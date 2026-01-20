@@ -251,12 +251,12 @@
     justify-content: center;
     width: 2.5rem;
     height: 2.5rem;
-    border: 1px solid var(--color-border, #e5e5e5);
+    border: 2px solid {{ section.settings.arrow_border_color | default: '#e5e5e5' }};
     border-radius: 50%;
-    background: var(--color-background);
-    color: var(--color-text);
+    background: {{ section.settings.arrow_bg_color | default: 'transparent' }};
+    color: {{ section.settings.arrow_icon_color | default: 'var(--color-text)' }};
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
   }
 
   @media (min-width: 1024px) {
@@ -267,14 +267,19 @@
   }
 
   .product-slider-arrow:hover:not(:disabled) {
-    background: var(--color-text);
-    color: var(--color-background);
-    border-color: var(--color-text);
+    background: {{ section.settings.arrow_hover_bg_color | default: 'var(--color-text)' }};
+    color: {{ section.settings.arrow_hover_icon_color | default: 'var(--color-background)' }};
+    border-color: {{ section.settings.arrow_hover_bg_color | default: 'var(--color-text)' }};
+    transform: scale(1.05);
   }
 
   .product-slider-arrow:disabled {
     opacity: 0.3;
     cursor: not-allowed;
+  }
+
+  .product-slider-arrow:disabled:hover {
+    transform: none;
   }
 
   /* Slider - fixed width based on visible products */
@@ -501,6 +506,40 @@
       "default": 24,
       "unit": "px",
       "label": "Abstand zwischen Karten"
+    },
+    {
+      "type": "header",
+      "content": "Pfeile"
+    },
+    {
+      "type": "color",
+      "id": "arrow_bg_color",
+      "label": "Pfeil Hintergrund",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "arrow_border_color",
+      "label": "Pfeil Rahmen",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "color",
+      "id": "arrow_icon_color",
+      "label": "Pfeil Icon",
+      "default": "#2D2D2D"
+    },
+    {
+      "type": "color",
+      "id": "arrow_hover_bg_color",
+      "label": "Hover Hintergrund",
+      "default": "#2D2D2D"
+    },
+    {
+      "type": "color",
+      "id": "arrow_hover_icon_color",
+      "label": "Hover Icon",
+      "default": "#ffffff"
     },
     {
       "type": "header",
