@@ -43,7 +43,7 @@
       "type": "featured-collection",
       "settings": {
         "subtitle": "Unsere Favoriten",
-        "title": "Entdecke unsere beliebtesten handgefertigten Stuecke",
+        "title": "Entdecke unsere neuesten Produkte",
         "collection": "cloudy",
         "products_to_show": 4,
         "columns": 4,
@@ -56,12 +56,6 @@
     "collection_list": {
       "type": "collection-list",
       "blocks": {
-        "collection_fQJ6d8": {
-          "type": "collection",
-          "settings": {
-            "collection": "deko"
-          }
-        },
         "collection_rB4m66": {
           "type": "collection",
           "settings": {
@@ -79,13 +73,19 @@
           "settings": {
             "collection": "tischlampen"
           }
+        },
+        "collection_fQJ6d8": {
+          "type": "collection",
+          "settings": {
+            "collection": "deko"
+          }
         }
       },
       "block_order": [
-        "collection_fQJ6d8",
         "collection_rB4m66",
         "collection_2",
-        "collection_3"
+        "collection_3",
+        "collection_fQJ6d8"
       ],
       "settings": {
         "subtitle": "Kollektionen",
