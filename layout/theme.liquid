@@ -106,7 +106,7 @@
       content: '';
       position: absolute;
       z-index: -1;
-      transition: transform var(--button-hover-speed) ease;
+      transition: all var(--button-hover-speed) ease-out;
     }
     {% endif %}
 
@@ -305,12 +305,12 @@
       height: 100%;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
       transform: skewX(-25deg);
+      transition: left var(--button-hover-speed) ease-out;
     }
     .btn-primary:hover::before,
     .btn-secondary:hover::before,
     .product-add-btn:not(.product-add-btn--disabled):hover::before {
       left: 150%;
-      transition: left calc(var(--button-hover-speed) * 2) ease;
     }
 
       {% when 'scale' %}
