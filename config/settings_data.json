@@ -9,8 +9,8 @@
  */
 {
   "current": {
-    "button_hover_effect": "fill_top",
-    "button_hover_speed": 100,
+    "button_hover_effect": "fill_diagonal",
+    "button_hover_speed": 800,
     "content_for_index": []
   }
 }
