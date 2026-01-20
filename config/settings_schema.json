@@ -306,6 +306,10 @@
             "label": "Fuellen von rechts"
           },
           {
+            "value": "fill_diagonal",
+            "label": "Diagonal fuellen (schraeg)"
+          },
+          {
             "value": "fill_bottom",
             "label": "Fuellen von unten"
           },
