@@ -75,13 +75,39 @@
 
       --button-radius: {{ btn_radius }};
       --button-hover-speed: {{ btn_speed }}ms;
+
+      /* Button Colors - Primary */
+      --btn-primary-bg: {{ settings.btn_primary_bg | default: '#8B9A7E' }};
+      --btn-primary-text: {{ settings.btn_primary_text | default: '#FFFFFF' }};
+      --btn-primary-hover-bg: {{ settings.btn_primary_hover_bg | default: '#A8B59E' }};
+      --btn-primary-hover-text: {{ settings.btn_primary_hover_text | default: '#FFFFFF' }};
+
+      /* Button Colors - Secondary */
+      --btn-secondary-bg: {{ settings.btn_secondary_bg | default: 'transparent' }};
+      --btn-secondary-text: {{ settings.btn_secondary_text | default: '#2D2D2D' }};
+      --btn-secondary-border: {{ settings.btn_secondary_border | default: '#E8E4DE' }};
+      --btn-secondary-hover-bg: {{ settings.btn_secondary_hover_bg | default: '#8B9A7E' }};
+      --btn-secondary-hover-text: {{ settings.btn_secondary_hover_text | default: '#FFFFFF' }};
+      --btn-secondary-hover-border: {{ settings.btn_secondary_hover_border | default: '#8B9A7E' }};
     }
 
-    /* Button Border Radius Override */
+    /* Button Base Styles */
     .btn-primary,
     .btn-secondary,
     .btn-ghost {
       border-radius: var(--button-radius);
+    }
+
+    .btn-primary {
+      background-color: var(--btn-primary-bg);
+      border-color: var(--btn-primary-bg);
+      color: var(--btn-primary-text);
+    }
+
+    .btn-secondary {
+      background-color: var(--btn-secondary-bg);
+      border-color: var(--btn-secondary-border);
+      color: var(--btn-secondary-text);
     }
 
     /* ==========================================
@@ -108,6 +134,18 @@
       z-index: -1;
       transition: all var(--button-hover-speed) ease-out;
     }
+    {% else %}
+    /* No animation - just color change on hover */
+    .btn-primary:hover {
+      background-color: var(--btn-primary-hover-bg);
+      border-color: var(--btn-primary-hover-bg);
+      color: var(--btn-primary-hover-text);
+    }
+    .btn-secondary:hover {
+      background-color: var(--btn-secondary-hover-bg);
+      border-color: var(--btn-secondary-hover-border);
+      color: var(--btn-secondary-hover-text);
+    }
     {% endif %}
 
     {% case btn_hover %}
@@ -115,16 +153,19 @@
     /* Fill from Left */
     .btn-primary::before {
       inset: 0;
-      background-color: var(--color-primary-light);
+      background-color: var(--btn-primary-hover-bg);
       transform: translateX(-100%);
     }
     .btn-primary:hover::before {
       transform: translateX(0);
     }
+    .btn-primary:hover {
+      color: var(--btn-primary-hover-text);
+    }
 
     .product-add-btn:not(.product-add-btn--disabled)::before {
       inset: 0;
-      background-color: var(--color-primary);
+      background-color: var(--btn-primary-hover-bg);
       transform: translateX(-100%);
     }
     .product-add-btn:not(.product-add-btn--disabled):hover::before {
@@ -133,31 +174,34 @@
 
     .btn-secondary::before {
       inset: 0;
-      background-color: var(--color-primary);
+      background-color: var(--btn-secondary-hover-bg);
       transform: translateX(-100%);
     }
     .btn-secondary:hover::before {
       transform: translateX(0);
     }
     .btn-secondary:hover {
-      color: #ffffff;
-      border-color: var(--color-primary);
+      color: var(--btn-secondary-hover-text);
+      border-color: var(--btn-secondary-hover-border);
     }
 
       {% when 'fill_right' %}
     /* Fill from Right */
     .btn-primary::before {
       inset: 0;
-      background-color: var(--color-primary-light);
+      background-color: var(--btn-primary-hover-bg);
       transform: translateX(100%);
     }
     .btn-primary:hover::before {
       transform: translateX(0);
     }
+    .btn-primary:hover {
+      color: var(--btn-primary-hover-text);
+    }
 
     .product-add-btn:not(.product-add-btn--disabled)::before {
       inset: 0;
-      background-color: var(--color-primary);
+      background-color: var(--btn-primary-hover-bg);
       transform: translateX(100%);
     }
     .product-add-btn:not(.product-add-btn--disabled):hover::before {
@@ -166,76 +210,123 @@
 
     .btn-secondary::before {
       inset: 0;
-      background-color: var(--color-primary);
+      background-color: var(--btn-secondary-hover-bg);
       transform: translateX(100%);
     }
     .btn-secondary:hover::before {
       transform: translateX(0);
     }
     .btn-secondary:hover {
-      color: #ffffff;
-      border-color: var(--color-primary);
+      color: var(--btn-secondary-hover-text);
+      border-color: var(--btn-secondary-hover-border);
     }
 
       {% when 'fill_diagonal' %}
-    /* Diagonal Fill (Skewed) */
+    /* Diagonal Fill - fills button completely with skewed edge */
+    .btn-primary::before {
+      top: 0;
+      left: 0;
+      width: 150%;
+      height: 100%;
+      background-color: var(--btn-primary-hover-bg);
+      transform: translateX(-100%) skewX(-25deg);
+      transform-origin: top left;
+    }
+    .btn-primary:hover::before {
+      transform: translateX(0) skewX(-25deg);
+    }
+    .btn-primary:hover {
+      color: var(--btn-primary-hover-text);
+    }
+
+    .product-add-btn:not(.product-add-btn--disabled)::before {
+      top: 0;
+      left: 0;
+      width: 150%;
+      height: 100%;
+      background-color: var(--btn-primary-hover-bg);
+      transform: translateX(-100%) skewX(-25deg);
+      transform-origin: top left;
+    }
+    .product-add-btn:not(.product-add-btn--disabled):hover::before {
+      transform: translateX(0) skewX(-25deg);
+    }
+
+    .btn-secondary::before {
+      top: 0;
+      left: 0;
+      width: 150%;
+      height: 100%;
+      background-color: var(--btn-secondary-hover-bg);
+      transform: translateX(-100%) skewX(-25deg);
+      transform-origin: top left;
+    }
+    .btn-secondary:hover::before {
+      transform: translateX(0) skewX(-25deg);
+    }
+    .btn-secondary:hover {
+      color: var(--btn-secondary-hover-text);
+      border-color: var(--btn-secondary-hover-border);
+    }
+
+      {% when 'swipe_diagonal' %}
+    /* Diagonal Swipe - runs through without filling */
     .btn-primary::before {
       top: 0;
       left: -100%;
-      width: 100%;
+      width: 60%;
       height: 100%;
-      background-color: var(--color-primary-light);
+      background-color: var(--btn-primary-hover-bg);
       transform: skewX(-25deg);
       transition: left var(--button-hover-speed) ease-out;
     }
     .btn-primary:hover::before {
-      left: 100%;
+      left: 150%;
     }
 
     .product-add-btn:not(.product-add-btn--disabled)::before {
       top: 0;
       left: -100%;
-      width: 100%;
+      width: 60%;
       height: 100%;
-      background-color: var(--color-primary);
+      background-color: var(--btn-primary-hover-bg);
       transform: skewX(-25deg);
       transition: left var(--button-hover-speed) ease-out;
     }
     .product-add-btn:not(.product-add-btn--disabled):hover::before {
-      left: 100%;
+      left: 150%;
     }
 
     .btn-secondary::before {
       top: 0;
       left: -100%;
-      width: 100%;
+      width: 60%;
       height: 100%;
-      background-color: var(--color-primary);
+      background-color: var(--btn-secondary-hover-bg);
       transform: skewX(-25deg);
       transition: left var(--button-hover-speed) ease-out;
     }
     .btn-secondary:hover::before {
-      left: 100%;
-    }
-    .btn-secondary:hover {
-      color: #ffffff;
-      border-color: var(--color-primary);
+      left: 150%;
     }
 
       {% when 'fill_top' %}
     /* Fill from Top (Guillotine) */
     .btn-primary::before {
       inset: 0;
-      background-color: var(--color-primary-light);
+      background-color: var(--btn-primary-hover-bg);
       transform: translateY(-100%);
     }
     .btn-primary:hover::before {
       transform: translateY(0);
     }
+    .btn-primary:hover {
+      color: var(--btn-primary-hover-text);
+    }
 
     .product-add-btn:not(.product-add-btn--disabled)::before {
       inset: 0;
-      background-color: var(--color-primary);
+      background-color: var(--btn-primary-hover-bg);
       transform: translateY(-100%);
     }
     .product-add-btn:not(.product-add-btn--disabled):hover::before {
@@ -244,31 +335,34 @@
 
     .btn-secondary::before {
       inset: 0;
-      background-color: var(--color-primary);
+      background-color: var(--btn-secondary-hover-bg);
       transform: translateY(-100%);
     }
     .btn-secondary:hover::before {
       transform: translateY(0);
     }
     .btn-secondary:hover {
-      color: #ffffff;
-      border-color: var(--color-primary);
+      color: var(--btn-secondary-hover-text);
+      border-color: var(--btn-secondary-hover-border);
     }
 
       {% when 'fill_bottom' %}
     /* Fill from Bottom */
     .btn-primary::before {
       inset: 0;
-      background-color: var(--color-primary-light);
+      background-color: var(--btn-primary-hover-bg);
       transform: translateY(100%);
     }
     .btn-primary:hover::before {
       transform: translateY(0);
     }
+    .btn-primary:hover {
+      color: var(--btn-primary-hover-text);
+    }
 
     .product-add-btn:not(.product-add-btn--disabled)::before {
       inset: 0;
-      background-color: var(--color-primary);
+      background-color: var(--btn-primary-hover-bg);
       transform: translateY(100%);
     }
     .product-add-btn:not(.product-add-btn--disabled):hover::before {
@@ -277,15 +371,15 @@
 
     .btn-secondary::before {
       inset: 0;
-      background-color: var(--color-primary);
+      background-color: var(--btn-secondary-hover-bg);
       transform: translateY(100%);
     }
     .btn-secondary:hover::before {
       transform: translateY(0);
     }
     .btn-secondary:hover {
-      color: #ffffff;
-      border-color: var(--color-primary);
+      color: var(--btn-secondary-hover-text);
+      border-color: var(--btn-secondary-hover-border);
     }
 
       {% when 'fill_center' %}
@@ -295,7 +389,7 @@
       left: 50%;
       width: 0;
       height: 0;
-      background-color: var(--color-primary-light);
+      background-color: var(--btn-primary-hover-bg);
       border-radius: 50%;
       transform: translate(-50%, -50%);
       transition: width var(--button-hover-speed) ease, height var(--button-hover-speed) ease;
@@ -304,13 +398,16 @@
       width: 300%;
       height: 300%;
     }
+    .btn-primary:hover {
+      color: var(--btn-primary-hover-text);
+    }
 
     .product-add-btn:not(.product-add-btn--disabled)::before {
       top: 50%;
       left: 50%;
       width: 0;
       height: 0;
-      background-color: var(--color-primary);
+      background-color: var(--btn-primary-hover-bg);
       border-radius: 50%;
       transform: translate(-50%, -50%);
       transition: width var(--button-hover-speed) ease, height var(--button-hover-speed) ease;
@@ -325,7 +422,7 @@
       left: 50%;
       width: 0;
       height: 0;
-      background-color: var(--color-primary);
+      background-color: var(--btn-secondary-hover-bg);
       border-radius: 50%;
       transform: translate(-50%, -50%);
       transition: width var(--button-hover-speed) ease, height var(--button-hover-speed) ease;
@@ -335,8 +432,8 @@
       height: 300%;
     }
     .btn-secondary:hover {
-      color: #ffffff;
-      border-color: var(--color-primary);
+      color: var(--btn-secondary-hover-text);
+      border-color: var(--btn-secondary-hover-border);
     }
 
       {% when 'shine' %}
@@ -364,6 +461,15 @@
     .btn-secondary:hover,
     .product-add-btn:not(.product-add-btn--disabled):hover {
       transform: scale(1.05);
+    }
+    .btn-primary:hover {
+      background-color: var(--btn-primary-hover-bg);
+      color: var(--btn-primary-hover-text);
+    }
+    .btn-secondary:hover {
+      background-color: var(--btn-secondary-hover-bg);
+      color: var(--btn-secondary-hover-text);
+      border-color: var(--btn-secondary-hover-border);
     }
     .btn-primary::before,
     .btn-secondary::before,

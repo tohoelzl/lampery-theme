@@ -286,6 +286,75 @@
       },
       {
         "type": "header",
+        "content": "Primaer-Button (Primary)"
+      },
+      {
+        "type": "color",
+        "id": "btn_primary_bg",
+        "label": "Hintergrundfarbe",
+        "default": "#8B9A7E"
+      },
+      {
+        "type": "color",
+        "id": "btn_primary_text",
+        "label": "Textfarbe",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "btn_primary_hover_bg",
+        "label": "Hover Hintergrundfarbe",
+        "default": "#A8B59E"
+      },
+      {
+        "type": "color",
+        "id": "btn_primary_hover_text",
+        "label": "Hover Textfarbe",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "header",
+        "content": "Sekundaer-Button (Secondary)"
+      },
+      {
+        "type": "color",
+        "id": "btn_secondary_bg",
+        "label": "Hintergrundfarbe",
+        "default": "transparent",
+        "info": "Leer lassen fuer transparent"
+      },
+      {
+        "type": "color",
+        "id": "btn_secondary_text",
+        "label": "Textfarbe",
+        "default": "#2D2D2D"
+      },
+      {
+        "type": "color",
+        "id": "btn_secondary_border",
+        "label": "Rahmenfarbe",
+        "default": "#E8E4DE"
+      },
+      {
+        "type": "color",
+        "id": "btn_secondary_hover_bg",
+        "label": "Hover Hintergrundfarbe",
+        "default": "#8B9A7E"
+      },
+      {
+        "type": "color",
+        "id": "btn_secondary_hover_text",
+        "label": "Hover Textfarbe",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "btn_secondary_hover_border",
+        "label": "Hover Rahmenfarbe",
+        "default": "#8B9A7E"
+      },
+      {
+        "type": "header",
         "content": "Hover Effekt"
       },
       {
@@ -308,6 +377,10 @@
           {
             "value": "fill_diagonal",
             "label": "Diagonal fuellen (schraeg)"
+          },
+          {
+            "value": "swipe_diagonal",
+            "label": "Diagonal durchlaufen (Wischer)"
           },
           {
             "value": "fill_bottom",
