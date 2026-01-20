@@ -9,47 +9,44 @@
   assign columns = section.settings.columns
   assign card_size = section.settings.card_size | default: 'medium'
   assign card_gap = section.settings.card_gap | default: 24
+  assign container_width = section.settings.container_width | default: 'normal'
 
   comment
-    Calculate actual columns based on card size
-    Smaller size = more columns, larger size = fewer columns
+    Columns are now directly controlled by the setting
+    Card size only affects visual appearance, not column count
   endcomment
+  assign size_columns = columns
+
   case card_size
-    when 'small'
-      assign size_columns = columns | plus: 1
-      if size_columns > 6
-        assign size_columns = 6
-      endif
+    when 'small', 'medium', 'large'
       assign mobile_columns = 2
-    when 'medium'
-      assign size_columns = columns
-      assign mobile_columns = 2
-    when 'large'
-      assign size_columns = columns | minus: 1
-      if size_columns < 2
-        assign size_columns = 2
-      endif
-      assign mobile_columns = 2
-    when 'extra_large'
-      assign size_columns = columns | minus: 2
-      if size_columns < 2
-        assign size_columns = 2
-      endif
-      assign mobile_columns = 1
-    when 'xxl'
-      assign size_columns = columns | minus: 2
-      if size_columns < 1
-        assign size_columns = 1
-      endif
+    when 'extra_large', 'xxl'
       assign mobile_columns = 1
     else
-      assign size_columns = columns
       assign mobile_columns = 2
+  endcase
+
+  comment
+    Container max-width based on setting
+  endcomment
+  case container_width
+    when 'narrow'
+      assign container_max = '1200px'
+    when 'normal'
+      assign container_max = '1400px'
+    when 'wide'
+      assign container_max = '1600px'
+    when 'extra_wide'
+      assign container_max = '1800px'
+    when 'full'
+      assign container_max = '100%'
+    else
+      assign container_max = '1400px'
   endcase
 -%}
 
-<section id="featured" class="section-lg">
-  <div class="container mx-auto px-4 lg:px-8">
+<section id="featured" class="section-lg featured-collection-section" style="--container-max: {{ container_max }};">
+  <div class="featured-collection-container">
 
     {% comment %} Section Header {% endcomment %}
     <div class="section-header">
@@ -90,6 +87,19 @@
 </section>
 
 <style>
+  /* Featured Collection Container */
+  .featured-collection-container {
+    max-width: var(--container-max, 1400px);
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    .featured-collection-container {
+      padding: 0 2rem;
+    }
+  }
+
   /* Featured Collection Grid */
   .featured-collection-grid {
     display: grid;
@@ -148,10 +158,39 @@
       "type": "range",
       "id": "columns",
       "min": 2,
-      "max": 5,
+      "max": 6,
       "step": 1,
       "default": 4,
       "label": "Spalten (Desktop)"
+    },
+    {
+      "type": "select",
+      "id": "container_width",
+      "label": "Container-Breite",
+      "options": [
+        {
+          "value": "narrow",
+          "label": "Schmal (1200px)"
+        },
+        {
+          "value": "normal",
+          "label": "Normal (1400px)"
+        },
+        {
+          "value": "wide",
+          "label": "Breit (1600px)"
+        },
+        {
+          "value": "extra_wide",
+          "label": "Sehr breit (1800px)"
+        },
+        {
+          "value": "full",
+          "label": "Volle Breite"
+        }
+      ],
+      "default": "normal",
+      "info": "Breiterer Container ermoeglicht mehr/groessere Karten"
     },
     {
       "type": "select",
@@ -179,8 +218,7 @@
           "label": "XXL"
         }
       ],
-      "default": "medium",
-      "info": "Groessere Karten = weniger Spalten"
+      "default": "medium"
     },
     {
       "type": "range",
