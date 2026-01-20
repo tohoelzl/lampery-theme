@@ -13,6 +13,76 @@
   "sections": {
     "header": {
       "type": "header",
+      "blocks": {
+        "promotion_tGM9t7": {
+          "type": "promotion",
+          "settings": {
+            "menu_handle": "Lampen",
+            "layout_type": "image_only",
+            "image": "shopify://shop_images/Gemini_Generated_Image_86xfgu86xfgu86xf_5ab6b71c-6f48-4374-9313-fd15a4de5e4f.png",
+            "title": "Neu eingetroffen",
+            "text": "",
+            "button_text": "Jetzt entdecken",
+            "link": "",
+            "product": "",
+            "image_ratio": "landscape",
+            "overlay_text": false,
+            "rounded_corners": true
+          }
+        },
+        "promotion_747xRP": {
+          "type": "promotion",
+          "settings": {
+            "menu_handle": "Lampen",
+            "layout_type": "image_only",
+            "image": "shopify://shop_images/Gemini_Generated_Image_523di6523di6523d.png",
+            "title": "Neu eingetroffen",
+            "text": "",
+            "button_text": "Jetzt entdecken",
+            "link": "",
+            "product": "",
+            "image_ratio": "portrait",
+            "overlay_text": false,
+            "rounded_corners": true
+          }
+        },
+        "promotion_DxYAQy": {
+          "type": "promotion",
+          "settings": {
+            "menu_handle": "",
+            "layout_type": "image_text",
+            "title": "Neu eingetroffen",
+            "text": "",
+            "button_text": "Jetzt entdecken",
+            "link": "",
+            "product": "",
+            "image_ratio": "landscape",
+            "overlay_text": false,
+            "rounded_corners": true
+          }
+        },
+        "promotion_wffRCr": {
+          "type": "promotion",
+          "settings": {
+            "menu_handle": "",
+            "layout_type": "image_text",
+            "title": "Neu eingetroffen",
+            "text": "",
+            "button_text": "Jetzt entdecken",
+            "link": "",
+            "product": "",
+            "image_ratio": "landscape",
+            "overlay_text": false,
+            "rounded_corners": true
+          }
+        }
+      },
+      "block_order": [
+        "promotion_tGM9t7",
+        "promotion_747xRP",
+        "promotion_DxYAQy",
+        "promotion_wffRCr"
+      ],
       "settings": {
         "logo": "shopify://shop_images/Group_25.png",
         "logo_width": 100,
