@@ -9,43 +9,44 @@
   assign columns = section.settings.columns
   assign card_size = section.settings.card_size | default: 'medium'
   assign card_gap = section.settings.card_gap | default: 24
-  assign container_width = section.settings.container_width | default: 'normal'
 
   comment
-    Columns are now directly controlled by the setting
-    Card size only affects visual appearance, not column count
+    Card width in pixels based on size setting
+    These are minimum widths per card
   endcomment
-  assign size_columns = columns
-
   case card_size
-    when 'small', 'medium', 'large'
+    when 'small'
+      assign card_width = 220
       assign mobile_columns = 2
-    when 'extra_large', 'xxl'
+    when 'medium'
+      assign card_width = 280
+      assign mobile_columns = 2
+    when 'large'
+      assign card_width = 340
+      assign mobile_columns = 2
+    when 'extra_large'
+      assign card_width = 400
+      assign mobile_columns = 1
+    when 'xxl'
+      assign card_width = 480
       assign mobile_columns = 1
     else
+      assign card_width = 280
       assign mobile_columns = 2
   endcase
 
   comment
-    Container max-width based on setting
+    Calculate container width automatically:
+    container = (card_width * columns) + (gap * (columns - 1)) + padding (64px for 2rem each side)
   endcomment
-  case container_width
-    when 'narrow'
-      assign container_max = '1200px'
-    when 'normal'
-      assign container_max = '1400px'
-    when 'wide'
-      assign container_max = '1600px'
-    when 'extra_wide'
-      assign container_max = '1800px'
-    when 'full'
-      assign container_max = '100%'
-    else
-      assign container_max = '1400px'
-  endcase
+  assign gaps_count = columns | minus: 1
+  assign total_gaps = gaps_count | times: card_gap
+  assign total_cards = columns | times: card_width
+  assign container_padding = 64
+  assign container_max = total_cards | plus: total_gaps | plus: container_padding
 -%}
 
-<section id="featured" class="section-lg featured-collection-section" style="--container-max: {{ container_max }};">
+<section id="featured" class="section-lg featured-collection-section" style="--container-max: {{ container_max }}px; --card-width: {{ card_width }}px;">
   <div class="featured-collection-container">
 
     {% comment %} Section Header {% endcomment %}
@@ -87,7 +88,7 @@
 </section>
 
 <style>
-  /* Featured Collection Container */
+  /* Featured Collection Container - auto-calculated based on card size, columns, and gap */
   .featured-collection-container {
     max-width: var(--container-max, 1400px);
     margin: 0 auto;
@@ -103,11 +104,11 @@
   /* Featured Collection Grid */
   .featured-collection-grid {
     display: grid;
-    grid-template-columns: repeat({{ size_columns }}, 1fr);
+    grid-template-columns: repeat({{ columns }}, minmax(var(--card-width, 280px), 1fr));
     gap: var(--card-gap, 24px);
   }
 
-  /* Mobile */
+  /* Mobile - always use mobile columns */
   @media (max-width: 1023px) {
     .featured-collection-grid {
       grid-template-columns: repeat({{ mobile_columns }}, 1fr);
@@ -165,60 +166,32 @@
     },
     {
       "type": "select",
-      "id": "container_width",
-      "label": "Container-Breite",
-      "options": [
-        {
-          "value": "narrow",
-          "label": "Schmal (1200px)"
-        },
-        {
-          "value": "normal",
-          "label": "Normal (1400px)"
-        },
-        {
-          "value": "wide",
-          "label": "Breit (1600px)"
-        },
-        {
-          "value": "extra_wide",
-          "label": "Sehr breit (1800px)"
-        },
-        {
-          "value": "full",
-          "label": "Volle Breite"
-        }
-      ],
-      "default": "normal",
-      "info": "Breiterer Container ermoeglicht mehr/groessere Karten"
-    },
-    {
-      "type": "select",
       "id": "card_size",
       "label": "Produktkarten-Groesse",
       "options": [
         {
           "value": "small",
-          "label": "Klein"
+          "label": "Klein (220px)"
         },
         {
           "value": "medium",
-          "label": "Mittel"
+          "label": "Mittel (280px)"
         },
         {
           "value": "large",
-          "label": "Gross"
+          "label": "Gross (340px)"
         },
         {
           "value": "extra_large",
-          "label": "Sehr gross"
+          "label": "Sehr gross (400px)"
         },
         {
           "value": "xxl",
-          "label": "XXL"
+          "label": "XXL (480px)"
         }
       ],
-      "default": "medium"
+      "default": "medium",
+      "info": "Container-Breite passt sich automatisch an"
     },
     {
       "type": "range",
