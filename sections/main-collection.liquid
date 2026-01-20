@@ -8,6 +8,7 @@
   assign columns = section.settings.columns_desktop
   assign filter_type = section.settings.filter_type
   assign card_size = section.settings.card_size | default: 'medium'
+  assign card_gap = section.settings.card_gap | default: 24
 -%}
 
 <section class="main-collection bg-background" x-data="{ filterOpen: false }">
@@ -119,7 +120,7 @@
         {% comment %} Products Grid {% endcomment %}
         {% paginate collection.products by products_per_page %}
           {% if collection.products.size > 0 %}
-            <div class="collection-grid collection-grid--{{ card_size }}" data-columns="{{ columns }}">
+            <div class="collection-grid collection-grid--{{ card_size }}" data-columns="{{ columns }}" style="--card-gap: {{ card_gap }}px;">
               {% for product in collection.products %}
                 {% render 'product-card', product: product %}
               {% endfor %}
@@ -408,47 +409,24 @@
   .collection-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    --card-min-width: 200px;
+    gap: var(--card-gap, 24px);
   }
 
   /* Card Size Variants */
-  .collection-grid--small {
-    --card-min-width: 160px;
-  }
-
   .collection-grid--small .product-card {
     font-size: 0.9em;
-  }
-
-  .collection-grid--medium {
-    --card-min-width: 220px;
-  }
-
-  .collection-grid--large {
-    --card-min-width: 280px;
   }
 
   .collection-grid--large .product-card {
     font-size: 1.05em;
   }
 
-  .collection-grid--extra_large {
-    --card-min-width: 340px;
-  }
-
   .collection-grid--extra_large .product-card {
     font-size: 1.1em;
   }
 
-  .collection-grid > * {
-    min-width: var(--card-min-width);
-  }
-
-  @media (min-width: 640px) {
-    .collection-grid {
-      gap: 2rem;
-    }
+  .collection-grid--xxl .product-card {
+    font-size: 1.15em;
   }
 
   @media (min-width: 768px) {
@@ -720,10 +698,24 @@
         {
           "value": "extra_large",
           "label": "Sehr gross"
+        },
+        {
+          "value": "xxl",
+          "label": "XXL"
         }
       ],
       "default": "medium",
-      "info": "Beeinflusst die minimale Breite der Produktkarten"
+      "info": "Beeinflusst die Schriftgroesse der Produktkarten"
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "min": 8,
+      "max": 64,
+      "step": 4,
+      "default": 24,
+      "unit": "px",
+      "label": "Abstand zwischen Karten"
     },
     {
       "type": "header",
