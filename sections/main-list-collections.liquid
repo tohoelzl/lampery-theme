@@ -7,6 +7,59 @@
   assign columns = section.settings.columns_desktop
   assign show_description = section.settings.show_description
   assign show_product_count = section.settings.show_product_count
+  assign card_size = section.settings.card_size | default: 'medium'
+  assign card_gap = section.settings.card_gap | default: 24
+  assign card_style = section.settings.card_style | default: 'rounded'
+
+  case card_style
+    when 'square'
+      assign card_radius = '0'
+    when 'slightly_rounded'
+      assign card_radius = '0.5rem'
+    when 'rounded'
+      assign card_radius = '1rem'
+    when 'pill'
+      assign card_radius = '1.5rem'
+    else
+      assign card_radius = '1rem'
+  endcase
+
+  comment
+    Calculate actual columns based on card size
+    Smaller size = more columns, larger size = fewer columns
+  endcomment
+  case card_size
+    when 'small'
+      assign size_columns = columns | plus: 1
+      if size_columns > 6
+        assign size_columns = 6
+      endif
+      assign mobile_columns = 2
+    when 'medium'
+      assign size_columns = columns
+      assign mobile_columns = 1
+    when 'large'
+      assign size_columns = columns | minus: 1
+      if size_columns < 2
+        assign size_columns = 2
+      endif
+      assign mobile_columns = 1
+    when 'extra_large'
+      assign size_columns = columns | minus: 2
+      if size_columns < 2
+        assign size_columns = 2
+      endif
+      assign mobile_columns = 1
+    when 'xxl'
+      assign size_columns = columns | minus: 2
+      if size_columns < 1
+        assign size_columns = 1
+      endif
+      assign mobile_columns = 1
+    else
+      assign size_columns = columns
+      assign mobile_columns = 1
+  endcase
 -%}
 
 <section class="collections-page">
@@ -41,7 +94,7 @@
     </header>
 
     {% comment %} ========== COLLECTIONS GRID ========== {% endcomment %}
-    <div class="collections-grid" data-columns="{{ columns }}">
+    <div class="collections-grid" style="--card-gap: {{ card_gap }}px; --card-radius: {{ card_radius }};">
       {% for collection in collections %}
         {% unless collection.handle == 'all' or collection.handle == 'frontpage' %}
           <a href="{{ collection.url }}" class="collection-card">
@@ -239,26 +292,19 @@
   /* Collections Grid */
   .collections-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    grid-template-columns: repeat({{ mobile_columns }}, 1fr);
+    gap: var(--card-gap, 24px);
   }
 
   @media (min-width: 640px) {
     .collections-grid {
       grid-template-columns: repeat(2, 1fr);
-      gap: 2rem;
     }
   }
 
   @media (min-width: 1024px) {
-    .collections-grid[data-columns="2"] {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .collections-grid[data-columns="3"] {
-      grid-template-columns: repeat(3, 1fr);
-    }
-    .collections-grid[data-columns="4"] {
-      grid-template-columns: repeat(4, 1fr);
+    .collections-grid {
+      grid-template-columns: repeat({{ size_columns }}, 1fr);
     }
   }
 
@@ -267,7 +313,7 @@
     display: flex;
     flex-direction: column;
     text-decoration: none;
-    border-radius: 1rem;
+    border-radius: var(--card-radius, 1rem);
     overflow: hidden;
     background: var(--color-background);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -512,10 +558,73 @@
       "type": "range",
       "id": "columns_desktop",
       "min": 2,
-      "max": 4,
+      "max": 5,
       "step": 1,
       "default": 3,
       "label": "Spalten (Desktop)"
+    },
+    {
+      "type": "select",
+      "id": "card_style",
+      "label": "Karten-Stil",
+      "options": [
+        {
+          "value": "square",
+          "label": "Eckig"
+        },
+        {
+          "value": "slightly_rounded",
+          "label": "Leicht abgerundet"
+        },
+        {
+          "value": "rounded",
+          "label": "Abgerundet"
+        },
+        {
+          "value": "pill",
+          "label": "Stark abgerundet"
+        }
+      ],
+      "default": "rounded"
+    },
+    {
+      "type": "select",
+      "id": "card_size",
+      "label": "Karten-Groesse",
+      "options": [
+        {
+          "value": "small",
+          "label": "Klein"
+        },
+        {
+          "value": "medium",
+          "label": "Mittel"
+        },
+        {
+          "value": "large",
+          "label": "Gross"
+        },
+        {
+          "value": "extra_large",
+          "label": "Sehr gross"
+        },
+        {
+          "value": "xxl",
+          "label": "XXL"
+        }
+      ],
+      "default": "medium",
+      "info": "Groessere Karten = weniger Spalten"
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "min": 8,
+      "max": 64,
+      "step": 4,
+      "default": 24,
+      "unit": "px",
+      "label": "Abstand zwischen Karten"
     }
   ]
 }
