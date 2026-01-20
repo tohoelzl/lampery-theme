@@ -36,6 +36,13 @@
   assign total_cards = visible_products | times: card_width
   assign slider_width = total_cards | plus: total_gaps
 
+  comment
+    Calculate total container width:
+    container_width = slider_width + 2 arrows (3rem = 48px each) + 2 gaps (1.5rem = 24px each) + padding (64px)
+    = slider_width + 96 + 48 + 64 = slider_width + 208
+  endcomment
+  assign container_width = slider_width | plus: 208
+
   assign section_id = 'product-slider-' | append: section.id
 
   comment
@@ -51,7 +58,7 @@
   endif
 -%}
 
-<section class="product-slider-section" style="--card-width: {{ card_width }}px; --card-gap: {{ card_gap }}px; --slider-width: {{ slider_width }}px;">
+<section class="product-slider-section" style="--card-width: {{ card_width }}px; --card-gap: {{ card_gap }}px; --slider-width: {{ slider_width }}px; --container-width: {{ container_width }}px;">
   <div class="product-slider-container">
 
     {% comment %} Section Header {% endcomment %}
@@ -155,9 +162,9 @@
     }
   }
 
-  /* Container */
+  /* Container - width based on slider + arrows + gaps */
   .product-slider-container {
-    max-width: 1600px;
+    max-width: var(--container-width);
     margin: 0 auto;
     padding: 0 1rem;
   }
