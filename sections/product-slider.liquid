@@ -9,6 +9,7 @@
   assign products_to_show = section.settings.products_to_show
   assign card_size = section.settings.card_size | default: 'medium'
   assign card_gap = section.settings.card_gap | default: 24
+  assign text_align = section.settings.text_alignment | default: 'center'
 
   case card_size
     when 'small'
@@ -44,49 +45,50 @@
   <div class="product-slider-container">
 
     {% comment %} Section Header {% endcomment %}
-    <div class="product-slider-header">
-      <div class="product-slider-header__text">
-        {% if section.settings.subtitle != blank %}
-          <span class="product-slider-subtitle">{{ section.settings.subtitle }}</span>
-        {% endif %}
-        <h2 class="product-slider-title">{{ section.settings.title }}</h2>
-      </div>
-
-      {% comment %} Navigation Arrows - Desktop {% endcomment %}
-      <div class="product-slider-nav">
-        <button type="button" class="product-slider-nav__btn product-slider-nav__btn--prev" data-slider-prev="{{ section_id }}" aria-label="Vorherige Produkte">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <button type="button" class="product-slider-nav__btn product-slider-nav__btn--next" data-slider-next="{{ section_id }}" aria-label="Naechste Produkte">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-      </div>
+    <div class="product-slider-header product-slider-header--{{ text_align }}">
+      {% if section.settings.subtitle != blank %}
+        <span class="product-slider-subtitle">{{ section.settings.subtitle }}</span>
+      {% endif %}
+      <h2 class="product-slider-title">{{ section.settings.title }}</h2>
     </div>
 
     {% if has_products %}
-      {% comment %} Products Slider {% endcomment %}
-      <div class="product-slider-wrapper">
-        <div class="product-slider" id="{{ section_id }}">
-          {% if product_source == 'all' %}
-            {% comment %} Show all products sorted by newest first {% endcomment %}
-            {% for product in collections.all.products limit: products_to_show %}
-              <div class="product-slider__item">
-                {% render 'product-card', product: product %}
-              </div>
-            {% endfor %}
-          {% else %}
-            {% comment %} Show products from selected collection {% endcomment %}
-            {% for product in collection.products limit: products_to_show %}
-              <div class="product-slider__item">
-                {% render 'product-card', product: product %}
-              </div>
-            {% endfor %}
-          {% endif %}
+      {% comment %} Products Slider with Navigation {% endcomment %}
+      <div class="product-slider-track">
+        {% comment %} Left Arrow {% endcomment %}
+        <button type="button" class="product-slider-arrow product-slider-arrow--prev" data-slider-prev="{{ section_id }}" aria-label="Vorherige Produkte">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        {% comment %} Slider {% endcomment %}
+        <div class="product-slider-wrapper">
+          <div class="product-slider" id="{{ section_id }}">
+            {% if product_source == 'all' %}
+              {% comment %} Show all products sorted by newest first {% endcomment %}
+              {% for product in collections.all.products limit: products_to_show %}
+                <div class="product-slider__item">
+                  {% render 'product-card', product: product %}
+                </div>
+              {% endfor %}
+            {% else %}
+              {% comment %} Show products from selected collection {% endcomment %}
+              {% for product in collection.products limit: products_to_show %}
+                <div class="product-slider__item">
+                  {% render 'product-card', product: product %}
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
         </div>
+
+        {% comment %} Right Arrow {% endcomment %}
+        <button type="button" class="product-slider-arrow product-slider-arrow--next" data-slider-next="{{ section_id }}" aria-label="Naechste Produkte">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
       </div>
 
       {% comment %} View All Link {% endcomment %}
@@ -111,14 +113,18 @@
       {% endif %}
     {% else %}
       {% comment %} Placeholder when no products available {% endcomment %}
-      <div class="product-slider-wrapper">
-        <div class="product-slider" id="{{ section_id }}">
-          {% for i in (1..6) %}
-            <div class="product-slider__item">
-              <div class="product-slider__placeholder"></div>
-            </div>
-          {% endfor %}
+      <div class="product-slider-track">
+        <div class="product-slider-arrow product-slider-arrow--prev" style="opacity: 0.3;"></div>
+        <div class="product-slider-wrapper">
+          <div class="product-slider" id="{{ section_id }}">
+            {% for i in (1..6) %}
+              <div class="product-slider__item">
+                <div class="product-slider__placeholder"></div>
+              </div>
+            {% endfor %}
+          </div>
         </div>
+        <div class="product-slider-arrow product-slider-arrow--next" style="opacity: 0.3;"></div>
       </div>
       <p class="product-slider-empty">
         {% if product_source == 'all' %}
@@ -160,11 +166,7 @@
 
   /* Header */
   .product-slider-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
     margin-bottom: 1.5rem;
-    gap: 1rem;
   }
 
   @media (min-width: 1024px) {
@@ -173,8 +175,16 @@
     }
   }
 
-  .product-slider-header__text {
-    flex: 1;
+  .product-slider-header--left {
+    text-align: left;
+  }
+
+  .product-slider-header--center {
+    text-align: center;
+  }
+
+  .product-slider-header--right {
+    text-align: right;
   }
 
   .product-slider-subtitle {
@@ -208,17 +218,25 @@
     }
   }
 
-  /* Navigation */
-  .product-slider-nav {
+  /* Slider Track - contains arrows and slider */
+  .product-slider-track {
     display: flex;
+    align-items: center;
     gap: 0.5rem;
-    flex-shrink: 0;
   }
 
-  .product-slider-nav__btn {
+  @media (min-width: 1024px) {
+    .product-slider-track {
+      gap: 1rem;
+    }
+  }
+
+  /* Navigation Arrows */
+  .product-slider-arrow {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     width: 2.5rem;
     height: 2.5rem;
     border: 1px solid var(--color-border, #e5e5e5);
@@ -227,44 +245,32 @@
     color: var(--color-text);
     cursor: pointer;
     transition: all 0.2s ease;
+    z-index: 2;
   }
 
   @media (min-width: 1024px) {
-    .product-slider-nav__btn {
+    .product-slider-arrow {
       width: 3rem;
       height: 3rem;
     }
   }
 
-  .product-slider-nav__btn:hover {
+  .product-slider-arrow:hover:not(:disabled) {
     background: var(--color-text);
     color: var(--color-background);
     border-color: var(--color-text);
   }
 
-  .product-slider-nav__btn:disabled {
+  .product-slider-arrow:disabled {
     opacity: 0.3;
     cursor: not-allowed;
   }
 
-  .product-slider-nav__btn:disabled:hover {
-    background: var(--color-background);
-    color: var(--color-text);
-    border-color: var(--color-border, #e5e5e5);
-  }
-
   /* Slider Wrapper */
   .product-slider-wrapper {
-    position: relative;
-    margin: 0 -1rem;
-    padding: 0 1rem;
-  }
-
-  @media (min-width: 1024px) {
-    .product-slider-wrapper {
-      margin: 0 -2rem;
-      padding: 0 2rem;
-    }
+    flex: 1;
+    overflow: hidden;
+    min-width: 0;
   }
 
   /* Slider */
@@ -277,7 +283,7 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding-bottom: 0.5rem;
+    padding: 0.25rem 0;
   }
 
   .product-slider::-webkit-scrollbar {
@@ -288,17 +294,6 @@
   .product-slider__item {
     flex: 0 0 var(--card-width, 280px);
     scroll-snap-align: start;
-  }
-
-  /* Make first item align with container on mobile */
-  .product-slider__item:first-child {
-    scroll-margin-left: 1rem;
-  }
-
-  @media (min-width: 1024px) {
-    .product-slider__item:first-child {
-      scroll-margin-left: 2rem;
-    }
   }
 
   /* Placeholder */
@@ -395,6 +390,26 @@
       "id": "title",
       "label": "Titel",
       "default": "Unsere Produkte"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text Ausrichtung",
+      "options": [
+        {
+          "value": "left",
+          "label": "Links"
+        },
+        {
+          "value": "center",
+          "label": "Zentriert"
+        },
+        {
+          "value": "right",
+          "label": "Rechts"
+        }
+      ],
+      "default": "center"
     },
     {
       "type": "header",
