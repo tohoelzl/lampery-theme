@@ -11,6 +11,7 @@
   "current": {
     "button_hover_effect": "fill_diagonal",
     "button_hover_speed": 800,
+    "product_card_style": "square",
     "content_for_index": []
   }
 }
