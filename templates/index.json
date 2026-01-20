@@ -103,10 +103,11 @@
       "settings": {
         "subtitle": "Entdecke",
         "title": "Alle Produkte",
+        "text_alignment": "center",
         "product_source": "all",
         "collection": "",
         "products_to_show": 12,
-        "card_size": "large",
+        "card_size": "medium",
         "card_gap": 24,
         "show_view_all": true,
         "view_all_text": "Alle Produkte ansehen"
