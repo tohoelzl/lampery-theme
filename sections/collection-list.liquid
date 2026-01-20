@@ -4,12 +4,63 @@
 {% endcomment %}
 
 {%- liquid
-  assign collections_per_row = section.settings.collections_per_row
+  assign columns = section.settings.collections_per_row
+  assign card_size = section.settings.card_size | default: 'medium'
+  assign card_gap = section.settings.card_gap | default: 24
+  assign card_style = section.settings.card_style | default: 'rounded'
   assign aspect_ratio = section.settings.aspect_ratio
+
+  case card_style
+    when 'square'
+      assign card_radius = '0'
+    when 'slightly_rounded'
+      assign card_radius = '0.5rem'
+    when 'rounded'
+      assign card_radius = '1rem'
+    when 'pill'
+      assign card_radius = '1.5rem'
+    else
+      assign card_radius = '1rem'
+  endcase
+
+  comment
+    Card width in pixels based on size setting
+    Same values as featured-collection for consistency
+  endcomment
+  case card_size
+    when 'small'
+      assign card_width = 220
+      assign mobile_columns = 2
+    when 'medium'
+      assign card_width = 280
+      assign mobile_columns = 2
+    when 'large'
+      assign card_width = 340
+      assign mobile_columns = 1
+    when 'extra_large'
+      assign card_width = 400
+      assign mobile_columns = 1
+    when 'xxl'
+      assign card_width = 480
+      assign mobile_columns = 1
+    else
+      assign card_width = 280
+      assign mobile_columns = 2
+  endcase
+
+  comment
+    Calculate container width automatically:
+    container = (card_width * columns) + (gap * (columns - 1)) + padding (64px for 2rem each side)
+  endcomment
+  assign gaps_count = columns | minus: 1
+  assign total_gaps = gaps_count | times: card_gap
+  assign total_cards = columns | times: card_width
+  assign container_padding = 64
+  assign container_max = total_cards | plus: total_gaps | plus: container_padding
 -%}
 
-<section class="section">
-  <div class="container mx-auto px-4 lg:px-8">
+<section class="collection-list-section" style="--container-max: {{ container_max }}px; --card-width: {{ card_width }}px;">
+  <div class="collection-list-container">
 
     {% comment %} Section Header {% endcomment %}
     <div class="section-header">
@@ -20,61 +71,197 @@
     </div>
 
     {% comment %} Collections Grid {% endcomment %}
-    <div class="max-w-6xl mx-auto w-full">
-      <div class="grid grid-cols-1 lg:grid-cols-{{ collections_per_row }} gap-4 lg:gap-6">
-        {% for block in section.blocks %}
-          {%- liquid
-            assign collection = collections[block.settings.collection]
-          -%}
+    <div class="collection-list-grid" style="--card-gap: {{ card_gap }}px; --card-radius: {{ card_radius }};">
+      {% for block in section.blocks %}
+        {%- liquid
+          assign collection = collections[block.settings.collection]
+        -%}
 
-          {% if collection != blank %}
-            <a href="{{ collection.url }}"
-               class="group relative block {{ aspect_ratio }} rounded-xl overflow-hidden bg-background"
-               {{ block.shopify_attributes }}>
+        {% if collection != blank %}
+          <a href="{{ collection.url }}"
+             class="collection-list-card {{ aspect_ratio }}"
+             {{ block.shopify_attributes }}>
 
-              {% comment %} Collection Image {% endcomment %}
-              {% if collection.featured_image != blank %}
-                <img
-                  src="{{ collection.featured_image | image_url: width: 600 }}"
-                  srcset="{{ collection.featured_image | image_url: width: 400 }} 400w,
-                          {{ collection.featured_image | image_url: width: 600 }} 600w,
-                          {{ collection.featured_image | image_url: width: 800 }} 800w"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  alt="{{ collection.title }}"
-                  width="{{ collection.featured_image.width }}"
-                  height="{{ collection.featured_image.height }}"
-                  class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                >
-              {% else %}
-                <div class="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent-soft"></div>
-              {% endif %}
+            {% comment %} Collection Image {% endcomment %}
+            {% if collection.featured_image != blank %}
+              <img
+                src="{{ collection.featured_image | image_url: width: 600 }}"
+                srcset="{{ collection.featured_image | image_url: width: 400 }} 400w,
+                        {{ collection.featured_image | image_url: width: 600 }} 600w,
+                        {{ collection.featured_image | image_url: width: 800 }} 800w"
+                sizes="(max-width: 768px) 100vw, 33vw"
+                alt="{{ collection.title }}"
+                width="{{ collection.featured_image.width }}"
+                height="{{ collection.featured_image.height }}"
+                class="collection-list-card__image"
+                loading="lazy"
+              >
+            {% else %}
+              <div class="collection-list-card__placeholder"></div>
+            {% endif %}
 
-              {% comment %} Overlay {% endcomment %}
-              <div class="absolute inset-0 bg-gradient-to-t from-text/60 via-text/20 to-transparent"></div>
+            {% comment %} Overlay {% endcomment %}
+            <div class="collection-list-card__overlay"></div>
 
-              {% comment %} Content {% endcomment %}
-              <div class="absolute inset-0 flex flex-col justify-end p-4 lg:p-6">
-                <h3 class="text-lg lg:text-xl font-semibold text-white mb-1">
-                  {{ collection.title }}
-                </h3>
-                <p class="text-white/80 text-sm">
-                  {{ collection.products_count }} {{ 'collection.products' | t }}
-                </p>
-              </div>
+            {% comment %} Content {% endcomment %}
+            <div class="collection-list-card__content">
+              <h3 class="collection-list-card__title">
+                {{ collection.title }}
+              </h3>
+              <p class="collection-list-card__count">
+                {{ collection.products_count }} {% if collection.products_count == 1 %}Produkt{% else %}Produkte{% endif %}
+              </p>
+            </div>
 
-              {% comment %} Hover Arrow {% endcomment %}
-              <div class="absolute top-4 right-4 lg:top-6 lg:right-6 w-8 h-8 lg:w-10 lg:h-10 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {% render 'icon-arrow-right', class: 'w-4 h-4 lg:w-5 lg:h-5 text-text' %}
-              </div>
-            </a>
-          {% endif %}
-        {% endfor %}
-      </div>
+            {% comment %} Hover Arrow {% endcomment %}
+            <div class="collection-list-card__arrow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </a>
+        {% endif %}
+      {% endfor %}
     </div>
 
   </div>
 </section>
+
+<style>
+  /* Collection List Section - full width wrapper */
+  .collection-list-section {
+    width: 100%;
+    padding: 4rem 0;
+  }
+
+  /* Collection List Container - auto-calculated based on card size, columns, and gap */
+  .collection-list-container {
+    max-width: var(--container-max, 1400px);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    .collection-list-container {
+      padding: 0 2rem;
+    }
+  }
+
+  /* Collection List Grid */
+  .collection-list-grid {
+    display: grid;
+    grid-template-columns: repeat({{ columns }}, minmax(var(--card-width, 280px), 1fr));
+    gap: var(--card-gap, 24px);
+  }
+
+  /* Mobile - use mobile columns */
+  @media (max-width: 1023px) {
+    .collection-list-grid {
+      grid-template-columns: repeat({{ mobile_columns }}, 1fr);
+    }
+  }
+
+  /* Collection Card */
+  .collection-list-card {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: var(--card-radius, 1rem);
+    background: var(--color-background-alt);
+    text-decoration: none;
+  }
+
+  .collection-list-card__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .collection-list-card:hover .collection-list-card__image {
+    transform: scale(1.05);
+  }
+
+  .collection-list-card__placeholder {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--color-primary, #8B9A7E) 0%, var(--color-accent-soft, #F5E6D3) 100%);
+    opacity: 0.3;
+  }
+
+  .collection-list-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 40%, transparent 100%);
+  }
+
+  .collection-list-card__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    .collection-list-card__content {
+      padding: 1.5rem;
+    }
+  }
+
+  .collection-list-card__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0 0 0.25rem;
+  }
+
+  @media (min-width: 1024px) {
+    .collection-list-card__title {
+      font-size: 1.25rem;
+    }
+  }
+
+  .collection-list-card__count {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+  }
+
+  .collection-list-card__arrow {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background: #ffffff;
+    border-radius: 50%;
+    color: var(--color-text);
+    opacity: 0;
+    transform: translateX(-0.5rem);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .collection-list-card__arrow {
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+  }
+
+  .collection-list-card:hover .collection-list-card__arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+</style>
 
 {% schema %}
 {
@@ -106,10 +293,73 @@
       "type": "range",
       "id": "collections_per_row",
       "min": 2,
-      "max": 4,
+      "max": 5,
       "step": 1,
       "default": 3,
-      "label": "Kollektionen pro Reihe"
+      "label": "Spalten (Desktop)"
+    },
+    {
+      "type": "select",
+      "id": "card_size",
+      "label": "Karten-Groesse",
+      "options": [
+        {
+          "value": "small",
+          "label": "Klein (220px)"
+        },
+        {
+          "value": "medium",
+          "label": "Mittel (280px)"
+        },
+        {
+          "value": "large",
+          "label": "Gross (340px)"
+        },
+        {
+          "value": "extra_large",
+          "label": "Sehr gross (400px)"
+        },
+        {
+          "value": "xxl",
+          "label": "XXL (480px)"
+        }
+      ],
+      "default": "medium",
+      "info": "Container-Breite passt sich automatisch an"
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "min": 8,
+      "max": 64,
+      "step": 4,
+      "default": 24,
+      "unit": "px",
+      "label": "Abstand zwischen Karten"
+    },
+    {
+      "type": "select",
+      "id": "card_style",
+      "label": "Karten-Ecken",
+      "options": [
+        {
+          "value": "square",
+          "label": "Eckig"
+        },
+        {
+          "value": "slightly_rounded",
+          "label": "Leicht abgerundet"
+        },
+        {
+          "value": "rounded",
+          "label": "Abgerundet"
+        },
+        {
+          "value": "pill",
+          "label": "Stark abgerundet"
+        }
+      ],
+      "default": "rounded"
     },
     {
       "type": "select",
@@ -118,6 +368,7 @@
       "options": [
         { "value": "aspect-square", "label": "Quadratisch (1:1)" },
         { "value": "aspect-[4/3]", "label": "Querformat (4:3)" },
+        { "value": "aspect-[3/4]", "label": "Hochformat (3:4)" },
         { "value": "aspect-video", "label": "Breit (16:9)" }
       ],
       "default": "aspect-[4/3]"
