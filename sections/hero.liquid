@@ -63,7 +63,7 @@
         {% if section.settings.button_label != blank or section.settings.button_2_label != blank %}
           <div class="hero__buttons hero__buttons--{{ text_align }}">
             {% if section.settings.button_label != blank %}
-              <a href="{{ section.settings.button_link }}" class="hero__btn hero__btn--primary">
+              <a href="{{ section.settings.button_link }}" class="hero__btn btn-primary">
                 {{ section.settings.button_label }}
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -71,7 +71,7 @@
               </a>
             {% endif %}
             {% if section.settings.button_2_label != blank %}
-              <a href="{{ section.settings.button_2_link }}" class="hero__btn hero__btn--secondary">
+              <a href="{{ section.settings.button_2_link }}" class="hero__btn btn-secondary">
                 {{ section.settings.button_2_label }}
               </a>
             {% endif %}
@@ -330,43 +330,25 @@
     }
   }
 
-  .hero__btn--primary {
-    {% if bg_image != blank %}
-      background: {{ section.settings.button_bg_color }};
-      color: {{ section.settings.button_text_color }};
-    {% else %}
-      background: var(--color-primary);
-      color: white;
-    {% endif %}
+  /* Hero button overrides for background image */
+  {% if bg_image != blank %}
+  .hero__btn.btn-primary {
+    background: {{ section.settings.button_bg_color }};
+    color: {{ section.settings.button_text_color }};
+    border-color: {{ section.settings.button_bg_color }};
   }
 
-  .hero__btn--primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  .hero__btn.btn-secondary {
+    background: transparent;
+    border: 2px solid {{ section.settings.text_color }};
+    color: {{ section.settings.text_color }};
   }
 
-  .hero__btn--secondary {
-    {% if bg_image != blank %}
-      background: transparent;
-      border: 2px solid {{ section.settings.text_color }};
-      color: {{ section.settings.text_color }};
-    {% else %}
-      background: transparent;
-      border: 2px solid var(--color-border);
-      color: var(--color-text);
-    {% endif %}
+  .hero__btn.btn-secondary:hover {
+    background: {{ section.settings.text_color }};
+    color: {{ section.settings.background_color }};
   }
-
-  .hero__btn--secondary:hover {
-    {% if bg_image != blank %}
-      background: {{ section.settings.text_color }};
-      color: {{ section.settings.background_color }};
-    {% else %}
-      background: var(--color-text);
-      color: var(--color-background);
-      border-color: var(--color-text);
-    {% endif %}
-  }
+  {% endif %}
 
   /* Product Image */
   .hero__image {

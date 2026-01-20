@@ -264,11 +264,7 @@ a {
   color: #ffffff;
 }
 
-.btn-primary:hover {
-  background-color: var(--color-primary-light);
-  border-color: var(--color-primary-light);
-  color: #ffffff;
-}
+/* Hover handled by theme.liquid for animated effects */
 
 .btn-primary:focus-visible {
   box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-primary);
@@ -285,11 +281,7 @@ a {
   color: var(--color-text);
 }
 
-.btn-secondary:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background-color: transparent;
-}
+/* Hover handled by theme.liquid for animated effects */
 
 .btn-secondary:focus-visible {
   box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-primary);

@@ -1243,13 +1243,9 @@
     color: white;
     background: var(--color-text);
     border: none;
-    border-radius: 0.5rem;
+    border-radius: var(--button-radius, 0.5rem);
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.15s ease;
-  }
-
-  .product-add-btn:hover {
-    background: var(--color-primary);
+    transition: transform 0.15s ease;
   }
 
   .product-add-btn:active {
@@ -1259,10 +1255,6 @@
   .product-add-btn--disabled {
     opacity: 0.5;
     cursor: not-allowed;
-  }
-
-  .product-add-btn--disabled:hover {
-    background: var(--color-text);
   }
 
   .product-dynamic-checkout {
