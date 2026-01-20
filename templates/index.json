@@ -54,34 +54,41 @@
     "collection_list": {
       "type": "collection-list",
       "blocks": {
-        "collection_1": {
+        "collection_fQJ6d8": {
           "type": "collection",
           "settings": {
-            "collection": ""
+            "collection": "deko"
+          }
+        },
+        "collection_rB4m66": {
+          "type": "collection",
+          "settings": {
+            "collection": "hangelampe"
           }
         },
         "collection_2": {
           "type": "collection",
           "settings": {
-            "collection": ""
+            "collection": "cloudy"
           }
         },
         "collection_3": {
           "type": "collection",
           "settings": {
-            "collection": ""
+            "collection": "tischlampen"
           }
         }
       },
       "block_order": [
-        "collection_1",
+        "collection_fQJ6d8",
+        "collection_rB4m66",
         "collection_2",
         "collection_3"
       ],
       "settings": {
         "subtitle": "Kollektionen",
         "title": "Nach Kategorie stoebern",
-        "collections_per_row": 3,
+        "collections_per_row": 4,
         "aspect_ratio": "aspect-[4/3]"
       }
     },
