@@ -283,14 +283,14 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding: 0.5rem;
-    margin: -0.5rem;
+    padding: 1rem;
+    margin: -1rem;
   }
 
   /* Pseudo-element to add space after last item */
   .product-slider::after {
     content: '';
-    flex: 0 0 0.5rem;
+    flex: 0 0 1rem;
   }
 
   .product-slider::-webkit-scrollbar {
@@ -363,11 +363,11 @@
     }
 
     prevBtn.addEventListener('click', function() {
-      slider.scrollBy({ left: -scrollAmount * 2, behavior: 'smooth' });
+      slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
     });
 
     nextBtn.addEventListener('click', function() {
-      slider.scrollBy({ left: scrollAmount * 2, behavior: 'smooth' });
+      slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     });
 
     slider.addEventListener('scroll', updateButtons);
