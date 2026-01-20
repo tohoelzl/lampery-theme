@@ -188,8 +188,6 @@
   .hero__content {
     {% if bg_image != blank %}
       color: {{ section.settings.text_color }};
-    {% else %}
-      color: var(--color-text);
     {% endif %}
   }
 
@@ -217,7 +215,7 @@
       color: {{ section.settings.text_color }};
       opacity: 0.8;
     {% else %}
-      color: var(--color-primary);
+      color: {{ section.settings.subtitle_color }};
     {% endif %}
   }
 
@@ -236,6 +234,9 @@
     line-height: 1.15;
     margin: 0 0 1rem;
     text-wrap: balance;
+    {% unless bg_image != blank %}
+      color: {{ section.settings.title_color }};
+    {% endunless %}
   }
 
   @media (min-width: 768px) {
@@ -266,7 +267,7 @@
     {% if bg_image != blank %}
       opacity: 0.9;
     {% else %}
-      color: var(--color-text-muted);
+      color: {{ section.settings.description_color }};
     {% endif %}
   }
 
@@ -596,13 +597,32 @@
     },
     {
       "type": "header",
-      "content": "Farben (mit Hintergrundbild)"
+      "content": "Farben"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Titel Farbe",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Untertitel Farbe",
+      "default": "#8B9A7E"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Beschreibung Farbe",
+      "default": "#666666"
     },
     {
       "type": "color",
       "id": "text_color",
-      "label": "Textfarbe",
-      "default": "#ffffff"
+      "label": "Textfarbe (mit Hintergrundbild)",
+      "default": "#ffffff",
+      "info": "Ueberschreibt alle Textfarben wenn ein Hintergrundbild gesetzt ist"
     },
     {
       "type": "color",
