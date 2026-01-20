@@ -186,9 +186,7 @@
 
   /* Content */
   .hero__content {
-    {% if bg_image != blank %}
-      color: {{ section.settings.text_color }};
-    {% endif %}
+    /* Colors now controlled individually via title_color, subtitle_color, description_color */
   }
 
   .hero__content--left {
@@ -211,12 +209,7 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-bottom: 1rem;
-    {% if bg_image != blank %}
-      color: {{ section.settings.text_color }};
-      opacity: 0.8;
-    {% else %}
-      color: {{ section.settings.subtitle_color }};
-    {% endif %}
+    color: {{ section.settings.subtitle_color }};
   }
 
   @media (min-width: 1024px) {
@@ -234,9 +227,7 @@
     line-height: 1.15;
     margin: 0 0 1rem;
     text-wrap: balance;
-    {% unless bg_image != blank %}
-      color: {{ section.settings.title_color }};
-    {% endunless %}
+    color: {{ section.settings.title_color }};
   }
 
   @media (min-width: 768px) {
@@ -264,11 +255,7 @@
     line-height: 1.7;
     margin: 0 0 1.5rem;
     max-width: 540px;
-    {% if bg_image != blank %}
-      opacity: 0.9;
-    {% else %}
-      color: {{ section.settings.description_color }};
-    {% endif %}
+    color: {{ section.settings.description_color }};
   }
 
   .hero__content--center .hero__description {
@@ -331,8 +318,7 @@
     }
   }
 
-  /* Hero button overrides for background image */
-  {% if bg_image != blank %}
+  /* Hero button styling */
   .hero__btn.btn-primary {
     background: {{ section.settings.button_bg_color }};
     color: {{ section.settings.button_text_color }};
@@ -341,15 +327,14 @@
 
   .hero__btn.btn-secondary {
     background: transparent;
-    border: 2px solid {{ section.settings.text_color }};
-    color: {{ section.settings.text_color }};
+    border: 2px solid {{ section.settings.title_color }};
+    color: {{ section.settings.title_color }};
   }
 
   .hero__btn.btn-secondary:hover {
-    background: {{ section.settings.text_color }};
+    background: {{ section.settings.title_color }};
     color: {{ section.settings.background_color }};
   }
-  {% endif %}
 
   /* Product Image */
   .hero__image {
@@ -385,12 +370,8 @@
     gap: 0.5rem;
     text-decoration: none;
     transition: opacity 0.2s ease;
-    {% if bg_image != blank %}
-      color: {{ section.settings.text_color }};
-      opacity: 0.7;
-    {% else %}
-      color: var(--color-text-muted);
-    {% endif %}
+    color: {{ section.settings.title_color }};
+    opacity: 0.7;
   }
 
   .hero__scroll-link:hover {
@@ -603,26 +584,19 @@
       "type": "color",
       "id": "title_color",
       "label": "Titel Farbe",
-      "default": "#1a1a1a"
+      "default": "#ffffff"
     },
     {
       "type": "color",
       "id": "subtitle_color",
       "label": "Untertitel Farbe",
-      "default": "#8B9A7E"
+      "default": "#ffffff"
     },
     {
       "type": "color",
       "id": "description_color",
       "label": "Beschreibung Farbe",
-      "default": "#666666"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Textfarbe (mit Hintergrundbild)",
-      "default": "#ffffff",
-      "info": "Ueberschreibt alle Textfarben wenn ein Hintergrundbild gesetzt ist"
+      "default": "#ffffff"
     },
     {
       "type": "color",
