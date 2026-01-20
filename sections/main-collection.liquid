@@ -9,6 +9,43 @@
   assign filter_type = section.settings.filter_type
   assign card_size = section.settings.card_size | default: 'medium'
   assign card_gap = section.settings.card_gap | default: 24
+
+  comment
+    Calculate actual columns based on card size
+    Smaller size = more columns, larger size = fewer columns
+  endcomment
+  case card_size
+    when 'small'
+      assign size_columns = columns | plus: 1
+      if size_columns > 6
+        assign size_columns = 6
+      endif
+      assign mobile_columns = 2
+    when 'medium'
+      assign size_columns = columns
+      assign mobile_columns = 2
+    when 'large'
+      assign size_columns = columns | minus: 1
+      if size_columns < 2
+        assign size_columns = 2
+      endif
+      assign mobile_columns = 2
+    when 'extra_large'
+      assign size_columns = columns | minus: 2
+      if size_columns < 2
+        assign size_columns = 2
+      endif
+      assign mobile_columns = 1
+    when 'xxl'
+      assign size_columns = columns | minus: 2
+      if size_columns < 1
+        assign size_columns = 1
+      endif
+      assign mobile_columns = 1
+    else
+      assign size_columns = columns
+      assign mobile_columns = 2
+  endcase
 -%}
 
 <section class="main-collection bg-background" x-data="{ filterOpen: false }">
@@ -120,7 +157,7 @@
         {% comment %} Products Grid {% endcomment %}
         {% paginate collection.products by products_per_page %}
           {% if collection.products.size > 0 %}
-            <div class="collection-grid collection-grid--{{ card_size }}" data-columns="{{ columns }}" style="--card-gap: {{ card_gap }}px;">
+            <div class="collection-grid" data-columns="{{ size_columns }}" data-mobile-columns="{{ mobile_columns }}" style="--card-gap: {{ card_gap }}px;">
               {% for product in collection.products %}
                 {% render 'product-card', product: product %}
               {% endfor %}
@@ -408,46 +445,14 @@
   /* Product Grid */
   .collection-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat({{ mobile_columns }}, 1fr);
     gap: var(--card-gap, 24px);
   }
 
-  /* Card Size Variants */
-  .collection-grid--small .product-card {
-    font-size: 0.9em;
-  }
-
-  .collection-grid--large .product-card {
-    font-size: 1.05em;
-  }
-
-  .collection-grid--extra_large .product-card {
-    font-size: 1.1em;
-  }
-
-  .collection-grid--xxl .product-card {
-    font-size: 1.15em;
-  }
-
-  @media (min-width: 768px) {
-    .collection-grid[data-columns="3"] {
-      grid-template-columns: repeat(3, 1fr);
-    }
-    .collection-grid[data-columns="4"],
-    .collection-grid[data-columns="5"] {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
+  /* Desktop Grid - uses calculated size_columns */
   @media (min-width: 1024px) {
-    .collection-grid[data-columns="3"] {
-      grid-template-columns: repeat(3, 1fr);
-    }
-    .collection-grid[data-columns="4"] {
-      grid-template-columns: repeat(4, 1fr);
-    }
-    .collection-grid[data-columns="5"] {
-      grid-template-columns: repeat(5, 1fr);
+    .collection-grid {
+      grid-template-columns: repeat({{ size_columns }}, 1fr);
     }
   }
 
@@ -705,7 +710,7 @@
         }
       ],
       "default": "medium",
-      "info": "Beeinflusst die Schriftgroesse der Produktkarten"
+      "info": "Groessere Karten = weniger Spalten"
     },
     {
       "type": "range",

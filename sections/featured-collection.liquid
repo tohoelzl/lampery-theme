@@ -9,6 +9,43 @@
   assign columns = section.settings.columns
   assign card_size = section.settings.card_size | default: 'medium'
   assign card_gap = section.settings.card_gap | default: 24
+
+  comment
+    Calculate actual columns based on card size
+    Smaller size = more columns, larger size = fewer columns
+  endcomment
+  case card_size
+    when 'small'
+      assign size_columns = columns | plus: 1
+      if size_columns > 6
+        assign size_columns = 6
+      endif
+      assign mobile_columns = 2
+    when 'medium'
+      assign size_columns = columns
+      assign mobile_columns = 2
+    when 'large'
+      assign size_columns = columns | minus: 1
+      if size_columns < 2
+        assign size_columns = 2
+      endif
+      assign mobile_columns = 2
+    when 'extra_large'
+      assign size_columns = columns | minus: 2
+      if size_columns < 2
+        assign size_columns = 2
+      endif
+      assign mobile_columns = 1
+    when 'xxl'
+      assign size_columns = columns | minus: 2
+      if size_columns < 1
+        assign size_columns = 1
+      endif
+      assign mobile_columns = 1
+    else
+      assign size_columns = columns
+      assign mobile_columns = 2
+  endcase
 -%}
 
 <section id="featured" class="section-lg">
@@ -56,32 +93,15 @@
   /* Featured Collection Grid */
   .featured-collection-grid {
     display: grid;
-    grid-template-columns: repeat({{ columns }}, 1fr);
+    grid-template-columns: repeat({{ size_columns }}, 1fr);
     gap: var(--card-gap, 24px);
   }
 
-  /* Mobile: 2 columns */
+  /* Mobile */
   @media (max-width: 1023px) {
     .featured-collection-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat({{ mobile_columns }}, 1fr);
     }
-  }
-
-  /* Card Size Variants */
-  .featured-collection-grid--small .product-card {
-    font-size: 0.9em;
-  }
-
-  .featured-collection-grid--large .product-card {
-    font-size: 1.05em;
-  }
-
-  .featured-collection-grid--extra_large .product-card {
-    font-size: 1.1em;
-  }
-
-  .featured-collection-grid--xxl .product-card {
-    font-size: 1.15em;
   }
 </style>
 
@@ -160,7 +180,7 @@
         }
       ],
       "default": "medium",
-      "info": "Beeinflusst die Schriftgroesse der Produktkarten"
+      "info": "Groessere Karten = weniger Spalten"
     },
     {
       "type": "range",
