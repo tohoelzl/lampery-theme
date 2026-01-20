@@ -7,6 +7,7 @@
   assign collection = collections[section.settings.collection]
   assign products_to_show = section.settings.products_to_show
   assign columns = section.settings.columns
+  assign card_size = section.settings.card_size | default: 'medium'
 -%}
 
 <section id="featured" class="section-lg">
@@ -22,7 +23,7 @@
 
     {% if collection != blank and collection.products.size > 0 %}
       {% comment %} Products Grid - Using Shopify native product object {% endcomment %}
-      <div class="grid grid-cols-2 lg:grid-cols-{{ columns }} gap-6 lg:gap-8">
+      <div class="featured-collection-grid featured-collection-grid--{{ card_size }} grid grid-cols-2 lg:grid-cols-{{ columns }} gap-6 lg:gap-8">
         {% for product in collection.products limit: products_to_show %}
           {% render 'product-card', product: product %}
         {% endfor %}
@@ -49,6 +50,93 @@
 
   </div>
 </section>
+
+<style>
+  /* Product Card Size Variants */
+  .featured-collection-grid {
+    --card-min-width: 200px;
+  }
+
+  .featured-collection-grid--small {
+    --card-min-width: 160px;
+  }
+
+  .featured-collection-grid--small .product-card {
+    font-size: 0.9em;
+  }
+
+  .featured-collection-grid--medium {
+    --card-min-width: 220px;
+  }
+
+  .featured-collection-grid--large {
+    --card-min-width: 280px;
+  }
+
+  .featured-collection-grid--large .product-card {
+    font-size: 1.05em;
+  }
+
+  .featured-collection-grid--extra_large {
+    --card-min-width: 340px;
+  }
+
+  .featured-collection-grid--extra_large .product-card {
+    font-size: 1.1em;
+  }
+
+  /* Apply min-width to grid items */
+  .featured-collection-grid > * {
+    min-width: var(--card-min-width);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .featured-collection-grid--small {
+      --card-min-width: 140px;
+    }
+
+    .featured-collection-grid--medium {
+      --card-min-width: 150px;
+    }
+
+    .featured-collection-grid--large {
+      --card-min-width: 170px;
+    }
+
+    .featured-collection-grid--extra_large {
+      --card-min-width: 180px;
+    }
+  }
+
+  /* For larger screens, allow horizontal scroll if cards are too big */
+  @media (min-width: 1024px) {
+    .featured-collection-grid--large,
+    .featured-collection-grid--extra_large {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      padding-bottom: 0.5rem;
+    }
+
+    .featured-collection-grid--large::-webkit-scrollbar,
+    .featured-collection-grid--extra_large::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .featured-collection-grid--large::-webkit-scrollbar-track,
+    .featured-collection-grid--extra_large::-webkit-scrollbar-track {
+      background: var(--color-background-alt, #f5f5f5);
+      border-radius: 3px;
+    }
+
+    .featured-collection-grid--large::-webkit-scrollbar-thumb,
+    .featured-collection-grid--extra_large::-webkit-scrollbar-thumb {
+      background: var(--color-border, #e0e0e0);
+      border-radius: 3px;
+    }
+  }
+</style>
 
 {% schema %}
 {
@@ -97,6 +185,31 @@
       "step": 1,
       "default": 4,
       "label": "Spalten (Desktop)"
+    },
+    {
+      "type": "select",
+      "id": "card_size",
+      "label": "Produktkarten-Groesse",
+      "options": [
+        {
+          "value": "small",
+          "label": "Klein"
+        },
+        {
+          "value": "medium",
+          "label": "Mittel"
+        },
+        {
+          "value": "large",
+          "label": "Gross"
+        },
+        {
+          "value": "extra_large",
+          "label": "Sehr gross"
+        }
+      ],
+      "default": "medium",
+      "info": "Beeinflusst die minimale Breite der Produktkarten"
     },
     {
       "type": "header",

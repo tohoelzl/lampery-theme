@@ -7,6 +7,7 @@
   assign products_per_page = section.settings.products_per_page
   assign columns = section.settings.columns_desktop
   assign filter_type = section.settings.filter_type
+  assign card_size = section.settings.card_size | default: 'medium'
 -%}
 
 <section class="main-collection bg-background" x-data="{ filterOpen: false }">
@@ -118,7 +119,7 @@
         {% comment %} Products Grid {% endcomment %}
         {% paginate collection.products by products_per_page %}
           {% if collection.products.size > 0 %}
-            <div class="collection-grid" data-columns="{{ columns }}">
+            <div class="collection-grid collection-grid--{{ card_size }}" data-columns="{{ columns }}">
               {% for product in collection.products %}
                 {% render 'product-card', product: product %}
               {% endfor %}
@@ -408,6 +409,40 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
+    --card-min-width: 200px;
+  }
+
+  /* Card Size Variants */
+  .collection-grid--small {
+    --card-min-width: 160px;
+  }
+
+  .collection-grid--small .product-card {
+    font-size: 0.9em;
+  }
+
+  .collection-grid--medium {
+    --card-min-width: 220px;
+  }
+
+  .collection-grid--large {
+    --card-min-width: 280px;
+  }
+
+  .collection-grid--large .product-card {
+    font-size: 1.05em;
+  }
+
+  .collection-grid--extra_large {
+    --card-min-width: 340px;
+  }
+
+  .collection-grid--extra_large .product-card {
+    font-size: 1.1em;
+  }
+
+  .collection-grid > * {
+    min-width: var(--card-min-width);
   }
 
   @media (min-width: 640px) {
@@ -664,6 +699,31 @@
       "step": 1,
       "default": 4,
       "label": "Spalten (Desktop)"
+    },
+    {
+      "type": "select",
+      "id": "card_size",
+      "label": "Produktkarten-Groesse",
+      "options": [
+        {
+          "value": "small",
+          "label": "Klein"
+        },
+        {
+          "value": "medium",
+          "label": "Mittel"
+        },
+        {
+          "value": "large",
+          "label": "Gross"
+        },
+        {
+          "value": "extra_large",
+          "label": "Sehr gross"
+        }
+      ],
+      "default": "medium",
+      "info": "Beeinflusst die minimale Breite der Produktkarten"
     },
     {
       "type": "header",
