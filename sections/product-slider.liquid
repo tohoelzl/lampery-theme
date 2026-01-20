@@ -269,8 +269,8 @@
   /* Slider Wrapper */
   .product-slider-wrapper {
     flex: 1;
-    overflow: hidden;
     min-width: 0;
+    overflow: visible;
   }
 
   /* Slider */
@@ -283,7 +283,14 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding: 0.25rem 0.5rem 0.25rem 0;
+    padding: 0.5rem;
+    margin: -0.5rem;
+  }
+
+  /* Pseudo-element to add space after last item */
+  .product-slider::after {
+    content: '';
+    flex: 0 0 0.5rem;
   }
 
   .product-slider::-webkit-scrollbar {
@@ -295,6 +302,7 @@
     flex: 0 0 var(--card-width, 280px);
     scroll-snap-align: start;
   }
+
 
   /* Placeholder */
   .product-slider__placeholder {
