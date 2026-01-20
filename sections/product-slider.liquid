@@ -80,6 +80,8 @@
                 </div>
               {% endfor %}
             {% endif %}
+            {% comment %} Spacer to prevent last card cutoff {% endcomment %}
+            <div class="product-slider__spacer" aria-hidden="true"></div>
           </div>
         </div>
 
@@ -266,11 +268,13 @@
     cursor: not-allowed;
   }
 
-  /* Slider Wrapper */
+  /* Slider Wrapper - clips horizontal overflow but allows vertical for shadows */
   .product-slider-wrapper {
     flex: 1;
     min-width: 0;
-    overflow: visible;
+    overflow: hidden;
+    padding: 0.5rem 0;
+    margin: -0.5rem 0;
   }
 
   /* Slider */
@@ -283,14 +287,7 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding: 1rem;
-    margin: -1rem;
-  }
-
-  /* Pseudo-element to add space after last item */
-  .product-slider::after {
-    content: '';
-    flex: 0 0 1rem;
+    padding: 0.5rem 0;
   }
 
   .product-slider::-webkit-scrollbar {
@@ -301,6 +298,12 @@
   .product-slider__item {
     flex: 0 0 var(--card-width, 280px);
     scroll-snap-align: start;
+  }
+
+  /* Spacer element to ensure last card is fully visible */
+  .product-slider__spacer {
+    flex: 0 0 1px;
+    min-width: 1px;
   }
 
 
