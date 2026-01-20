@@ -1,8 +1,21 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
       "type": "hero",
       "settings": {
+        "layout": "left",
+        "text_alignment": "left",
+        "min_height_mobile": 80,
+        "min_height_desktop": 90,
         "subtitle": "Handcrafted with Love",
         "title": "Licht, das Raeume verwandelt",
         "description": "Entdecke unsere handgefertigten Lampen und Wohnaccessoires - designed in Germany, made with passion.",
@@ -10,7 +23,17 @@
         "button_link": "shopify://collections/all",
         "button_2_label": "Mehr erfahren",
         "button_2_link": "#featured",
-        "background_type": "gradient",
+        "image_max_width": 450,
+        "image_shadow": true,
+        "image_decoration": true,
+        "background_image": "shopify://shop_images/Gemini_Generated_Image_8j4l1z8j4l1z8j4l.png",
+        "background_position": "center",
+        "background_color": "#f8f8f6",
+        "overlay_color": "#000000",
+        "overlay_opacity": 30,
+        "text_color": "#ffffff",
+        "button_bg_color": "#ffffff",
+        "button_text_color": "#1a1a1a",
         "show_scroll_indicator": true
       }
     },
@@ -19,6 +42,7 @@
       "settings": {
         "subtitle": "Unsere Favoriten",
         "title": "Entdecke unsere beliebtesten handgefertigten Stuecke",
+        "collection": "",
         "products_to_show": 8,
         "columns": 4,
         "show_view_all": true,
@@ -27,34 +51,40 @@
     },
     "collection_list": {
       "type": "collection-list",
+      "blocks": {
+        "collection_1": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "collection_2": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "collection_3": {
+          "type": "collection",
+          "settings": {
+            "collection": ""
+          }
+        }
+      },
+      "block_order": [
+        "collection_1",
+        "collection_2",
+        "collection_3"
+      ],
       "settings": {
         "subtitle": "Kollektionen",
         "title": "Nach Kategorie stoebern",
         "collections_per_row": 3,
         "aspect_ratio": "aspect-[4/3]"
-      },
-      "blocks": {
-        "collection_1": {
-          "type": "collection"
-        },
-        "collection_2": {
-          "type": "collection"
-        },
-        "collection_3": {
-          "type": "collection"
-        }
-      },
-      "block_order": ["collection_1", "collection_2", "collection_3"]
+      }
     },
     "about": {
       "type": "about",
-      "settings": {
-        "badge_number": "10+",
-        "badge_text": "Jahre Erfahrung",
-        "subtitle": "Unsere Geschichte",
-        "title": "Mit Liebe zum Detail",
-        "text": "<p>Jede Lampe erzaehlt eine Geschichte. Wir verbinden traditionelles Handwerk mit zeitlosem Design, um Lichtobjekte zu schaffen, die Raeume in Wohlfuehlorte verwandeln.</p><p>Unsere Materialien stammen aus nachhaltigen Quellen, und jedes Stueck wird in unserer Werkstatt von Hand gefertigt.</p>"
-      },
       "blocks": {
         "feature_1": {
           "type": "feature",
@@ -89,14 +119,22 @@
           }
         }
       },
-      "block_order": ["feature_1", "feature_2", "feature_3", "feature_4"]
+      "block_order": [
+        "feature_1",
+        "feature_2",
+        "feature_3",
+        "feature_4"
+      ],
+      "settings": {
+        "badge_number": "10+",
+        "badge_text": "Jahre Erfahrung",
+        "subtitle": "Unsere Geschichte",
+        "title": "Mit Liebe zum Detail",
+        "text": "<p>Jede Lampe erzaehlt eine Geschichte. Wir verbinden traditionelles Handwerk mit zeitlosem Design, um Lichtobjekte zu schaffen, die Raeume in Wohlfuehlorte verwandeln.</p><p>Unsere Materialien stammen aus nachhaltigen Quellen, und jedes Stueck wird in unserer Werkstatt von Hand gefertigt.</p>"
+      }
     },
     "testimonials": {
       "type": "testimonials",
-      "settings": {
-        "subtitle": "Kundenstimmen",
-        "title": "Was unsere Kunden sagen"
-      },
       "blocks": {
         "testimonial_1": {
           "type": "testimonial",
@@ -123,7 +161,15 @@
           }
         }
       },
-      "block_order": ["testimonial_1", "testimonial_2", "testimonial_3"]
+      "block_order": [
+        "testimonial_1",
+        "testimonial_2",
+        "testimonial_3"
+      ],
+      "settings": {
+        "subtitle": "Kundenstimmen",
+        "title": "Was unsere Kunden sagen"
+      }
     },
     "newsletter": {
       "type": "newsletter",
@@ -132,6 +178,10 @@
         "description": "Melde dich fuer unseren Newsletter an und erhalte exklusive Angebote, neue Produkte und Inspirationen direkt in dein Postfach.",
         "placeholder": "Deine E-Mail-Adresse",
         "button_text": "Anmelden",
+        "button_bg": "#d4a574",
+        "button_text_color": "#ffffff",
+        "button_hover_bg": "#2d2d2d",
+        "button_hover_text": "#ffffff",
         "privacy_text": "Mit der Anmeldung stimmst du unserer Datenschutzerklaerung zu."
       }
     }
