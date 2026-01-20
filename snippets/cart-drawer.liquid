@@ -1,0 +1,186 @@
+{% comment %}
+  Cart Drawer Snippet - Slide-out cart with AJAX updates
+  Uses Alpine.js for interactivity
+{% endcomment %}
+
+<div
+  x-show="cartOpen"
+  x-cloak
+  class="fixed inset-0 z-50"
+  role="dialog"
+  aria-modal="true"
+  aria-label="{{ 'cart.title' | t }}"
+>
+  {% comment %} Backdrop {% endcomment %}
+  <div
+    class="fixed inset-0 bg-text/20 backdrop-blur-sm"
+    x-show="cartOpen"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    @click="cartOpen = false"
+  ></div>
+
+  {% comment %} Cart Panel {% endcomment %}
+  <div
+    class="fixed inset-y-0 right-0 w-full max-w-md bg-background shadow-lg flex flex-col"
+    x-show="cartOpen"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="translate-x-full"
+    x-transition:enter-end="translate-x-0"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="translate-x-0"
+    x-transition:leave-end="translate-x-full"
+    id="cart-drawer"
+  >
+    {% comment %} Cart Header {% endcomment %}
+    <div class="flex items-center justify-between px-6 py-4 border-b border-border">
+      <span class="text-lg font-semibold">{{ 'cart.title' | t }} (<span data-cart-count>{{ cart.item_count }}</span>)</span>
+      <button
+        class="p-2 -mr-2 text-text hover:text-primary transition-colors"
+        @click="cartOpen = false"
+        aria-label="{{ 'accessibility.close' | t }}"
+        type="button"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    {% comment %} Cart Progress Bar {% endcomment %}
+    {% if settings.cart_progress_enabled %}
+      <div id="cart-progress-wrapper">
+        {% render 'cart-progress' %}
+      </div>
+    {% endif %}
+
+    {% comment %} Cart Content {% endcomment %}
+    <div class="flex-1 overflow-y-auto" id="cart-drawer-content">
+      {% if cart.item_count > 0 %}
+        <div class="px-6 py-4 space-y-4" id="cart-items-list">
+          {% for item in cart.items %}
+            <div class="flex gap-4 pb-4 border-b border-border last:border-0" data-cart-item="{{ item.key }}">
+              {% comment %} Item Image {% endcomment %}
+              <a href="{{ item.url }}" class="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-background-alt">
+                {% if item.image != blank %}
+                  <img
+                    src="{{ item.image | image_url: width: 160 }}"
+                    alt="{{ item.title | escape }}"
+                    width="80"
+                    height="80"
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="w-full h-full flex items-center justify-center text-text-muted">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                  </div>
+                {% endif %}
+              </a>
+
+              {% comment %} Item Details {% endcomment %}
+              <div class="flex-1 min-w-0">
+                <a href="{{ item.url }}" class="text-sm font-medium hover:text-primary transition-colors line-clamp-2">
+                  {{ item.product.title }}
+                </a>
+
+                {% if item.variant.title != 'Default Title' %}
+                  <p class="text-xs text-text-muted mt-1">{{ item.variant.title }}</p>
+                {% endif %}
+
+                <div class="flex items-center justify-between mt-2">
+                  {% comment %} Quantity Selector {% endcomment %}
+                  <div class="flex items-center border border-border rounded">
+                    <button
+                      class="cart-qty-btn w-8 h-8 flex items-center justify-center hover:bg-background-alt transition-colors"
+                      type="button"
+                      aria-label="{{ 'cart.decrease_quantity' | t }}"
+                      data-quantity-minus="{{ item.key }}"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                      </svg>
+                    </button>
+                    <span class="w-8 text-center text-sm" data-quantity-value="{{ item.key }}">{{ item.quantity }}</span>
+                    <button
+                      class="cart-qty-btn w-8 h-8 flex items-center justify-center hover:bg-background-alt transition-colors"
+                      type="button"
+                      aria-label="{{ 'cart.increase_quantity' | t }}"
+                      data-quantity-plus="{{ item.key }}"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                      </svg>
+                    </button>
+                  </div>
+
+                  {% comment %} Item Price {% endcomment %}
+                  <span class="text-sm font-medium">{{ item.final_line_price | money }}</span>
+                </div>
+              </div>
+
+              {% comment %} Remove Button {% endcomment %}
+              <button
+                class="cart-qty-btn flex-shrink-0 p-1 text-text-muted hover:text-accent transition-colors"
+                type="button"
+                aria-label="{{ 'cart.remove' | t }}"
+                data-cart-remove="{{ item.key }}"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              </button>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-12 px-6" id="cart-empty-state">
+          <svg class="w-16 h-16 mx-auto text-border mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+          </svg>
+          <p class="text-text-muted mb-4">{{ 'cart.empty' | t }}</p>
+          <a href="{{ routes.all_products_collection_url }}" class="btn-primary inline-flex" @click="cartOpen = false">
+            {{ 'cart.continue_shopping' | t }}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+
+    {% comment %} Cart Footer {% endcomment %}
+    <div class="border-t border-border px-6 py-4 space-y-3" id="cart-footer" {% if cart.item_count == 0 %}style="display: none;"{% endif %}>
+      {% comment %} Subtotal {% endcomment %}
+      <div class="flex items-center justify-between">
+        <span class="text-text-muted">{{ 'cart.subtotal' | t }}</span>
+        <span class="text-lg font-semibold" id="cart-subtotal">{{ cart.total_price | money }}</span>
+      </div>
+
+      <p class="text-xs text-text-muted text-center">
+        {{ 'cart.shipping_at_checkout' | t }}
+      </p>
+
+      {% comment %} View Cart Button {% endcomment %}
+      <a href="{{ routes.cart_url }}" class="btn-secondary w-full justify-center">
+        {{ 'cart.view_cart' | t | default: 'Warenkorb ansehen' }}
+      </a>
+
+      {% comment %} Checkout Button {% endcomment %}
+      <a href="{{ routes.checkout_url }}" class="btn-primary w-full justify-center">
+        {{ 'cart.checkout' | t }}
+      </a>
+
+      <button
+        class="btn-link w-full"
+        type="button"
+        @click="cartOpen = false"
+      >
+        {{ 'cart.continue_shopping' | t }}
+      </button>
+    </div>
+  </div>
+</div>

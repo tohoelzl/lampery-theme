@@ -1,0 +1,125 @@
+{% comment %}
+  Featured Collection Section - Converted from WooCommerce front-page.php Product Sections
+  Shopify Native: Uses collection object instead of WP_Query
+{% endcomment %}
+
+{%- liquid
+  assign collection = collections[section.settings.collection]
+  assign products_to_show = section.settings.products_to_show
+  assign columns = section.settings.columns
+-%}
+
+<section id="featured" class="section-lg">
+  <div class="container mx-auto px-4 lg:px-8">
+
+    {% comment %} Section Header {% endcomment %}
+    <div class="section-header">
+      <span class="inline-block text-sm font-medium text-primary uppercase tracking-wider mb-3">
+        {{ section.settings.subtitle }}
+      </span>
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+    </div>
+
+    {% if collection != blank and collection.products.size > 0 %}
+      {% comment %} Products Grid - Using Shopify native product object {% endcomment %}
+      <div class="grid grid-cols-2 lg:grid-cols-{{ columns }} gap-6 lg:gap-8">
+        {% for product in collection.products limit: products_to_show %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+      </div>
+
+      {% comment %} View All Link {% endcomment %}
+      {% if section.settings.show_view_all %}
+        <div class="text-center mt-12">
+          <a href="{{ collection.url }}" class="btn-secondary">
+            {{ section.settings.view_all_text | default: 'Alle Produkte ansehen' }}
+            {% render 'icon-arrow-right', class: 'w-4 h-4 ml-2' %}
+          </a>
+        </div>
+      {% endif %}
+    {% else %}
+      {% comment %} Placeholder when no collection is selected {% endcomment %}
+      <div class="grid grid-cols-2 lg:grid-cols-{{ columns }} gap-6 lg:gap-8">
+        {% for i in (1..products_to_show) %}
+          <div class="aspect-product rounded-xl bg-background-alt animate-pulse"></div>
+        {% endfor %}
+      </div>
+      <p class="text-center text-text-muted mt-8">Wähle eine Kollektion in den Theme-Einstellungen aus.</p>
+    {% endif %}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Produkt-Kollektion",
+  "class": "section-featured-collection",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Inhalt"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Untertitel",
+      "default": "Unsere Favoriten"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Entdecke unsere beliebtesten handgefertigten Stuecke"
+    },
+    {
+      "type": "header",
+      "content": "Kollektion"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Kollektion"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 16,
+      "step": 4,
+      "default": 8,
+      "label": "Anzahl Produkte"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "Spalten (Desktop)"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "default": true,
+      "label": "\"Alle ansehen\" Button anzeigen"
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "Button Text",
+      "default": "Alle Produkte ansehen"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Produkt-Kollektion",
+      "category": "Collection"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,393 @@
+{% comment %}
+  Quick View Content Section
+  This section is loaded via AJAX into the quick view modal
+{% endcomment %}
+
+<div class="quick-view-product">
+  <div class="quick-view-grid">
+
+    {% comment %} Product Images {% endcomment %}
+    <div class="quick-view-media">
+      <div class="quick-view-image-main">
+        {% if product.featured_image %}
+          <img
+            src="{{ product.featured_image | image_url: width: 800 }}"
+            alt="{{ product.featured_image.alt | default: product.title | escape }}"
+            width="{{ product.featured_image.width }}"
+            height="{{ product.featured_image.height }}"
+            loading="eager"
+          >
+        {% else %}
+          <div class="quick-view-no-image">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="M21 15L16 10L5 21"/>
+            </svg>
+          </div>
+        {% endif %}
+      </div>
+
+      {% if product.images.size > 1 %}
+        <div class="quick-view-thumbnails">
+          {% for image in product.images limit: 4 %}
+            <div class="quick-view-thumb {% if forloop.first %}is-active{% endif %}">
+              <img
+                src="{{ image | image_url: width: 150 }}"
+                alt="{{ image.alt | default: product.title | escape }}"
+                loading="lazy"
+              >
+            </div>
+          {% endfor %}
+          {% if product.images.size > 4 %}
+            <div class="quick-view-thumb-more">+{{ product.images.size | minus: 4 }}</div>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+    {% comment %} Product Info {% endcomment %}
+    <div class="quick-view-info">
+      {% if product.vendor != blank %}
+        <p class="quick-view-vendor">{{ product.vendor }}</p>
+      {% endif %}
+
+      <h2 class="quick-view-title">{{ product.title }}</h2>
+
+      {% comment %} Price {% endcomment %}
+      <div class="quick-view-price">
+        {% if product.compare_at_price > product.price %}
+          <span class="quick-view-price-sale">{{ product.price | money }}</span>
+          <span class="quick-view-price-compare">{{ product.compare_at_price | money }}</span>
+          <span class="quick-view-price-badge">
+            -{{ product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price }}%
+          </span>
+        {% else %}
+          <span class="quick-view-price-regular">{{ product.price | money }}</span>
+        {% endif %}
+      </div>
+
+      <p class="quick-view-tax">{{ 'products.product.price_vat' | t | default: 'inkl. MwSt.' }}</p>
+
+      {% comment %} Short Description {% endcomment %}
+      {% if product.description != blank %}
+        <div class="quick-view-description">
+          {{ product.description | strip_html | truncate: 200 }}
+        </div>
+      {% endif %}
+
+      {% comment %} Variant Selector (if variants exist) {% endcomment %}
+      {% if product.has_only_default_variant == false %}
+        <div class="quick-view-variants">
+          {% for option in product.options_with_values %}
+            <div class="quick-view-option">
+              <label class="quick-view-option-label">{{ option.name }}</label>
+              <div class="quick-view-option-values">
+                {% for value in option.values %}
+                  <span class="quick-view-option-value">{{ value }}</span>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+          <p class="quick-view-variants-hint">Alle Varianten auf der Produktseite verfügbar</p>
+        </div>
+      {% endif %}
+
+      {% comment %} View Product Button {% endcomment %}
+      <a href="{{ product.url }}" class="quick-view-button">
+        Produkt ansehen
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+
+      {% comment %} Add to Cart (only if single variant or default) {% endcomment %}
+      {% if product.available %}
+        <form action="/cart/add" method="post" class="quick-view-form">
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" class="quick-view-add-cart">
+            {{ 'products.product.add_to_cart' | t | default: 'In den Warenkorb' }}
+          </button>
+        </form>
+      {% else %}
+        <button type="button" class="quick-view-sold-out" disabled>
+          {{ 'products.product.sold_out' | t | default: 'Ausverkauft' }}
+        </button>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
+<style>
+  .quick-view-product {
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .quick-view-product {
+      padding: 2rem;
+    }
+  }
+
+  .quick-view-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .quick-view-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+  }
+
+  /* Media */
+  .quick-view-media {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .quick-view-image-main {
+    aspect-ratio: 1;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: var(--color-background-alt, #f5f5f5);
+  }
+
+  .quick-view-image-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .quick-view-no-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: var(--color-border, #e5e5e5);
+  }
+
+  .quick-view-thumbnails {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .quick-view-thumb {
+    width: 60px;
+    height: 60px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+
+  .quick-view-thumb.is-active {
+    border-color: var(--color-primary, #1a1a1a);
+  }
+
+  .quick-view-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .quick-view-thumb-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 0.5rem;
+    background: var(--color-background-alt, #f5f5f5);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-muted, #666);
+  }
+
+  /* Info */
+  .quick-view-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .quick-view-vendor {
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted, #666);
+    margin: 0 0 0.5rem;
+  }
+
+  .quick-view-title {
+    font-family: var(--font-heading-family);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 1rem;
+    color: var(--color-text, #1a1a1a);
+    line-height: 1.3;
+  }
+
+  @media (min-width: 768px) {
+    .quick-view-title {
+      font-size: 1.75rem;
+    }
+  }
+
+  /* Price */
+  .quick-view-price {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.25rem;
+  }
+
+  .quick-view-price-regular,
+  .quick-view-price-sale {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text, #1a1a1a);
+  }
+
+  .quick-view-price-sale {
+    color: #dc2626;
+  }
+
+  .quick-view-price-compare {
+    font-size: 1rem;
+    color: var(--color-text-muted, #666);
+    text-decoration: line-through;
+  }
+
+  .quick-view-price-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    background: #dc2626;
+    color: white;
+    border-radius: 0.25rem;
+  }
+
+  .quick-view-tax {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted, #666);
+    margin: 0 0 1rem;
+  }
+
+  /* Description */
+  .quick-view-description {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-text-muted, #666);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Variants */
+  .quick-view-variants {
+    margin-bottom: 1.5rem;
+  }
+
+  .quick-view-option {
+    margin-bottom: 0.75rem;
+  }
+
+  .quick-view-option-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    margin-bottom: 0.375rem;
+    color: var(--color-text, #1a1a1a);
+  }
+
+  .quick-view-option-values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .quick-view-option-value {
+    font-size: 0.8125rem;
+    padding: 0.375rem 0.75rem;
+    background: var(--color-background-alt, #f5f5f5);
+    border-radius: 0.375rem;
+    color: var(--color-text-muted, #666);
+  }
+
+  .quick-view-variants-hint {
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #666);
+    margin: 0.75rem 0 0;
+    font-style: italic;
+  }
+
+  /* Buttons */
+  .quick-view-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-text, #1a1a1a);
+    background: transparent;
+    border: 2px solid var(--color-border, #e5e5e5);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-bottom: 0.75rem;
+  }
+
+  .quick-view-button:hover {
+    border-color: var(--color-text, #1a1a1a);
+    background: var(--color-background-alt, #f5f5f5);
+  }
+
+  .quick-view-add-cart,
+  .quick-view-sold-out {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .quick-view-add-cart {
+    color: white;
+    background: var(--color-primary, #1a1a1a);
+  }
+
+  .quick-view-add-cart:hover {
+    background: var(--color-text, #000);
+  }
+
+  .quick-view-sold-out {
+    color: var(--color-text-muted, #666);
+    background: var(--color-background-alt, #f5f5f5);
+    cursor: not-allowed;
+  }
+
+  .quick-view-form {
+    margin: 0;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Quick View Content",
+  "settings": []
+}
+{% endschema %}

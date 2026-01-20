@@ -1,0 +1,522 @@
+{% comment %}
+  Main List Collections Section
+  Shows all collections on /collections page with premium design
+{% endcomment %}
+
+{%- liquid
+  assign columns = section.settings.columns_desktop
+  assign show_description = section.settings.show_description
+  assign show_product_count = section.settings.show_product_count
+-%}
+
+<section class="collections-page">
+  <div class="collections-page__container">
+
+    {% comment %} ========== PAGE HEADER ========== {% endcomment %}
+    <header class="collections-page__header">
+      {% if section.settings.show_breadcrumbs %}
+        <nav class="collections-page__breadcrumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="{{ routes.root_url }}">{{ 'general.breadcrumbs.home' | t | default: 'Home' }}</a></li>
+            <li><span>{{ 'collections.general.title' | t | default: 'Kollektionen' }}</span></li>
+          </ol>
+        </nav>
+      {% endif %}
+
+      <h1 class="collections-page__title">
+        {{ section.settings.title | default: 'Alle Kollektionen' }}
+      </h1>
+
+      {% if section.settings.description != blank %}
+        <p class="collections-page__description">
+          {{ section.settings.description }}
+        </p>
+      {% endif %}
+
+      {% if section.settings.show_count %}
+        <p class="collections-page__count">
+          {{ collections.size }} {{ 'collections.general.collections_count' | t | default: 'Kollektionen' }}
+        </p>
+      {% endif %}
+    </header>
+
+    {% comment %} ========== COLLECTIONS GRID ========== {% endcomment %}
+    <div class="collections-grid" data-columns="{{ columns }}">
+      {% for collection in collections %}
+        {% unless collection.handle == 'all' or collection.handle == 'frontpage' %}
+          <a href="{{ collection.url }}" class="collection-card">
+
+            {% comment %} Image {% endcomment %}
+            <div class="collection-card__media">
+              {% if collection.featured_image != blank %}
+                <img
+                  src="{{ collection.featured_image | image_url: width: 800 }}"
+                  srcset="{{ collection.featured_image | image_url: width: 400 }} 400w,
+                          {{ collection.featured_image | image_url: width: 600 }} 600w,
+                          {{ collection.featured_image | image_url: width: 800 }} 800w"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  alt="{{ collection.title | escape }}"
+                  width="{{ collection.featured_image.width }}"
+                  height="{{ collection.featured_image.height }}"
+                  class="collection-card__image"
+                  loading="lazy"
+                >
+              {% elsif collection.products.first.featured_image != blank %}
+                <img
+                  src="{{ collection.products.first.featured_image | image_url: width: 800 }}"
+                  srcset="{{ collection.products.first.featured_image | image_url: width: 400 }} 400w,
+                          {{ collection.products.first.featured_image | image_url: width: 600 }} 600w,
+                          {{ collection.products.first.featured_image | image_url: width: 800 }} 800w"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  alt="{{ collection.title | escape }}"
+                  class="collection-card__image"
+                  loading="lazy"
+                >
+              {% else %}
+                <div class="collection-card__placeholder">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                    <rect x="3" y="3" width="7" height="7" rx="1"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1"/>
+                  </svg>
+                </div>
+              {% endif %}
+
+              {% comment %} Overlay {% endcomment %}
+              <div class="collection-card__overlay"></div>
+
+              {% comment %} Hover Arrow {% endcomment %}
+              <div class="collection-card__arrow">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+
+            {% comment %} Content {% endcomment %}
+            <div class="collection-card__content">
+              <h2 class="collection-card__title">{{ collection.title }}</h2>
+
+              {% if show_product_count %}
+                <span class="collection-card__count">
+                  {{ collection.products_count }} {% if collection.products_count == 1 %}Produkt{% else %}Produkte{% endif %}
+                </span>
+              {% endif %}
+
+              {% if show_description and collection.description != blank %}
+                <p class="collection-card__description">
+                  {{ collection.description | strip_html | truncate: 100 }}
+                </p>
+              {% endif %}
+            </div>
+
+          </a>
+        {% endunless %}
+      {% endfor %}
+    </div>
+
+    {% comment %} Empty State {% endcomment %}
+    {% if collections.size == 0 %}
+      <div class="collections-empty">
+        <div class="collections-empty__icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+          </svg>
+        </div>
+        <h2 class="collections-empty__title">Keine Kollektionen gefunden</h2>
+        <p class="collections-empty__text">Es sind noch keine Kollektionen vorhanden.</p>
+        <a href="{{ routes.root_url }}" class="collections-empty__btn">
+          Zur Startseite
+        </a>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<style>
+  /* Page Container */
+  .collections-page {
+    padding: 2rem 0 4rem;
+    background: var(--color-background);
+  }
+
+  @media (min-width: 1024px) {
+    .collections-page {
+      padding: 3rem 0 6rem;
+    }
+  }
+
+  .collections-page__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    .collections-page__container {
+      padding: 0 2rem;
+    }
+  }
+
+  /* Header */
+  .collections-page__header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  @media (min-width: 1024px) {
+    .collections-page__header {
+      margin-bottom: 4rem;
+    }
+  }
+
+  .collections-page__breadcrumbs {
+    margin-bottom: 1.5rem;
+  }
+
+  .collections-page__breadcrumbs ol {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  .collections-page__breadcrumbs li:not(:last-child)::after {
+    content: '/';
+    margin-left: 0.5rem;
+    color: var(--color-border);
+  }
+
+  .collections-page__breadcrumbs a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .collections-page__breadcrumbs a:hover {
+    color: var(--color-primary);
+  }
+
+  .collections-page__title {
+    font-family: var(--font-heading-family);
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0 0 1rem;
+    color: var(--color-text);
+  }
+
+  @media (min-width: 1024px) {
+    .collections-page__title {
+      font-size: 3rem;
+    }
+  }
+
+  .collections-page__description {
+    max-width: 600px;
+    margin: 0 auto 1rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  .collections-page__count {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Collections Grid */
+  .collections-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .collections-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .collections-grid[data-columns="2"] {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .collections-grid[data-columns="3"] {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .collections-grid[data-columns="4"] {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* Collection Card */
+  .collection-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: var(--color-background);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .collection-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Card Media */
+  .collection-card__media {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: var(--color-background-alt);
+  }
+
+  .collection-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .collection-card:hover .collection-card__image {
+    transform: scale(1.05);
+  }
+
+  .collection-card__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: var(--color-border);
+    background: linear-gradient(135deg, var(--color-background-alt) 0%, var(--color-border) 100%);
+  }
+
+  .collection-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .collection-card:hover .collection-card__overlay {
+    opacity: 1;
+  }
+
+  /* Arrow */
+  .collection-card__arrow {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: white;
+    border-radius: 50%;
+    color: var(--color-text);
+    opacity: 0;
+    transform: translateX(-0.5rem);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .collection-card:hover .collection-card__arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Card Content */
+  .collection-card__content {
+    padding: 1.25rem;
+    flex: 1;
+  }
+
+  @media (min-width: 1024px) {
+    .collection-card__content {
+      padding: 1.5rem;
+    }
+  }
+
+  .collection-card__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.375rem;
+    color: var(--color-text);
+    transition: color 0.2s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .collection-card__title {
+      font-size: 1.25rem;
+    }
+  }
+
+  .collection-card:hover .collection-card__title {
+    color: var(--color-primary);
+  }
+
+  .collection-card__count {
+    display: inline-block;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  .collection-card__description {
+    margin: 0.75rem 0 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+
+  /* Empty State */
+  .collections-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+
+  .collections-empty__icon {
+    color: var(--color-border);
+    margin-bottom: 1.5rem;
+  }
+
+  .collections-empty__title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    color: var(--color-text);
+  }
+
+  .collections-empty__text {
+    color: var(--color-text-muted);
+    margin: 0 0 1.5rem;
+  }
+
+  .collections-empty__btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: white;
+    background: var(--color-primary);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+
+  .collections-empty__btn:hover {
+    background: var(--color-text);
+  }
+
+  /* Alternative Layout - Cards with overlay text */
+  .collections-grid[data-layout="overlay"] .collection-card__media {
+    aspect-ratio: 3/4;
+  }
+
+  .collections-grid[data-layout="overlay"] .collection-card__overlay {
+    opacity: 1;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 60%);
+  }
+
+  .collections-grid[data-layout="overlay"] .collection-card__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+  }
+
+  .collections-grid[data-layout="overlay"] .collection-card__title,
+  .collections-grid[data-layout="overlay"] .collection-card__count {
+    color: white;
+  }
+
+  .collections-grid[data-layout="overlay"] .collection-card:hover .collection-card__title {
+    color: white;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Kollektionen Uebersicht",
+  "class": "section-main-list-collections",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Seiteninhalt"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Alle Kollektionen"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Beschreibung"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Breadcrumbs anzeigen",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_count",
+      "label": "Anzahl Kollektionen anzeigen",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Kollektion-Karten"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_count",
+      "label": "Produktanzahl anzeigen",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Beschreibung anzeigen",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3,
+      "label": "Spalten (Desktop)"
+    }
+  ]
+}
+{% endschema %}

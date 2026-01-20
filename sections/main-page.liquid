@@ -1,0 +1,27 @@
+{% comment %}
+  Main Page Section
+{% endcomment %}
+
+<section class="section bg-background">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+
+      <h1 class="text-3xl lg:text-4xl font-semibold mb-8">
+        {{ page.title }}
+      </h1>
+
+      <div class="prose prose-lg max-w-none">
+        {{ page.content }}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Seite",
+  "class": "section-main-page",
+  "settings": []
+}
+{% endschema %}

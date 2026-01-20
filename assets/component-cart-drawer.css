@@ -1,0 +1,55 @@
+/**
+ * Cart Drawer Component CSS
+ */
+
+/* Cart drawer backdrop animation */
+.cart-drawer-backdrop {
+  transition: opacity 0.3s ease;
+}
+
+/* Cart drawer panel animation */
+.cart-drawer-panel {
+  transition: transform 0.3s ease;
+}
+
+
+/* Quantity input styling */
+[data-quantity-input] {
+  -moz-appearance: textfield;
+}
+
+[data-quantity-input]::-webkit-outer-spin-button,
+[data-quantity-input]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Toast notification */
+.toast-notification {
+  max-width: calc(100vw - 2rem);
+  word-wrap: break-word;
+}
+
+/* Cart progress animation */
+.cart-progress [style*="width"] {
+  transition: width 0.5s ease;
+}
+
+/* Confetti effect (optional) */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100%) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti {
+  position: fixed;
+  top: 0;
+  pointer-events: none;
+  animation: confetti-fall 3s ease-out forwards;
+}

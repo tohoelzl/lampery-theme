@@ -1,0 +1,63 @@
+{% comment %}
+  ============================================
+  JSON-LD PRODUCT SNIPPET
+  ============================================
+  SEO: Structured data for product pages
+  Helps Google understand product info for rich results
+  ============================================
+{% endcomment %}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+-%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "url": "{{ shop.url }}{{ product.url }}",
+  "description": {{ product.description | strip_html | truncate: 500 | json }},
+  {%- if product.featured_image -%}
+  "image": [
+    "https:{{ product.featured_image | image_url: width: 1200 }}"
+    {%- for image in product.images offset: 1 limit: 4 -%}
+    ,"https:{{ image | image_url: width: 1200 }}"
+    {%- endfor -%}
+  ],
+  {%- endif -%}
+  {%- if product.vendor != blank -%}
+  "brand": {
+    "@type": "Brand",
+    "name": {{ product.vendor | json }}
+  },
+  {%- endif -%}
+  {%- if current_variant.sku != blank -%}
+  "sku": {{ current_variant.sku | json }},
+  {%- endif -%}
+  {%- if current_variant.barcode != blank -%}
+  "gtin": {{ current_variant.barcode | json }},
+  {%- endif -%}
+  "offers": {
+    "@type": "Offer",
+    "url": "{{ shop.url }}{{ product.url }}",
+    "priceCurrency": "{{ cart.currency.iso_code }}",
+    "price": "{{ current_variant.price | money_without_currency | strip_html | remove: ',' }}",
+    {%- if current_variant.compare_at_price > current_variant.price -%}
+    "priceValidUntil": "{{ 'now' | date: '%Y' | plus: 1 }}-12-31",
+    {%- endif -%}
+    "availability": "{% if current_variant.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+    "seller": {
+      "@type": "Organization",
+      "name": {{ shop.name | json }}
+    }
+  }
+  {%- if product.metafields.reviews.rating.value != blank -%}
+  ,"aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ product.metafields.reviews.rating.value }}",
+    "reviewCount": "{{ product.metafields.reviews.rating_count.value }}"
+  }
+  {%- endif -%}
+}
+</script>

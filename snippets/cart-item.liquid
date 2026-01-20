@@ -1,0 +1,229 @@
+{% comment %}
+  ============================================
+  CART ITEM SNIPPET
+  ============================================
+  Usage: {% render 'cart-item', item: item %}
+
+  Features:
+  - AJAX quantity update (no page reload)
+  - Remove item functionality
+  - Shows variant info
+  - Line item price
+  ============================================
+{% endcomment %}
+
+<div class="cart-item"
+     data-line-key="{{ item.key }}"
+     data-line-index="{{ forloop.index }}"
+     data-variant-id="{{ item.variant_id }}">
+
+  <!-- Product Image -->
+  <a href="{{ item.url }}" class="cart-item__image-link">
+    {%- if item.image -%}
+      <img src="{{ item.image | image_url: width: 160 }}"
+           alt="{{ item.title | escape }}"
+           class="cart-item__image"
+           width="80"
+           height="80"
+           loading="lazy">
+    {%- else -%}
+      <div class="cart-item__image cart-item__placeholder">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+          <polyline points="21 15 16 10 5 21"></polyline>
+        </svg>
+      </div>
+    {%- endif -%}
+  </a>
+
+  <!-- Product Details -->
+  <div class="cart-item__details">
+    <h4 class="cart-item__title">
+      <a href="{{ item.url }}">{{ item.product.title }}</a>
+    </h4>
+
+    <!-- Variant Info -->
+    {%- if item.variant.title != 'Default Title' -%}
+      <p class="cart-item__variant">
+        {{ item.variant.title }}
+      </p>
+    {%- endif -%}
+
+    <!-- Unit Price (for products sold by unit) -->
+    {%- if item.unit_price_measurement -%}
+      <p class="cart-item__unit-price">
+        {{ item.unit_price | money }} / {{ item.unit_price_measurement.reference_value }}{{ item.unit_price_measurement.reference_unit }}
+      </p>
+    {%- endif -%}
+
+    <!-- Line Item Properties (gift message, customization, etc.) -->
+    {%- if item.properties.size > 0 -%}
+      <ul class="cart-item__properties">
+        {%- for property in item.properties -%}
+          {%- unless property.last == blank -%}
+            <li class="cart-item__property">
+              <span class="cart-item__property-name">{{ property.first }}:</span>
+              <span class="cart-item__property-value">{{ property.last }}</span>
+            </li>
+          {%- endunless -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <!-- Actions Row: Quantity & Price -->
+    <div class="cart-item__actions">
+      <!-- Quantity Selector -->
+      <div class="quantity-selector">
+        <button class="quantity-selector__btn"
+                type="button"
+                aria-label="{{ 'cart.decrease_quantity' | t | default: 'Decrease quantity' }}"
+                onclick="updateCartQuantity('{{ item.key }}', {{ item.quantity | minus: 1 }})">
+          <span aria-hidden="true">−</span>
+        </button>
+        <input type="number"
+               class="quantity-selector__input"
+               name="updates[]"
+               value="{{ item.quantity }}"
+               min="0"
+               aria-label="{{ 'cart.quantity' | t }}"
+               data-line-key="{{ item.key }}"
+               onchange="updateCartQuantity('{{ item.key }}', this.value)">
+        <button class="quantity-selector__btn"
+                type="button"
+                aria-label="{{ 'cart.increase_quantity' | t | default: 'Increase quantity' }}"
+                onclick="updateCartQuantity('{{ item.key }}', {{ item.quantity | plus: 1 }})">
+          <span aria-hidden="true">+</span>
+        </button>
+      </div>
+
+      <!-- Line Price -->
+      <div class="cart-item__price">
+        {%- if item.original_line_price != item.final_line_price -%}
+          <span class="cart-item__price-compare">
+            {{ item.original_line_price | money }}
+          </span>
+        {%- endif -%}
+        <span class="cart-item__price-current{% if item.original_line_price != item.final_line_price %} cart-item__price--sale{% endif %}">
+          {{ item.final_line_price | money }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Remove Button -->
+    <button class="cart-item__remove"
+            type="button"
+            onclick="updateCartQuantity('{{ item.key }}', 0)"
+            aria-label="{{ 'cart.remove' | t }} {{ item.title | escape }}">
+      {{ 'cart.remove' | t }}
+    </button>
+
+    <!-- Selling Plan (subscriptions) -->
+    {%- if item.selling_plan_allocation -%}
+      <p class="cart-item__selling-plan">
+        {{ item.selling_plan_allocation.selling_plan.name }}
+      </p>
+    {%- endif -%}
+
+    <!-- Discount Info -->
+    {%- if item.line_level_discount_allocations.size > 0 -%}
+      <ul class="cart-item__discounts">
+        {%- for discount in item.line_level_discount_allocations -%}
+          <li class="cart-item__discount">
+            <span class="cart-item__discount-icon">🏷️</span>
+            {{ discount.discount_application.title }} (-{{ discount.amount | money }})
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</div>
+
+<style>
+  .cart-item__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+  }
+
+  .cart-item__price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
+  .cart-item__price-compare {
+    font-size: var(--font-size-small);
+    color: var(--color-text-light);
+    text-decoration: line-through;
+  }
+
+  .cart-item__price-current {
+    font-weight: 600;
+  }
+
+  .cart-item__price--sale {
+    color: var(--color-sale, var(--color-error));
+  }
+
+  .cart-item__unit-price {
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .cart-item__properties {
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .cart-item__property {
+    margin-bottom: 2px;
+  }
+
+  .cart-item__property-name {
+    font-weight: 500;
+  }
+
+  .cart-item__discounts {
+    margin-top: var(--spacing-sm);
+  }
+
+  .cart-item__discount {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.75rem;
+    color: var(--color-success);
+  }
+
+  .cart-item__selling-plan {
+    font-size: 0.75rem;
+    color: var(--color-primary);
+    margin-top: var(--spacing-xs);
+  }
+
+  /* Loading state for item being updated */
+  .cart-item.is-updating {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .cart-item.is-updating::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+</style>

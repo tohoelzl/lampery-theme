@@ -1,0 +1,654 @@
+{% comment %}
+  Hero Section - Flexible Layout with Background Image Support
+  Layouts: Text Left (Image Right), Text Center (No Image), Text Right (Image Left)
+{% endcomment %}
+
+{%- liquid
+  assign layout = section.settings.layout
+  assign text_align = section.settings.text_alignment
+  assign bg_image = section.settings.background_image
+  assign product_image = section.settings.product_image
+  assign show_image = false
+
+  if layout != 'center' and product_image != blank
+    assign show_image = true
+  endif
+-%}
+
+<section class="hero">
+  {% comment %} Background Image {% endcomment %}
+  {% if bg_image != blank %}
+    <div class="hero__background">
+      <img
+        src="{{ bg_image | image_url: width: 1920 }}"
+        srcset="{{ bg_image | image_url: width: 1200 }} 1200w,
+                {{ bg_image | image_url: width: 1600 }} 1600w,
+                {{ bg_image | image_url: width: 1920 }} 1920w"
+        sizes="100vw"
+        alt="{{ bg_image.alt | default: section.settings.title | escape }}"
+        width="{{ bg_image.width }}"
+        height="{{ bg_image.height }}"
+        class="hero__background-image"
+        loading="eager"
+        fetchpriority="high"
+      >
+      <div class="hero__overlay" style="--overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}; --overlay-color: {{ section.settings.overlay_color }};"></div>
+    </div>
+  {% endif %}
+
+  <div class="hero__container">
+    <div class="hero__grid hero__grid--{{ layout }}{% unless show_image %} hero__grid--no-image{% endunless %}">
+
+      {% comment %} Product Image - Only for Left/Right layouts {% endcomment %}
+      {% if show_image and layout == 'right' %}
+        <div class="hero__image hero__image--left">
+          {% render 'hero-image', image: product_image, settings: section.settings %}
+        </div>
+      {% endif %}
+
+      {% comment %} Hero Content {% endcomment %}
+      <div class="hero__content hero__content--{{ text_align }}">
+        {% if section.settings.subtitle != blank %}
+          <span class="hero__subtitle">{{ section.settings.subtitle }}</span>
+        {% endif %}
+
+        {% if section.settings.title != blank %}
+          <h1 class="hero__title">{{ section.settings.title }}</h1>
+        {% endif %}
+
+        {% if section.settings.description != blank %}
+          <p class="hero__description">{{ section.settings.description }}</p>
+        {% endif %}
+
+        {% if section.settings.button_label != blank or section.settings.button_2_label != blank %}
+          <div class="hero__buttons hero__buttons--{{ text_align }}">
+            {% if section.settings.button_label != blank %}
+              <a href="{{ section.settings.button_link }}" class="hero__btn hero__btn--primary">
+                {{ section.settings.button_label }}
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            {% endif %}
+            {% if section.settings.button_2_label != blank %}
+              <a href="{{ section.settings.button_2_link }}" class="hero__btn hero__btn--secondary">
+                {{ section.settings.button_2_label }}
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+
+      {% comment %} Product Image - Only for Left layout {% endcomment %}
+      {% if show_image and layout == 'left' %}
+        <div class="hero__image hero__image--right">
+          {% render 'hero-image', image: product_image, settings: section.settings %}
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+  {% comment %} Scroll Indicator {% endcomment %}
+  {% if section.settings.show_scroll_indicator %}
+    <div class="hero__scroll">
+      <a href="#main-content" class="hero__scroll-link">
+        <span class="hero__scroll-text">{{ 'general.scroll' | t }}</span>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M10 4V16M10 16L4 10M10 16L16 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  {% endif %}
+
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: {{ section.settings.min_height_mobile }}vh;
+    display: flex;
+    align-items: center;
+    background-color: {{ section.settings.background_color }};
+    overflow: hidden;
+  }
+
+  @media (min-width: 1024px) {
+    .hero {
+      min-height: {{ section.settings.min_height_desktop }}vh;
+    }
+  }
+
+  /* Background */
+  .hero__background {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero__background-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: {{ section.settings.background_position }};
+  }
+
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: var(--overlay-color, rgba(0, 0, 0, 0.3));
+    opacity: var(--overlay-opacity, 0.5);
+  }
+
+  /* Container */
+  .hero__container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    .hero__container {
+      padding: 4rem 2rem;
+    }
+  }
+
+  /* Grid Layouts */
+  .hero__grid {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  @media (min-width: 1024px) {
+    .hero__grid {
+      gap: 3rem;
+    }
+
+    .hero__grid--left {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .hero__grid--right {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .hero__grid--center,
+    .hero__grid--no-image {
+      grid-template-columns: 1fr;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+  }
+
+  /* Content */
+  .hero__content {
+    {% if bg_image != blank %}
+      color: {{ section.settings.text_color }};
+    {% else %}
+      color: var(--color-text);
+    {% endif %}
+  }
+
+  .hero__content--left {
+    text-align: left;
+  }
+
+  .hero__content--center {
+    text-align: center;
+  }
+
+  .hero__content--right {
+    text-align: right;
+  }
+
+  /* Subtitle */
+  .hero__subtitle {
+    display: inline-block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    {% if bg_image != blank %}
+      color: {{ section.settings.text_color }};
+      opacity: 0.8;
+    {% else %}
+      color: var(--color-primary);
+    {% endif %}
+  }
+
+  @media (min-width: 1024px) {
+    .hero__subtitle {
+      font-size: 0.875rem;
+      margin-bottom: 1.25rem;
+    }
+  }
+
+  /* Title */
+  .hero__title {
+    font-family: var(--font-heading-family);
+    font-size: 2.25rem;
+    font-weight: 600;
+    line-height: 1.15;
+    margin: 0 0 1rem;
+    text-wrap: balance;
+  }
+
+  @media (min-width: 768px) {
+    .hero__title {
+      font-size: 3rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero__title {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .hero__title {
+      font-size: 4rem;
+    }
+  }
+
+  /* Description */
+  .hero__description {
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 0 0 1.5rem;
+    max-width: 540px;
+    {% if bg_image != blank %}
+      opacity: 0.9;
+    {% else %}
+      color: var(--color-text-muted);
+    {% endif %}
+  }
+
+  .hero__content--center .hero__description {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero__content--right .hero__description {
+    margin-left: auto;
+  }
+
+  @media (min-width: 1024px) {
+    .hero__description {
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+    }
+  }
+
+  /* Buttons */
+  .hero__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .hero__buttons--left {
+    justify-content: flex-start;
+  }
+
+  .hero__buttons--center {
+    justify-content: center;
+  }
+
+  .hero__buttons--right {
+    justify-content: flex-end;
+  }
+
+  @media (min-width: 640px) {
+    .hero__buttons {
+      gap: 1rem;
+    }
+  }
+
+  .hero__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .hero__btn {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+    }
+  }
+
+  .hero__btn--primary {
+    {% if bg_image != blank %}
+      background: {{ section.settings.button_bg_color }};
+      color: {{ section.settings.button_text_color }};
+    {% else %}
+      background: var(--color-primary);
+      color: white;
+    {% endif %}
+  }
+
+  .hero__btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .hero__btn--secondary {
+    {% if bg_image != blank %}
+      background: transparent;
+      border: 2px solid {{ section.settings.text_color }};
+      color: {{ section.settings.text_color }};
+    {% else %}
+      background: transparent;
+      border: 2px solid var(--color-border);
+      color: var(--color-text);
+    {% endif %}
+  }
+
+  .hero__btn--secondary:hover {
+    {% if bg_image != blank %}
+      background: {{ section.settings.text_color }};
+      color: {{ section.settings.background_color }};
+    {% else %}
+      background: var(--color-text);
+      color: var(--color-background);
+      border-color: var(--color-text);
+    {% endif %}
+  }
+
+  /* Product Image */
+  .hero__image {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .hero__image {
+      display: block;
+    }
+  }
+
+  /* Scroll Indicator */
+  .hero__scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .hero__scroll {
+      display: block;
+    }
+  }
+
+  .hero__scroll-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+    {% if bg_image != blank %}
+      color: {{ section.settings.text_color }};
+      opacity: 0.7;
+    {% else %}
+      color: var(--color-text-muted);
+    {% endif %}
+  }
+
+  .hero__scroll-link:hover {
+    opacity: 1;
+  }
+
+  .hero__scroll-text {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  .hero__scroll-link svg {
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(6px); }
+    60% { transform: translateY(3px); }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Hero",
+  "class": "section-hero",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Text Position",
+      "options": [
+        { "value": "left", "label": "Links (Bild rechts)" },
+        { "value": "center", "label": "Mitte (kein Bild)" },
+        { "value": "right", "label": "Rechts (Bild links)" }
+      ],
+      "default": "left",
+      "info": "Bei 'Mitte' wird kein Produktbild angezeigt, nur Hintergrundbild moeglich"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text Ausrichtung",
+      "options": [
+        { "value": "left", "label": "Linksbuendig" },
+        { "value": "center", "label": "Zentriert" },
+        { "value": "right", "label": "Rechtsbuendig" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "min_height_mobile",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "default": 80,
+      "unit": "vh",
+      "label": "Mindesthoehe (Mobil)"
+    },
+    {
+      "type": "range",
+      "id": "min_height_desktop",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "default": 90,
+      "unit": "vh",
+      "label": "Mindesthoehe (Desktop)"
+    },
+    {
+      "type": "header",
+      "content": "Inhalt"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Untertitel",
+      "default": "Handcrafted with Love"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Licht, das Raeume verwandelt"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Beschreibung",
+      "default": "Entdecke unsere handgefertigten Lampen und Wohnaccessoires - designed in Germany, made with passion."
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button 1 Text",
+      "default": "Shop entdecken"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button 1 Link"
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Button 2 Text",
+      "default": "Mehr erfahren"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Button 2 Link"
+    },
+    {
+      "type": "header",
+      "content": "Produktbild"
+    },
+    {
+      "type": "paragraph",
+      "content": "Wird nur bei Layout 'Links' oder 'Rechts' angezeigt"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Produktbild"
+    },
+    {
+      "type": "range",
+      "id": "image_max_width",
+      "min": 300,
+      "max": 600,
+      "step": 25,
+      "default": 450,
+      "unit": "px",
+      "label": "Maximale Bildbreite"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_shadow",
+      "default": true,
+      "label": "Schatten anzeigen"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_decoration",
+      "default": true,
+      "label": "Dekorative Elemente anzeigen"
+    },
+    {
+      "type": "header",
+      "content": "Hintergrund"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Hintergrundbild",
+      "info": "Fuer Fullscreen-Hero empfohlen. Ohne Bild wird Hintergrundfarbe verwendet."
+    },
+    {
+      "type": "select",
+      "id": "background_position",
+      "label": "Bildposition",
+      "options": [
+        { "value": "top", "label": "Oben" },
+        { "value": "center", "label": "Mitte" },
+        { "value": "bottom", "label": "Unten" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe",
+      "default": "#f8f8f6",
+      "info": "Wird verwendet wenn kein Hintergrundbild gesetzt ist"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay Farbe",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "default": 30,
+      "unit": "%",
+      "label": "Overlay Deckkraft"
+    },
+    {
+      "type": "header",
+      "content": "Farben (mit Hintergrundbild)"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Textfarbe",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Hintergrund",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Textfarbe",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Einstellungen"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "default": true,
+      "label": "Scroll-Indikator anzeigen"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ]
+}
+{% endschema %}

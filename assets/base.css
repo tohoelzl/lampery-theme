@@ -1,0 +1,1274 @@
+/**
+ * Lampery Shopify Theme - Base CSS
+ * Converted from WooCommerce Tailwind CSS
+ *
+ * Design System:
+ * - Colors: Sage green (#8B9A7E), Sand (#C9B99A), Accent (#D4A574)
+ * - Typography: Manrope font family
+ * - Spacing: 8px grid system
+ */
+
+/* ==========================================
+   CSS Reset & Base
+   ========================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body-family);
+  font-size: var(--font-body-size);
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+ul, ol {
+  list-style: none;
+  padding: 0;
+}
+
+/* ==========================================
+   Typography
+   ========================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading-family);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+
+@media (min-width: 1024px) {
+  h1 { font-size: 3rem; }
+  h2 { font-size: 2.5rem; }
+  h3 { font-size: 1.75rem; }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ==========================================
+   Layout
+   ========================================== */
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.section-lg {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+  .section-lg {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+/* Header - Clean rebuild */
+.site-header {
+  overflow: visible;
+}
+
+.site-header .header-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 1024px) {
+  .site-header .header-container {
+    padding: 0 2rem;
+  }
+}
+
+.site-header nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  font-size: 18px;
+}
+
+.site-header .site-branding {
+  flex-shrink: 0;
+}
+
+.site-header .header-right {
+  display: flex;
+  align-items: center;
+  gap: 8rem;
+}
+
+.site-header .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+  .site-header .header-actions {
+    gap: 1rem;
+  }
+}
+
+/* Hero Image - rechtsbündig */
+.hero-image {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 1.875rem;
+  font-weight: 600;
+}
+
+@media (min-width: 1024px) {
+  .section-title {
+    font-size: 2.25rem;
+  }
+}
+
+.section-subtitle {
+  color: var(--color-text-muted);
+  margin-top: 0.5rem;
+}
+
+/* ==========================================
+   Background Colors
+   ========================================== */
+
+.bg-background { background-color: var(--color-background); }
+.bg-background-alt { background-color: var(--color-background-alt); }
+.bg-primary { background-color: var(--color-primary); }
+.bg-primary-light { background-color: var(--color-primary-light); }
+.bg-accent { background-color: var(--color-accent); }
+.bg-accent-soft { background-color: var(--color-accent-soft); }
+
+/* ==========================================
+   Text Colors
+   ========================================== */
+
+.text-text { color: var(--color-text); }
+.text-text-muted { color: var(--color-text-muted); }
+.text-primary { color: var(--color-primary); }
+.text-accent { color: var(--color-accent); }
+.text-white { color: #ffffff; }
+
+/* ==========================================
+   Borders
+   ========================================== */
+
+.border-border { border-color: var(--color-border); }
+.border-primary { border-color: var(--color-primary); }
+
+/* ==========================================
+   Buttons
+   ========================================== */
+
+/* ==========================================
+   Button Design System
+
+   Consistent button styles across the theme:
+   - btn-primary: Main CTA (sage green background)
+   - btn-secondary: Secondary action (outlined)
+   - btn-ghost: Minimal action (no border)
+   - btn-link: Text link style
+   - btn-icon: Icon-only button
+
+   Sizes: btn-sm, (default), btn-lg
+   ========================================== */
+
+/* Base button styles */
+.btn-primary,
+.btn-secondary,
+.btn-ghost,
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-body-family);
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+}
+
+/* Primary Button - Main CTA */
+.btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary-light);
+  color: #ffffff;
+}
+
+.btn-primary:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-primary);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+/* Secondary Button - Outlined */
+.btn-secondary {
+  background-color: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: transparent;
+}
+
+.btn-secondary:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-primary);
+}
+
+.btn-secondary:active {
+  transform: translateY(1px);
+}
+
+/* Ghost Button - No border */
+.btn-ghost {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--color-text);
+  padding: 0.5rem 1rem;
+}
+
+.btn-ghost:hover {
+  color: var(--color-primary);
+  background-color: var(--color-primary);
+  background-color: rgba(139, 154, 126, 0.08);
+}
+
+.btn-ghost:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+/* Link Button - Text style */
+.btn-link {
+  background: transparent;
+  border: none;
+  padding: 0.5rem 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  border-radius: 0;
+}
+
+.btn-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.btn-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Icon Button */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.btn-icon:hover {
+  color: var(--color-primary);
+  background-color: rgba(139, 154, 126, 0.08);
+}
+
+.btn-icon:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+/* Button Sizes */
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+}
+
+/* Full width modifier */
+.w-full {
+  width: 100%;
+}
+
+/* Disabled state */
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-ghost:disabled,
+.btn-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Reset native button styles globally */
+button,
+[type="button"],
+[type="submit"],
+[type="reset"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* Cart quantity buttons - minimal style */
+.cart-qty-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-text);
+  transition: color 0.2s ease;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.cart-qty-btn:hover {
+  color: var(--color-primary);
+}
+
+/* Quantity selector buttons (cart page) */
+.quantity-selector {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.quantity-selector__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.quantity-selector__btn:hover {
+  background-color: var(--color-background-alt);
+  color: var(--color-primary);
+}
+
+.quantity-selector__input {
+  width: 3rem;
+  height: 2rem;
+  padding: 0;
+  text-align: center;
+  border: none;
+  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  background: transparent;
+  font-size: 0.875rem;
+  -moz-appearance: textfield;
+}
+
+.quantity-selector__input::-webkit-outer-spin-button,
+.quantity-selector__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ==========================================
+   Cart Progress Timeline
+   ========================================== */
+
+.cart-progress {
+  position: relative;
+}
+
+.progress-bar-container {
+  position: relative;
+}
+
+.progress-track {
+  position: relative;
+}
+
+.progress-fill {
+  z-index: 1;
+}
+
+.milestone {
+  top: 0;
+  z-index: 10;
+}
+
+.h-1\.5 {
+  height: 0.375rem;
+}
+
+.inset-y-0 {
+  top: 0;
+  bottom: 0;
+}
+
+/* Ensure milestone text doesn't overflow container */
+.max-w-16 {
+  max-width: 4rem;
+}
+
+.-mt-1\.5 {
+  margin-top: -0.375rem;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==========================================
+   Forms
+   ========================================== */
+
+input[type="text"],
+input[type="email"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="password"],
+textarea,
+select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  transition: border-color 0.2s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* ==========================================
+   Product Card
+   ========================================== */
+
+.product-card {
+  position: relative;
+}
+
+.product-card-image {
+  position: relative;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background-color: var(--color-background-alt);
+}
+
+.product-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-card-image img {
+  transform: scale(1.05);
+}
+
+.product-card-content {
+  padding-top: 1rem;
+}
+
+.product-card-brand {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.product-card-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.product-card-title a:hover {
+  color: var(--color-primary);
+}
+
+.product-card-price {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ==========================================
+   Sale Badge
+   ========================================== */
+
+.onsale {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 10;
+  background-color: var(--color-accent);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+/* ==========================================
+   Navigation
+   ========================================== */
+
+.nav-link {
+  position: relative;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-primary);
+  transition: width 0.2s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* ==========================================
+   Prose (Rich Text)
+   ========================================== */
+
+.prose {
+  color: var(--color-text);
+}
+
+.prose p {
+  margin-bottom: 1rem;
+}
+
+.prose h2, .prose h3, .prose h4 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose ul, .prose ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+}
+
+.prose a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.prose-lg {
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+
+.prose-sm {
+  font-size: 0.875rem;
+}
+
+/* ==========================================
+   Utilities
+   ========================================== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+[x-cloak] {
+  display: none !important;
+}
+
+/* ==========================================
+   Aspect Ratios
+   ========================================== */
+
+.aspect-square { aspect-ratio: 1/1; }
+.aspect-video { aspect-ratio: 16/9; }
+.aspect-product { aspect-ratio: 4/5; }
+.aspect-portrait { aspect-ratio: 3/4; }
+.aspect-\[4\/3\] { aspect-ratio: 4/3; }
+.aspect-\[4\/5\] { aspect-ratio: 4/5; }
+.aspect-\[3\/1\] { aspect-ratio: 3/1; }
+
+/* ==========================================
+   Grid
+   ========================================== */
+
+.grid {
+  display: grid;
+}
+
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+
+@media (min-width: 640px) {
+  .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 768px) {
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .lg\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .lg\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
+/* ==========================================
+   Flexbox
+   ========================================== */
+
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.flex-col { flex-direction: column; }
+.flex-shrink-0 { flex-shrink: 0; }
+.flex-1 { flex: 1 1 0%; }
+.items-center { align-items: center; }
+.items-start { align-items: start; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-start { justify-content: flex-start; }
+.justify-end { justify-content: flex-end; }
+.flex-wrap { flex-wrap: wrap; }
+
+/* ==========================================
+   Spacing
+   ========================================== */
+
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+.gap-6 { gap: 1.5rem; }
+.gap-8 { gap: 2rem; }
+.gap-12 { gap: 3rem; }
+
+.space-x-2 > * + * { margin-left: 0.5rem; }
+.space-x-3 > * + * { margin-left: 0.75rem; }
+.space-x-4 > * + * { margin-left: 1rem; }
+.space-x-8 > * + * { margin-left: 2rem; }
+
+.space-y-2 > * + * { margin-top: 0.5rem; }
+.space-y-3 > * + * { margin-top: 0.75rem; }
+.space-y-4 > * + * { margin-top: 1rem; }
+.space-y-6 > * + * { margin-top: 1.5rem; }
+
+.p-1 { padding: 0.25rem; }
+.p-2 { padding: 0.5rem; }
+.p-3 { padding: 0.75rem; }
+.p-4 { padding: 1rem; }
+.p-6 { padding: 1.5rem; }
+.p-8 { padding: 2rem; }
+
+.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+.px-8 { padding-left: 2rem; padding-right: 2rem; }
+
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+.py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+.py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+.py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+.py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+.py-16 { padding-top: 4rem; padding-bottom: 4rem; }
+
+.pt-4 { padding-top: 1rem; }
+.pt-6 { padding-top: 1.5rem; }
+.pb-6 { padding-bottom: 1.5rem; }
+
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-6 { margin-top: 1.5rem; }
+.mt-8 { margin-top: 2rem; }
+.mt-12 { margin-top: 3rem; }
+
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mb-8 { margin-bottom: 2rem; }
+
+.ml-2 { margin-left: 0.5rem; }
+.mr-2 { margin-right: 0.5rem; }
+.mr-3 { margin-right: 0.75rem; }
+
+.-ml-2 { margin-left: -0.5rem; }
+.-mr-2 { margin-right: -0.5rem; }
+.-mt-5 { margin-top: -1.25rem; }
+.-top-0\.5 { top: -0.125rem; }
+.-top-1 { top: -0.25rem; }
+.-right-0\.5 { right: -0.125rem; }
+.-right-1 { right: -0.25rem; }
+.-top-4 { top: -1rem; }
+.-right-4 { right: -1rem; }
+.-bottom-4 { bottom: -1rem; }
+.-left-6 { left: -1.5rem; }
+.-bottom-6 { bottom: -1.5rem; }
+
+/* ==========================================
+   Sizing
+   ========================================== */
+
+.w-4 { width: 1rem; }
+.w-5 { width: 1.25rem; }
+.w-6 { width: 1.5rem; }
+.w-8 { width: 2rem; }
+.w-10 { width: 2.5rem; }
+.w-12 { width: 3rem; }
+.w-16 { width: 4rem; }
+.w-20 { width: 5rem; }
+.w-24 { width: 6rem; }
+.w-32 { width: 8rem; }
+.w-full { width: 100%; }
+.w-fit { width: fit-content; }
+
+.h-2 { height: 0.5rem; }
+.h-4 { height: 1rem; }
+.h-5 { height: 1.25rem; }
+.h-6 { height: 1.5rem; }
+.h-8 { height: 2rem; }
+.h-10 { height: 2.5rem; }
+.h-12 { height: 3rem; }
+.h-14 { height: 3.5rem; }
+.h-16 { height: 4rem; }
+.h-20 { height: 5rem; }
+.h-full { height: 100%; }
+
+.min-h-\[80vh\] { min-height: 80vh; }
+.min-h-\[400px\] { min-height: 400px; }
+.min-w-0 { min-width: 0; }
+
+.max-w-sm { max-width: 24rem; }
+.max-w-md { max-width: 28rem; }
+.max-w-lg { max-width: 32rem; }
+.max-w-xl { max-width: 36rem; }
+.max-w-2xl { max-width: 42rem; }
+.max-w-3xl { max-width: 48rem; }
+.max-w-4xl { max-width: 56rem; }
+.max-w-6xl { max-width: 72rem; }
+.max-w-full { max-width: 100%; }
+.max-w-none { max-width: none; }
+
+@media (min-width: 1024px) {
+  .lg\:h-20 { height: 5rem; }
+  .lg\:min-h-\[90vh\] { min-height: 90vh; }
+  .lg\:min-h-\[500px\] { min-height: 500px; }
+  .lg\:max-w-4xl { max-width: 56rem; }
+  .lg\:max-w-6xl { max-width: 72rem; }
+  .lg\:max-w-full { max-width: 100%; }
+  .lg\:px-8 { padding-left: 2rem; padding-right: 2rem; }
+  .lg\:py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+  .lg\:gap-8 { gap: 2rem; }
+  .lg\:gap-12 { gap: 3rem; }
+  .lg\:gap-16 { gap: 4rem; }
+  .lg\:gap-20 { gap: 5rem; }
+  .lg\:col-span-1 { grid-column: span 1 / span 1; }
+  .lg\:col-span-2 { grid-column: span 2 / span 2; }
+  .lg\:col-span-3 { grid-column: span 3 / span 3; }
+}
+
+/* ==========================================
+   Positioning
+   ========================================== */
+
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed { position: fixed; }
+.sticky { position: sticky; }
+
+.inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+.inset-x-0 { left: 0; right: 0; }
+.inset-y-0 { top: 0; bottom: 0; }
+.top-0 { top: 0; }
+.right-0 { right: 0; }
+.bottom-0 { bottom: 0; }
+.left-0 { left: 0; }
+.top-3 { top: 0.75rem; }
+.right-3 { right: 0.75rem; }
+.left-3 { left: 0.75rem; }
+.top-4 { top: 1rem; }
+.right-4 { right: 1rem; }
+.left-4 { left: 1rem; }
+.top-6 { top: 1.5rem; }
+.right-6 { right: 1.5rem; }
+.bottom-6 { bottom: 1.5rem; }
+.bottom-8 { bottom: 2rem; }
+.top-full { top: 100%; }
+
+.z-10 { z-index: 10; }
+.z-40 { z-index: 40; }
+.z-50 { z-index: 50; }
+
+/* ==========================================
+   Transforms
+   ========================================== */
+
+.translate-x-0 { transform: translateX(0); }
+.translate-x-full { transform: translateX(100%); }
+.-translate-x-full { transform: translateX(-100%); }
+.translate-y-0 { transform: translateY(0); }
+.translate-y-2 { transform: translateY(0.5rem); }
+.translate-y-4 { transform: translateY(1rem); }
+.-translate-y-2 { transform: translateY(-0.5rem); }
+.-translate-x-1\/2 { transform: translateX(-50%); }
+.-translate-y-1\/2 { transform: translateY(-50%); }
+.left-1\/2 { left: 50%; }
+.top-1\/2 { top: 50%; }
+
+.scale-95 { transform: scale(0.95); }
+.scale-100 { transform: scale(1); }
+.scale-105 { transform: scale(1.05); }
+
+.rotate-180 { transform: rotate(180deg); }
+
+/* ==========================================
+   Visibility & Display
+   ========================================== */
+
+.block { display: block; }
+.inline-block { display: inline-block; }
+.hidden { display: none; }
+.opacity-0 { opacity: 0; }
+.opacity-30 { opacity: 0.3; }
+.opacity-50 { opacity: 0.5; }
+.opacity-60 { opacity: 0.6; }
+.opacity-100 { opacity: 1; }
+.invisible { visibility: hidden; }
+.visible { visibility: visible; }
+.overflow-hidden { overflow: hidden; }
+.overflow-y-auto { overflow-y: auto; }
+
+@media (min-width: 1024px) {
+  .lg\:hidden { display: none; }
+  .lg\:block { display: block; }
+  .lg\:flex { display: flex; }
+  .lg\:sticky { position: sticky; }
+  .lg\:top-24 { top: 6rem; }
+  .lg\:self-start { align-self: flex-start; }
+  .lg\:order-1 { order: 1; }
+  .lg\:order-2 { order: 2; }
+  .lg\:text-left { text-align: left; }
+  .lg\:aspect-square { aspect-ratio: 1/1; }
+}
+
+/* ==========================================
+   Borders & Rounded
+   ========================================== */
+
+.border { border-width: 1px; }
+.border-b { border-bottom-width: 1px; }
+.border-t { border-top-width: 1px; }
+.border-x { border-left-width: 1px; border-right-width: 1px; }
+.border-2 { border-width: 2px; }
+.border-transparent { border-color: transparent; }
+
+.rounded { border-radius: 0.25rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.rounded-xl { border-radius: 0.75rem; }
+.rounded-2xl { border-radius: 1rem; }
+.rounded-full { border-radius: 9999px; }
+
+/* ==========================================
+   Shadows
+   ========================================== */
+
+.shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); }
+.shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+.shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+
+/* ==========================================
+   Backdrop
+   ========================================== */
+
+.backdrop-blur-sm { backdrop-filter: blur(4px); }
+
+.bg-text\/20 { background-color: rgba(45, 45, 45, 0.2); }
+.bg-text\/60 { background-color: rgba(45, 45, 45, 0.6); }
+.bg-background\/95 { background-color: rgba(253, 251, 247, 0.95); }
+.bg-primary\/10 { background-color: rgba(139, 154, 126, 0.1); }
+.bg-primary\/20 { background-color: rgba(139, 154, 126, 0.2); }
+.bg-white\/10 { background-color: rgba(255, 255, 255, 0.1); }
+.bg-white\/20 { background-color: rgba(255, 255, 255, 0.2); }
+.text-white\/60 { color: rgba(255, 255, 255, 0.6); }
+.text-white\/80 { color: rgba(255, 255, 255, 0.8); }
+.border-white\/20 { border-color: rgba(255, 255, 255, 0.2); }
+.border-white\/40 { border-color: rgba(255, 255, 255, 0.4); }
+.bg-accent\/10 { background-color: rgba(212, 165, 116, 0.1); }
+
+/* ==========================================
+   Typography Utilities
+   ========================================== */
+
+.text-xs { font-size: 0.75rem; }
+.text-sm { font-size: 0.875rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-3xl { font-size: 1.875rem; }
+.text-4xl { font-size: 2.25rem; }
+.text-9xl { font-size: 8rem; }
+
+@media (min-width: 768px) {
+  .md\:text-5xl { font-size: 3rem; }
+}
+
+@media (min-width: 1024px) {
+  .lg\:text-xl { font-size: 1.25rem; }
+  .lg\:text-2xl { font-size: 1.5rem; }
+  .lg\:text-3xl { font-size: 1.875rem; }
+  .lg\:text-4xl { font-size: 2.25rem; }
+  .lg\:text-6xl { font-size: 3.75rem; }
+}
+
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+
+.leading-tight { line-height: 1.25; }
+.leading-relaxed { line-height: 1.625; }
+
+.tracking-tight { letter-spacing: -0.025em; }
+.tracking-wider { letter-spacing: 0.05em; }
+
+.uppercase { text-transform: uppercase; }
+.line-through { text-decoration: line-through; }
+.underline { text-decoration: underline; }
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+/* ==========================================
+   Transitions
+   ========================================== */
+
+.transition-colors { transition-property: color, background-color, border-color; transition-duration: 200ms; }
+.transition-opacity { transition-property: opacity; transition-duration: 200ms; }
+.transition-transform { transition-property: transform; transition-duration: 200ms; }
+.transition-all { transition-property: all; transition-duration: 200ms; }
+
+.duration-fast { transition-duration: 150ms; }
+.duration-normal { transition-duration: 200ms; }
+.duration-slow { transition-duration: 300ms; }
+.duration-200 { transition-duration: 200ms; }
+.duration-300 { transition-duration: 300ms; }
+.duration-500 { transition-duration: 500ms; }
+
+.ease-in { transition-timing-function: cubic-bezier(0.4, 0, 1, 1); }
+.ease-out { transition-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+.ease-in-out { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* ==========================================
+   Animations
+   ========================================== */
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+  50% { transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+}
+
+.animate-bounce { animation: bounce 1s infinite; }
+
+/* ==========================================
+   Cursor
+   ========================================== */
+
+.cursor-pointer { cursor: pointer; }
+.cursor-not-allowed { cursor: not-allowed; }
+.cursor-zoom-in { cursor: zoom-in; }
+.pointer-events-none { pointer-events: none; }
+
+/* ==========================================
+   Object Fit
+   ========================================== */
+
+.object-cover { object-fit: cover; }
+.object-contain { object-fit: contain; }
+
+/* ==========================================
+   Order
+   ========================================== */
+
+.order-1 { order: 1; }
+.order-2 { order: 2; }
+
+/* ==========================================
+   Appearance
+   ========================================== */
+
+.appearance-none { appearance: none; }
+
+/* ==========================================
+   Hover States
+   ========================================== */
+
+.hover\:text-primary:hover { color: var(--color-primary); }
+.hover\:bg-primary:hover { background-color: var(--color-primary); }
+.hover\:bg-primary-light:hover { background-color: var(--color-primary-light); }
+.hover\:bg-background-alt:hover { background-color: var(--color-background-alt); }
+.hover\:bg-border:hover { background-color: var(--color-border); }
+.hover\:bg-white:hover { background-color: #ffffff; }
+.hover\:bg-white\/90:hover { background-color: rgba(255, 255, 255, 0.9); }
+.hover\:text-white:hover { color: #ffffff; }
+.hover\:text-accent:hover { color: var(--color-accent); }
+.hover\:border-primary:hover { border-color: var(--color-primary); }
+.hover\:underline:hover { text-decoration: underline; }
+.hover\:scale-105:hover { transform: scale(1.05); }
+.hover\:opacity-100:hover { opacity: 1; }
+
+.group:hover .group-hover\:scale-105 { transform: scale(1.05); }
+.group:hover .group-hover\:opacity-100 { opacity: 1; }
+.group:hover .group-hover\:visible { visibility: visible; }
+.group:hover .group-hover\:text-primary { color: var(--color-primary); }
+.group:hover .group-hover\:bg-text\/20 { background-color: rgba(45, 45, 45, 0.2); }
+.group:hover .group-hover\:bg-primary\/10 { background-color: rgba(139, 154, 126, 0.1); }
+.group:hover .group-hover\:translate-y-0 { transform: translateY(0); }
+
+/* ==========================================
+   Focus States
+   ========================================== */
+
+.focus\:outline-none:focus { outline: none; }
+.focus\:border-primary:focus { border-color: var(--color-primary); }
+.focus\:border-white\/40:focus { border-color: rgba(255, 255, 255, 0.4); }
+.focus\:not-sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* ==========================================
+   Responsive Display
+   ========================================== */
+
+@media (max-width: 1023px) {
+  .lg\:hidden { display: block; }
+}
+
+@media (min-width: 640px) {
+  .sm\:flex-row { flex-direction: row; }
+  .sm\:items-center { align-items: center; }
+}
+
+@media (min-width: 768px) {
+  .md\:flex-row { flex-direction: row; }
+  .md\:space-y-0 > * + * { margin-top: 0; }
+}
+
+/* ==========================================
+   Placeholder
+   ========================================== */
+
+.placeholder\:text-white\/60::placeholder { color: rgba(255, 255, 255, 0.6); }
+
+/* ==========================================
+   Selection
+   ========================================== */
+
+::selection {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+/* ==========================================
+   Section Zebra Pattern (Alternating Backgrounds)
+   ========================================== */
+
+/* Main content sections - alternating backgrounds
+   Pattern: 1st=gray, 2nd=white, 3rd=gray, 4th=white, etc.
+   Using :nth-of-type to count only shopify-section elements */
+.site-main .shopify-section:nth-of-type(odd) {
+  background-color: var(--color-background-alt);
+}
+
+.site-main .shopify-section:nth-of-type(even) {
+  background-color: var(--color-background);
+}
+
+/* Override for sections that set their own background (e.g., Newsletter with bg-primary) */
+.site-main .shopify-section:has(.section-has-bg) {
+  background-color: transparent;
+}
+
+/* Utility classes for manual control */
+.section-bg-alt {
+  background-color: var(--color-background-alt) !important;
+}
+
+.section-bg-white {
+  background-color: var(--color-background) !important;
+}
+
+.section-bg-transparent {
+  background-color: transparent !important;
+}

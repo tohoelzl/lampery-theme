@@ -1,0 +1,94 @@
+{% comment %}
+  Hero Image Snippet
+  Renders the product image with optional decorations
+
+  Required:
+  - image: The image object
+  - settings: Section settings object
+{% endcomment %}
+
+<div class="hero-image-wrapper" style="max-width: {{ settings.image_max_width }}px;">
+  {% if settings.image_decoration %}
+    <div class="hero-image-decoration hero-image-decoration--top"></div>
+    <div class="hero-image-decoration hero-image-decoration--bottom"></div>
+  {% endif %}
+
+  <div class="hero-image-container{% if settings.image_shadow %} hero-image-container--shadow{% endif %}">
+    <img
+      src="{{ image | image_url: width: 800 }}"
+      srcset="{{ image | image_url: width: 400 }} 400w,
+              {{ image | image_url: width: 600 }} 600w,
+              {{ image | image_url: width: 800 }} 800w"
+      sizes="(max-width: 1024px) 100vw, 50vw"
+      alt="{{ image.alt | default: 'Hero Image' | escape }}"
+      width="{{ image.width }}"
+      height="{{ image.height }}"
+      class="hero-image-img"
+      loading="eager"
+    >
+  </div>
+</div>
+
+<style>
+  .hero-image-wrapper {
+    position: relative;
+    margin: 0 auto;
+  }
+
+  .hero-image-decoration {
+    position: absolute;
+    border-radius: 50%;
+    z-index: -1;
+  }
+
+  .hero-image-decoration--top {
+    width: 80px;
+    height: 80px;
+    top: -1rem;
+    right: -1rem;
+    background: var(--color-accent-soft, rgba(255, 200, 100, 0.3));
+  }
+
+  .hero-image-decoration--bottom {
+    width: 100px;
+    height: 100px;
+    bottom: -1.5rem;
+    left: -1.5rem;
+    background: var(--color-primary, #1a1a1a);
+    opacity: 0.1;
+  }
+
+  @media (min-width: 1024px) {
+    .hero-image-decoration--top {
+      width: 100px;
+      height: 100px;
+      top: -1.5rem;
+      right: -1.5rem;
+    }
+
+    .hero-image-decoration--bottom {
+      width: 120px;
+      height: 120px;
+      bottom: -2rem;
+      left: -2rem;
+    }
+  }
+
+  .hero-image-container {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: var(--color-background, #fff);
+  }
+
+  .hero-image-container--shadow {
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.15);
+  }
+
+  .hero-image-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+</style>

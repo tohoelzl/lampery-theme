@@ -1,0 +1,236 @@
+{% comment %}
+  Newsletter Section
+  Design: Helles Input auf Salbei-Hintergrund, Terrakotta Button
+{% endcomment %}
+
+<section class="newsletter-section">
+  <div class="newsletter-container">
+
+    <h2 class="newsletter-heading">{{ section.settings.title }}</h2>
+
+    <p class="newsletter-desc">{{ section.settings.description }}</p>
+
+    {% form 'customer', class: 'newsletter-form' %}
+
+      <input type="hidden" name="contact[tags]" value="newsletter">
+
+      {% if form.posted_successfully? %}
+        <p class="form-success">{{ 'newsletter.success' | t }}</p>
+      {% else %}
+
+        <div class="newsletter-form-wrapper">
+          <input
+            type="email"
+            name="contact[email]"
+            class="newsletter-input"
+            value="{{ form.email }}"
+            placeholder="{{ section.settings.placeholder }}"
+            required
+            autocomplete="email"
+            aria-label="E-Mail Adresse"
+          >
+          <button type="submit" class="newsletter-button">
+            {{ section.settings.button_text }}
+          </button>
+        </div>
+
+        {% if form.errors %}
+          <div class="form-error">
+            {{ form.errors | default_errors }}
+          </div>
+        {% endif %}
+
+      {% endif %}
+
+      <p class="newsletter-legal">{{ section.settings.privacy_text }}</p>
+
+    {% endform %}
+  </div>
+</section>
+
+<style>
+  /* Newsletter Sektion Wrapper */
+  .section-newsletter {
+    background-color: var(--color-primary) !important;
+  }
+
+  .newsletter-section {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    padding: 4rem 1.5rem;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .newsletter-container {
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Typografie */
+  .newsletter-heading {
+    font-family: var(--font-heading-family);
+    font-size: 1.875rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  @media (min-width: 1024px) {
+    .newsletter-heading {
+      font-size: 2.25rem;
+    }
+  }
+
+  .newsletter-desc {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Formular Wrapper */
+  .newsletter-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .newsletter-form-wrapper {
+      flex-direction: row;
+    }
+  }
+
+  /* Helles Input Feld */
+  .newsletter-input {
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    padding: 0.875rem 1rem;
+    border-radius: 0.5rem;
+    width: 100%;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .newsletter-input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .newsletter-input:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.2);
+  }
+
+  @media (min-width: 640px) {
+    .newsletter-input {
+      flex: 1;
+    }
+  }
+
+  /* Terrakotta Button */
+  .newsletter-button {
+    background-color: var(--color-accent);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 0.875rem 1.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    font-size: 1rem;
+    width: 100%;
+    white-space: nowrap;
+  }
+
+  .newsletter-button:hover {
+    background-color: var(--color-text);
+    transform: translateY(-1px);
+  }
+
+  @media (min-width: 640px) {
+    .newsletter-button {
+      width: auto;
+    }
+  }
+
+  /* Success Message */
+  .form-success {
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Error Message */
+  .form-error {
+    color: #fecaca;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Datenschutz Text */
+  .newsletter-legal {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 1rem;
+  }
+
+  .newsletter-legal a {
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "class": "section-newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "10% Willkommens-Rabatt sichern"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Beschreibung",
+      "default": "Melde dich fuer unseren Newsletter an. Erhalte exklusive Angebote, neue Produkt-Drops und Inspirationen direkt in dein Postfach."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Placeholder Text",
+      "default": "Deine E-Mail Adresse"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Jetzt anmelden"
+    },
+    {
+      "type": "text",
+      "id": "privacy_text",
+      "label": "Datenschutz-Hinweis",
+      "default": "Mit der Anmeldung stimmst du unserer Datenschutzerklaerung zu."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter",
+      "category": "Content"
+    }
+  ]
+}
+{% endschema %}

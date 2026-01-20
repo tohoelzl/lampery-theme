@@ -1,0 +1,120 @@
+{
+  "general": {
+    "scroll": "Scrollen",
+    "back_to_top": "Nach oben",
+    "view_all": "Alle anzeigen",
+    "breadcrumbs": {
+      "home": "Home"
+    },
+    "pagination": {
+      "label": "Seitennavigation",
+      "previous": "Zurueck",
+      "next": "Weiter"
+    },
+    "404": {
+      "title": "Seite nicht gefunden",
+      "description": "Die angeforderte Seite existiert nicht oder wurde verschoben.",
+      "back_home": "Zur Startseite"
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Zum Inhalt springen",
+    "main_navigation": "Hauptnavigation",
+    "toggle_menu": "Menue umschalten",
+    "search": "Suchen",
+    "account": "Mein Konto",
+    "cart": "Warenkorb",
+    "close": "Schliessen"
+  },
+  "navigation": {
+    "menu": "Menue"
+  },
+  "search": {
+    "title": "Suche",
+    "placeholder": "Produkte suchen...",
+    "submit": "Suchen",
+    "popular": "Beliebte Suchbegriffe",
+    "results_count": "{{ count }} Ergebnisse fuer \"{{ terms }}\"",
+    "no_results": "Keine Ergebnisse fuer \"{{ terms }}\""
+  },
+  "cart": {
+    "title": "Warenkorb",
+    "empty": "Dein Warenkorb ist leer",
+    "empty_title": "Dein Warenkorb ist leer",
+    "empty_description": "Entdecke unsere Produkte und fuege sie deinem Warenkorb hinzu.",
+    "continue_shopping": "Weiter shoppen",
+    "checkout": "Zur Kasse",
+    "subtotal": "Zwischensumme",
+    "view_cart": "Warenkorb ansehen",
+    "discount": "Rabatt",
+    "shipping": "Versand",
+    "shipping_at_checkout": "Wird an der Kasse berechnet",
+    "total": "Gesamt",
+    "taxes_included": "inkl. MwSt.",
+    "summary": "Zusammenfassung",
+    "decrease_quantity": "Menge verringern",
+    "increase_quantity": "Menge erhoehen",
+    "remove": "Entfernen",
+    "reward_progress": "Noch {{ amount }} EUR bis {{ reward }}",
+    "all_rewards_unlocked": "Alle Belohnungen freigeschaltet!",
+    "general": {
+      "error": "Ein Fehler ist aufgetreten. Bitte versuche es erneut.",
+      "quantity_error": "Es sind nur {{ quantity }} Stueck auf Lager."
+    }
+  },
+  "products": {
+    "product": {
+      "on_sale": "Sale",
+      "quick_view": "Schnellansicht",
+      "add_to_wishlist": "Zur Wunschliste hinzufuegen",
+      "add_to_cart": "In den Warenkorb",
+      "sold_out": "Ausverkauft",
+      "quantity": "Menge",
+      "share": "Teilen",
+      "price_vat": "inkl. MwSt.",
+      "free_shipping": "Kostenloser Versand",
+      "secure_payment": "Sichere Zahlung",
+      "gift_wrapping": "Geschenkverpackung"
+    }
+  },
+  "collections": {
+    "general": {
+      "title": "Kollektionen",
+      "collections_count": "Kollektionen",
+      "products_count": "{{ count }} Produkte",
+      "no_matches": "Keine Produkte gefunden",
+      "no_matches_text": "Versuche es mit anderen Filteroptionen."
+    },
+    "filtering": {
+      "filter": "Filter",
+      "clear_all": "Alle entfernen",
+      "apply": "Anwenden"
+    },
+    "sorting": {
+      "title": "Sortieren"
+    }
+  },
+  "collection": {
+    "products": "Produkte"
+  },
+  "newsletter": {
+    "success": "Danke fuer deine Anmeldung!"
+  },
+  "customer": {
+    "account": {
+      "title": "Mein Konto"
+    }
+  },
+  "localization": {
+    "language": "Sprache"
+  },
+  "social": {
+    "follow_instagram": "Auf Instagram folgen",
+    "follow_tiktok": "Auf TikTok folgen",
+    "follow_facebook": "Auf Facebook folgen"
+  },
+  "footer": {
+    "copyright": "Alle Rechte vorbehalten.",
+    "secure_payment": "Sichere Zahlung"
+  }
+}

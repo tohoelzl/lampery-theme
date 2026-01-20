@@ -1,0 +1,151 @@
+{% comment %}
+  Collection List Section - Converted from WooCommerce front-page.php Categories/Collections Section
+  Shopify Native: Uses linklist or collections directly
+{% endcomment %}
+
+{%- liquid
+  assign collections_per_row = section.settings.collections_per_row
+  assign aspect_ratio = section.settings.aspect_ratio
+-%}
+
+<section class="section">
+  <div class="container mx-auto px-4 lg:px-8">
+
+    {% comment %} Section Header {% endcomment %}
+    <div class="section-header">
+      <span class="inline-block text-sm font-medium text-primary uppercase tracking-wider mb-3">
+        {{ section.settings.subtitle }}
+      </span>
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+    </div>
+
+    {% comment %} Collections Grid {% endcomment %}
+    <div class="max-w-6xl mx-auto w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-{{ collections_per_row }} gap-4 lg:gap-6">
+        {% for block in section.blocks %}
+          {%- liquid
+            assign collection = collections[block.settings.collection]
+          -%}
+
+          {% if collection != blank %}
+            <a href="{{ collection.url }}"
+               class="group relative block {{ aspect_ratio }} rounded-xl overflow-hidden bg-background"
+               {{ block.shopify_attributes }}>
+
+              {% comment %} Collection Image {% endcomment %}
+              {% if collection.featured_image != blank %}
+                <img
+                  src="{{ collection.featured_image | image_url: width: 600 }}"
+                  srcset="{{ collection.featured_image | image_url: width: 400 }} 400w,
+                          {{ collection.featured_image | image_url: width: 600 }} 600w,
+                          {{ collection.featured_image | image_url: width: 800 }} 800w"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  alt="{{ collection.title }}"
+                  width="{{ collection.featured_image.width }}"
+                  height="{{ collection.featured_image.height }}"
+                  class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                >
+              {% else %}
+                <div class="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent-soft"></div>
+              {% endif %}
+
+              {% comment %} Overlay {% endcomment %}
+              <div class="absolute inset-0 bg-gradient-to-t from-text/60 via-text/20 to-transparent"></div>
+
+              {% comment %} Content {% endcomment %}
+              <div class="absolute inset-0 flex flex-col justify-end p-4 lg:p-6">
+                <h3 class="text-lg lg:text-xl font-semibold text-white mb-1">
+                  {{ collection.title }}
+                </h3>
+                <p class="text-white/80 text-sm">
+                  {{ collection.products_count }} {{ 'collection.products' | t }}
+                </p>
+              </div>
+
+              {% comment %} Hover Arrow {% endcomment %}
+              <div class="absolute top-4 right-4 lg:top-6 lg:right-6 w-8 h-8 lg:w-10 lg:h-10 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {% render 'icon-arrow-right', class: 'w-4 h-4 lg:w-5 lg:h-5 text-text' %}
+              </div>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Kollektionen Liste",
+  "class": "section-collection-list",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Inhalt"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Untertitel",
+      "default": "Kollektionen"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Nach Kategorie stoebern"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "collections_per_row",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3,
+      "label": "Kollektionen pro Reihe"
+    },
+    {
+      "type": "select",
+      "id": "aspect_ratio",
+      "label": "Seitenverhaeltnis",
+      "options": [
+        { "value": "aspect-square", "label": "Quadratisch (1:1)" },
+        { "value": "aspect-[4/3]", "label": "Querformat (4:3)" },
+        { "value": "aspect-video", "label": "Breit (16:9)" }
+      ],
+      "default": "aspect-[4/3]"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Kollektion",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Kollektion"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kollektionen Liste",
+      "category": "Collection",
+      "blocks": [
+        { "type": "collection" },
+        { "type": "collection" },
+        { "type": "collection" }
+      ]
+    }
+  ]
+}
+{% endschema %}

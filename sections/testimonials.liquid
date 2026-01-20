@@ -1,0 +1,141 @@
+{% comment %}
+  Testimonials Section - Converted from WooCommerce front-page.php Testimonials Section
+{% endcomment %}
+
+<section class="section">
+  <div class="container mx-auto px-4 lg:px-8">
+
+    {% comment %} Section Header {% endcomment %}
+    <div class="section-header">
+      <span class="inline-block text-sm font-medium text-primary uppercase tracking-wider mb-3">
+        {{ section.settings.subtitle }}
+      </span>
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+    </div>
+
+    {% comment %} Testimonials Grid {% endcomment %}
+    <div class="grid md:grid-cols-3 gap-8">
+      {% for block in section.blocks %}
+        <div class="bg-background rounded-xl p-8 shadow-sm" {{ block.shopify_attributes }}>
+
+          {% comment %} Quote Icon {% endcomment %}
+          <svg class="w-10 h-10 text-primary/20 mb-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+          </svg>
+
+          <p class="text-text-muted mb-6 leading-relaxed">
+            "{{ block.settings.text }}"
+          </p>
+
+          <div class="flex items-center">
+            {% if block.settings.avatar != blank %}
+              <img
+                src="{{ block.settings.avatar | image_url: width: 80 }}"
+                alt="{{ block.settings.author }}"
+                width="40"
+                height="40"
+                class="w-10 h-10 rounded-full object-cover mr-3"
+                loading="lazy"
+              >
+            {% else %}
+              <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                <span class="text-sm font-medium text-primary">
+                  {{ block.settings.author | slice: 0 }}
+                </span>
+              </div>
+            {% endif %}
+            <div>
+              <p class="font-medium text-sm">{{ block.settings.author }}</p>
+              <p class="text-xs text-text-muted">{{ block.settings.location }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Kundenstimmen",
+  "class": "section-testimonials",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Untertitel",
+      "default": "Kundenstimmen"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Was unsere Kunden sagen"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Kundenstimme",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Foto (optional)"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Die Lampe ist noch schoener als auf den Bildern. Die Verarbeitung ist erstklassig und das Licht schafft eine wunderbare Atmosphaere."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Name",
+          "default": "Maria S."
+        },
+        {
+          "type": "text",
+          "id": "location",
+          "label": "Ort/Rolle",
+          "default": "Hamburg"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kundenstimmen",
+      "category": "Content",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "text": "Die Lampe ist noch schoener als auf den Bildern. Die Verarbeitung ist erstklassig und das Licht schafft eine wunderbare Atmosphaere.",
+            "author": "Maria S.",
+            "location": "Hamburg"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "text": "Endlich eine Lampe, die nicht von der Stange ist. Der Kundenservice war super und die Lieferung sehr schnell.",
+            "author": "Thomas K.",
+            "location": "Muenchen"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "text": "Wir haben schon die dritte Lampe bestellt. Absolute Lieblingsmarke fuer alle, die das Besondere suchen.",
+            "author": "Anna & Peter",
+            "location": "Berlin"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

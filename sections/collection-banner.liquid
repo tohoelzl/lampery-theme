@@ -1,0 +1,403 @@
+{% comment %}
+  Collection Banner Section - High-End Design
+  Features: Full-width hero, overlay, breadcrumbs, animated elements
+{% endcomment %}
+
+{%- liquid
+  assign has_image = false
+  if section.settings.show_collection_image and collection.image
+    assign has_image = true
+  endif
+  assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0
+-%}
+
+<section class="collection-banner{% if has_image %} collection-banner--has-image{% endif %}">
+
+  {% comment %} Background Image {% endcomment %}
+  {% if has_image %}
+    <div class="collection-banner__media">
+      <img
+        src="{{ collection.image | image_url: width: 1920 }}"
+        srcset="{{ collection.image | image_url: width: 800 }} 800w,
+                {{ collection.image | image_url: width: 1200 }} 1200w,
+                {{ collection.image | image_url: width: 1600 }} 1600w,
+                {{ collection.image | image_url: width: 1920 }} 1920w"
+        sizes="100vw"
+        alt="{{ collection.image.alt | default: collection.title | escape }}"
+        width="{{ collection.image.width }}"
+        height="{{ collection.image.height }}"
+        class="collection-banner__image"
+        loading="eager"
+        fetchpriority="high"
+      >
+      <div class="collection-banner__overlay" style="--overlay-opacity: {{ overlay_opacity }};"></div>
+    </div>
+  {% endif %}
+
+  <div class="collection-banner__content">
+    <div class="container mx-auto px-4 lg:px-8">
+
+      {% comment %} Breadcrumbs {% endcomment %}
+      {% if section.settings.show_breadcrumbs %}
+        <nav class="collection-banner__breadcrumbs" aria-label="Breadcrumb">
+          <ol class="flex items-center gap-2 text-sm">
+            <li>
+              <a href="{{ routes.root_url }}" class="collection-banner__breadcrumb-link">
+                {{ 'general.breadcrumbs.home' | t | default: 'Home' }}
+              </a>
+            </li>
+            <li class="collection-banner__breadcrumb-separator" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </li>
+            <li>
+              <span class="collection-banner__breadcrumb-current" aria-current="page">
+                {{ collection.title }}
+              </span>
+            </li>
+          </ol>
+        </nav>
+      {% endif %}
+
+      {% comment %} Collection Title {% endcomment %}
+      <h1 class="collection-banner__title">
+        {{ collection.title }}
+      </h1>
+
+      {% comment %} Collection Description {% endcomment %}
+      {% if section.settings.show_collection_description and collection.description != blank %}
+        <div class="collection-banner__description">
+          {{ collection.description }}
+        </div>
+      {% endif %}
+
+      {% comment %} Product Count {% endcomment %}
+      {% if section.settings.show_product_count %}
+        <p class="collection-banner__count">
+          {{ collection.products_count }} {% if collection.products_count == 1 %}Produkt{% else %}Produkte{% endif %}
+        </p>
+      {% endif %}
+
+    </div>
+  </div>
+
+</section>
+
+<style>
+  .collection-banner {
+    position: relative;
+    display: flex;
+    align-items: {{ section.settings.content_position }};
+    background-color: var(--color-background);
+    overflow: hidden;
+  }
+
+  .collection-banner--has-image {
+    min-height: {{ section.settings.banner_height_mobile }}px;
+    background-color: var(--color-background-alt);
+  }
+
+  @media (min-width: 1024px) {
+    .collection-banner--has-image {
+      min-height: {{ section.settings.banner_height_desktop }}px;
+    }
+  }
+
+  /* Media (Background Image) */
+  .collection-banner__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .collection-banner__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: {{ section.settings.image_position }};
+  }
+
+  .collection-banner__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to {{ section.settings.gradient_direction }},
+      rgba(0, 0, 0, calc(var(--overlay-opacity) + 0.2)) 0%,
+      rgba(0, 0, 0, var(--overlay-opacity)) 100%
+    );
+  }
+
+  /* Content */
+  .collection-banner__content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 0.75rem 0;
+    text-align: {{ section.settings.text_alignment }};
+  }
+
+  .collection-banner--has-image .collection-banner__content {
+    padding: 3rem 0;
+  }
+
+  @media (min-width: 1024px) {
+    .collection-banner__content {
+      padding: 1rem 0;
+    }
+
+    .collection-banner--has-image .collection-banner__content {
+      padding: 4rem 0;
+    }
+  }
+
+  /* Breadcrumbs */
+  .collection-banner__breadcrumbs {
+    margin-bottom: 0.75rem;
+  }
+
+  .collection-banner--has-image .collection-banner__breadcrumbs {
+    margin-bottom: 1.5rem;
+  }
+
+  .collection-banner__breadcrumbs ol {
+    justify-content: {{ section.settings.text_alignment }};
+  }
+
+  .collection-banner--has-image .collection-banner__breadcrumb-link {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .collection-banner--has-image .collection-banner__breadcrumb-link:hover {
+    color: #ffffff;
+  }
+
+  .collection-banner:not(.collection-banner--has-image) .collection-banner__breadcrumb-link {
+    color: var(--color-text-muted);
+  }
+
+  .collection-banner:not(.collection-banner--has-image) .collection-banner__breadcrumb-link:hover {
+    color: var(--color-primary);
+  }
+
+  .collection-banner--has-image .collection-banner__breadcrumb-separator {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .collection-banner:not(.collection-banner--has-image) .collection-banner__breadcrumb-separator {
+    color: var(--color-text-muted);
+  }
+
+  .collection-banner--has-image .collection-banner__breadcrumb-current {
+    color: #ffffff;
+    font-weight: 500;
+  }
+
+  .collection-banner:not(.collection-banner--has-image) .collection-banner__breadcrumb-current {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  /* Title */
+  .collection-banner__title {
+    font-family: var(--font-heading-family);
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .collection-banner--has-image .collection-banner__title {
+    color: #ffffff;
+  }
+
+  .collection-banner:not(.collection-banner--has-image) .collection-banner__title {
+    color: var(--color-text);
+  }
+
+  @media (min-width: 768px) {
+    .collection-banner__title {
+      font-size: 2.75rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .collection-banner__title {
+      font-size: 3.5rem;
+    }
+  }
+
+  /* Description */
+  .collection-banner__description {
+    max-width: 600px;
+    margin-top: 1rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .collection-banner--has-image .collection-banner__description {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .collection-banner:not(.collection-banner--has-image) .collection-banner__description {
+    color: var(--color-text-muted);
+  }
+
+  .collection-banner__content[style*="text-align: center"] .collection-banner__description {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .collection-banner__content[style*="text-align: right"] .collection-banner__description {
+    margin-left: auto;
+  }
+
+  @media (min-width: 768px) {
+    .collection-banner__description {
+      font-size: 1.125rem;
+    }
+  }
+
+  /* Product Count */
+  .collection-banner__count {
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .collection-banner--has-image .collection-banner__count {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .collection-banner:not(.collection-banner--has-image) .collection-banner__count {
+    color: var(--color-text-muted);
+  }
+
+  /* No Image Variant */
+  .collection-banner:not(.collection-banner--has-image) {
+    background: linear-gradient(135deg, var(--color-background-alt) 0%, var(--color-background) 100%);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Kollektions-Banner",
+  "class": "section-collection-banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Inhalt"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "default": true,
+      "label": "Breadcrumbs anzeigen"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_description",
+      "default": true,
+      "label": "Beschreibung anzeigen"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_image",
+      "default": true,
+      "label": "Kollektionsbild anzeigen"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_count",
+      "default": true,
+      "label": "Produktanzahl anzeigen"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "banner_height_mobile",
+      "min": 200,
+      "max": 500,
+      "step": 20,
+      "default": 280,
+      "unit": "px",
+      "label": "Banner Hoehe (Mobil)"
+    },
+    {
+      "type": "range",
+      "id": "banner_height_desktop",
+      "min": 250,
+      "max": 600,
+      "step": 25,
+      "default": 350,
+      "unit": "px",
+      "label": "Banner Hoehe (Desktop)"
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Inhalt Position (vertikal)",
+      "options": [
+        { "value": "flex-start", "label": "Oben" },
+        { "value": "center", "label": "Mitte" },
+        { "value": "flex-end", "label": "Unten" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text Ausrichtung",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Zentriert" },
+        { "value": "right", "label": "Rechts" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Bild Einstellungen"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Bildposition",
+      "options": [
+        { "value": "top", "label": "Oben" },
+        { "value": "center", "label": "Mitte" },
+        { "value": "bottom", "label": "Unten" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "default": 40,
+      "unit": "%",
+      "label": "Overlay Deckkraft"
+    },
+    {
+      "type": "select",
+      "id": "gradient_direction",
+      "label": "Gradient Richtung",
+      "options": [
+        { "value": "bottom", "label": "Nach unten" },
+        { "value": "top", "label": "Nach oben" },
+        { "value": "right", "label": "Nach rechts" },
+        { "value": "left", "label": "Nach links" }
+      ],
+      "default": "bottom"
+    }
+  ]
+}
+{% endschema %}

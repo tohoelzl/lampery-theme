@@ -1,0 +1,573 @@
+{% comment %}
+  Collection Filters Snippet
+  Renders Shopify's native collection filters with accordion UI
+
+  Usage: {% render 'collection-filters', collection: collection %}
+{% endcomment %}
+
+{% if collection.filters.size > 0 %}
+  <div class="collection-filters">
+    {% for filter in collection.filters %}
+      <div class="filter-group" x-data="{ open: true }">
+        <button
+          type="button"
+          class="filter-group__header"
+          @click="open = !open"
+          :aria-expanded="open"
+        >
+          <span class="filter-group__title">{{ filter.label }}</span>
+          <svg
+            class="filter-group__icon"
+            :class="{ 'filter-group__icon--open': open }"
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+          >
+            <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div
+          class="filter-group__content"
+          x-show="open"
+          x-collapse
+        >
+          {% case filter.type %}
+            {% when 'list' %}
+              <ul class="filter-list">
+                {% for value in filter.values %}
+                  <li class="filter-list__item">
+                    <label class="filter-checkbox">
+                      <input
+                        type="checkbox"
+                        name="{{ value.param_name }}"
+                        value="{{ value.value }}"
+                        {% if value.active %}checked{% endif %}
+                        {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                        class="filter-checkbox__input"
+                        onchange="this.form.submit()"
+                      >
+                      <span class="filter-checkbox__box">
+                        <svg class="filter-checkbox__check" width="10" height="8" viewBox="0 0 10 8" fill="none">
+                          <path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </span>
+                      <span class="filter-checkbox__label">
+                        {{ value.label }}
+                        <span class="filter-checkbox__count">({{ value.count }})</span>
+                      </span>
+                    </label>
+                  </li>
+                {% endfor %}
+              </ul>
+
+            {% when 'boolean' %}
+              <ul class="filter-list">
+                {% for value in filter.values %}
+                  <li class="filter-list__item">
+                    <label class="filter-checkbox">
+                      <input
+                        type="checkbox"
+                        name="{{ value.param_name }}"
+                        value="{{ value.value }}"
+                        {% if value.active %}checked{% endif %}
+                        class="filter-checkbox__input"
+                        onchange="this.form.submit()"
+                      >
+                      <span class="filter-checkbox__box">
+                        <svg class="filter-checkbox__check" width="10" height="8" viewBox="0 0 10 8" fill="none">
+                          <path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </span>
+                      <span class="filter-checkbox__label">{{ value.label }}</span>
+                    </label>
+                  </li>
+                {% endfor %}
+              </ul>
+
+            {% when 'price_range' %}
+              <div class="filter-price-range" x-data="priceRange({{ filter.range_max | divided_by: 100.0 }}, {{ filter.min_value.value | default: 0 | divided_by: 100.0 }}, {{ filter.max_value.value | default: filter.range_max | divided_by: 100.0 }})">
+                <div class="filter-price-range__inputs">
+                  <div class="filter-price-range__field">
+                    <span class="filter-price-range__currency">{{ cart.currency.symbol }}</span>
+                    <input
+                      type="number"
+                      name="{{ filter.min_value.param_name }}"
+                      :value="minPrice"
+                      @change="updateMin($event.target.value)"
+                      min="0"
+                      :max="maxPrice"
+                      class="filter-price-range__input"
+                      placeholder="0"
+                    >
+                  </div>
+                  <span class="filter-price-range__separator">–</span>
+                  <div class="filter-price-range__field">
+                    <span class="filter-price-range__currency">{{ cart.currency.symbol }}</span>
+                    <input
+                      type="number"
+                      name="{{ filter.max_value.param_name }}"
+                      :value="maxPrice"
+                      @change="updateMax($event.target.value)"
+                      :min="minPrice"
+                      :max="rangeMax"
+                      class="filter-price-range__input"
+                      placeholder="{{ filter.range_max | divided_by: 100.0 | ceil }}"
+                    >
+                  </div>
+                </div>
+
+                <div class="filter-price-range__slider">
+                  <div class="filter-price-range__track"></div>
+                  <div
+                    class="filter-price-range__fill"
+                    :style="`left: ${(minPrice / rangeMax) * 100}%; right: ${100 - (maxPrice / rangeMax) * 100}%`"
+                  ></div>
+                  <input
+                    type="range"
+                    min="0"
+                    :max="rangeMax"
+                    :value="minPrice"
+                    @input="updateMin($event.target.value)"
+                    class="filter-price-range__thumb filter-price-range__thumb--min"
+                  >
+                  <input
+                    type="range"
+                    min="0"
+                    :max="rangeMax"
+                    :value="maxPrice"
+                    @input="updateMax($event.target.value)"
+                    class="filter-price-range__thumb filter-price-range__thumb--max"
+                  >
+                </div>
+
+                <button type="submit" class="filter-price-range__apply">
+                  Anwenden
+                </button>
+              </div>
+
+            {% when 'color' or 'color_list' %}
+              <ul class="filter-colors">
+                {% for value in filter.values %}
+                  <li class="filter-colors__item">
+                    <label class="filter-color" title="{{ value.label }}">
+                      <input
+                        type="checkbox"
+                        name="{{ value.param_name }}"
+                        value="{{ value.value }}"
+                        {% if value.active %}checked{% endif %}
+                        {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                        class="filter-color__input"
+                        onchange="this.form.submit()"
+                      >
+                      {% assign color_value = value.value | downcase %}
+                      {% assign swatch_color = color_value %}
+
+                      {% comment %} Common color mappings {% endcomment %}
+                      {% case color_value %}
+                        {% when 'weiss', 'white', 'weiß' %}
+                          {% assign swatch_color = '#ffffff' %}
+                        {% when 'schwarz', 'black' %}
+                          {% assign swatch_color = '#000000' %}
+                        {% when 'grau', 'gray', 'grey' %}
+                          {% assign swatch_color = '#808080' %}
+                        {% when 'rot', 'red' %}
+                          {% assign swatch_color = '#dc2626' %}
+                        {% when 'blau', 'blue' %}
+                          {% assign swatch_color = '#2563eb' %}
+                        {% when 'gruen', 'grün', 'green' %}
+                          {% assign swatch_color = '#16a34a' %}
+                        {% when 'gelb', 'yellow' %}
+                          {% assign swatch_color = '#eab308' %}
+                        {% when 'orange' %}
+                          {% assign swatch_color = '#ea580c' %}
+                        {% when 'rosa', 'pink' %}
+                          {% assign swatch_color = '#ec4899' %}
+                        {% when 'lila', 'purple', 'violett' %}
+                          {% assign swatch_color = '#9333ea' %}
+                        {% when 'braun', 'brown' %}
+                          {% assign swatch_color = '#78350f' %}
+                        {% when 'beige', 'creme', 'cream' %}
+                          {% assign swatch_color = '#d4b896' %}
+                        {% when 'gold' %}
+                          {% assign swatch_color = '#b8860b' %}
+                        {% when 'silber', 'silver' %}
+                          {% assign swatch_color = '#c0c0c0' %}
+                        {% when 'messing', 'brass' %}
+                          {% assign swatch_color = '#b5a642' %}
+                        {% when 'kupfer', 'copper' %}
+                          {% assign swatch_color = '#b87333' %}
+                        {% when 'natur', 'natural', 'holz', 'wood' %}
+                          {% assign swatch_color = '#deb887' %}
+                      {% endcase %}
+
+                      <span
+                        class="filter-color__swatch{% if color_value == 'weiss' or color_value == 'white' or color_value == 'weiß' %} filter-color__swatch--bordered{% endif %}"
+                        style="background-color: {{ swatch_color }};"
+                      ></span>
+                      <span class="filter-color__check">
+                        <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+                          <path d="M1 5L4 8L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </span>
+                    </label>
+                  </li>
+                {% endfor %}
+              </ul>
+
+          {% endcase %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<style>
+  /* Filter Groups */
+  .collection-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .filter-group {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .filter-group__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .filter-group__title {
+    font-weight: 500;
+    font-size: 0.9375rem;
+    color: var(--color-text);
+  }
+
+  .filter-group__icon {
+    color: var(--color-text-muted);
+    transition: transform 0.2s ease;
+  }
+
+  .filter-group__icon--open {
+    transform: rotate(180deg);
+  }
+
+  .filter-group__content {
+    padding-bottom: 1rem;
+  }
+
+  /* Checkbox Filter List */
+  .filter-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 250px;
+    overflow-y: auto;
+  }
+
+  .filter-list__item {
+    margin: 0;
+  }
+
+  .filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding: 0.25rem 0;
+  }
+
+  .filter-checkbox__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .filter-checkbox__box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-background);
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  .filter-checkbox__check {
+    opacity: 0;
+    color: white;
+    transition: opacity 0.15s ease;
+  }
+
+  .filter-checkbox__input:checked + .filter-checkbox__box {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .filter-checkbox__input:checked + .filter-checkbox__box .filter-checkbox__check {
+    opacity: 1;
+  }
+
+  .filter-checkbox__input:focus-visible + .filter-checkbox__box {
+    box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-primary);
+  }
+
+  .filter-checkbox__input:disabled + .filter-checkbox__box {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .filter-checkbox__label {
+    font-size: 0.875rem;
+    color: var(--color-text);
+    line-height: 1.4;
+  }
+
+  .filter-checkbox__count {
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+  }
+
+  .filter-checkbox__input:disabled ~ .filter-checkbox__label {
+    opacity: 0.4;
+  }
+
+  /* Price Range Filter */
+  .filter-price-range {
+    padding-top: 0.5rem;
+  }
+
+  .filter-price-range__inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .filter-price-range__field {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex: 1;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-background);
+  }
+
+  .filter-price-range__currency {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+
+  .filter-price-range__input {
+    width: 100%;
+    border: none;
+    background: none;
+    font-size: 0.875rem;
+    color: var(--color-text);
+    outline: none;
+    -moz-appearance: textfield;
+  }
+
+  .filter-price-range__input::-webkit-outer-spin-button,
+  .filter-price-range__input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .filter-price-range__separator {
+    color: var(--color-text-muted);
+  }
+
+  .filter-price-range__slider {
+    position: relative;
+    height: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .filter-price-range__track {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--color-border);
+    border-radius: 2px;
+    transform: translateY(-50%);
+  }
+
+  .filter-price-range__fill {
+    position: absolute;
+    top: 50%;
+    height: 4px;
+    background: var(--color-primary);
+    border-radius: 2px;
+    transform: translateY(-50%);
+  }
+
+  .filter-price-range__thumb {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    height: 20px;
+    background: none;
+    pointer-events: none;
+    -webkit-appearance: none;
+    transform: translateY(-50%);
+  }
+
+  .filter-price-range__thumb::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--color-background);
+    border: 2px solid var(--color-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: transform 0.15s ease;
+  }
+
+  .filter-price-range__thumb::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+  }
+
+  .filter-price-range__thumb::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--color-background);
+    border: 2px solid var(--color-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  .filter-price-range__apply {
+    width: 100%;
+    padding: 0.625rem 1rem;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .filter-price-range__apply:hover {
+    background: var(--color-text);
+  }
+
+  /* Color Swatches Filter */
+  .filter-colors {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .filter-colors__item {
+    margin: 0;
+  }
+
+  .filter-color {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+
+  .filter-color__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .filter-color__swatch {
+    display: block;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .filter-color__swatch--bordered {
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+
+  .filter-color__check {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+  }
+
+  .filter-color__input:checked ~ .filter-color__swatch {
+    box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-primary);
+  }
+
+  .filter-color__input:checked ~ .filter-color__check {
+    opacity: 1;
+  }
+
+  .filter-color__input:focus-visible ~ .filter-color__swatch {
+    box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-primary);
+  }
+
+  .filter-color__input:disabled ~ .filter-color__swatch {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .filter-color:hover .filter-color__swatch {
+    transform: scale(1.1);
+  }
+</style>
+
+<script>
+  // Price Range Alpine.js Component
+  function priceRange(rangeMax, initialMin, initialMax) {
+    return {
+      rangeMax: rangeMax,
+      minPrice: initialMin || 0,
+      maxPrice: initialMax || rangeMax,
+
+      updateMin(value) {
+        const numValue = parseFloat(value) || 0;
+        this.minPrice = Math.min(numValue, this.maxPrice);
+      },
+
+      updateMax(value) {
+        const numValue = parseFloat(value) || this.rangeMax;
+        this.maxPrice = Math.max(numValue, this.minPrice);
+      }
+    }
+  }
+</script>

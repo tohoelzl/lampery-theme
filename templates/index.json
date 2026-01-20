@@ -1,0 +1,147 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "subtitle": "Handcrafted with Love",
+        "title": "Licht, das Raeume verwandelt",
+        "description": "Entdecke unsere handgefertigten Lampen und Wohnaccessoires - designed in Germany, made with passion.",
+        "button_label": "Shop entdecken",
+        "button_link": "shopify://collections/all",
+        "button_2_label": "Mehr erfahren",
+        "button_2_link": "#featured",
+        "background_type": "gradient",
+        "show_scroll_indicator": true
+      }
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "settings": {
+        "subtitle": "Unsere Favoriten",
+        "title": "Entdecke unsere beliebtesten handgefertigten Stuecke",
+        "products_to_show": 8,
+        "columns": 4,
+        "show_view_all": true,
+        "view_all_text": "Alle Produkte ansehen"
+      }
+    },
+    "collection_list": {
+      "type": "collection-list",
+      "settings": {
+        "subtitle": "Kollektionen",
+        "title": "Nach Kategorie stoebern",
+        "collections_per_row": 3,
+        "aspect_ratio": "aspect-[4/3]"
+      },
+      "blocks": {
+        "collection_1": {
+          "type": "collection"
+        },
+        "collection_2": {
+          "type": "collection"
+        },
+        "collection_3": {
+          "type": "collection"
+        }
+      },
+      "block_order": ["collection_1", "collection_2", "collection_3"]
+    },
+    "about": {
+      "type": "about",
+      "settings": {
+        "badge_number": "10+",
+        "badge_text": "Jahre Erfahrung",
+        "subtitle": "Unsere Geschichte",
+        "title": "Mit Liebe zum Detail",
+        "text": "<p>Jede Lampe erzaehlt eine Geschichte. Wir verbinden traditionelles Handwerk mit zeitlosem Design, um Lichtobjekte zu schaffen, die Raeume in Wohlfuehlorte verwandeln.</p><p>Unsere Materialien stammen aus nachhaltigen Quellen, und jedes Stueck wird in unserer Werkstatt von Hand gefertigt.</p>"
+      },
+      "blocks": {
+        "feature_1": {
+          "type": "feature",
+          "settings": {
+            "icon": "icon-hand",
+            "title": "Handgefertigt",
+            "text": "Jedes Stueck ein Unikat"
+          }
+        },
+        "feature_2": {
+          "type": "feature",
+          "settings": {
+            "icon": "icon-globe",
+            "title": "Nachhaltig",
+            "text": "Verantwortungsvolle Materialien"
+          }
+        },
+        "feature_3": {
+          "type": "feature",
+          "settings": {
+            "icon": "icon-clock",
+            "title": "Langlebig",
+            "text": "Qualitaet fuer Generationen"
+          }
+        },
+        "feature_4": {
+          "type": "feature",
+          "settings": {
+            "icon": "icon-heart",
+            "title": "Made in Germany",
+            "text": "Designed & gefertigt"
+          }
+        }
+      },
+      "block_order": ["feature_1", "feature_2", "feature_3", "feature_4"]
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {
+        "subtitle": "Kundenstimmen",
+        "title": "Was unsere Kunden sagen"
+      },
+      "blocks": {
+        "testimonial_1": {
+          "type": "testimonial",
+          "settings": {
+            "text": "Die Lampe ist noch schoener als auf den Bildern. Die Verarbeitung ist erstklassig und das Licht schafft eine wunderbare Atmosphaere.",
+            "author": "Maria S.",
+            "location": "Hamburg"
+          }
+        },
+        "testimonial_2": {
+          "type": "testimonial",
+          "settings": {
+            "text": "Endlich eine Lampe, die nicht von der Stange ist. Der Kundenservice war super und die Lieferung sehr schnell.",
+            "author": "Thomas K.",
+            "location": "Muenchen"
+          }
+        },
+        "testimonial_3": {
+          "type": "testimonial",
+          "settings": {
+            "text": "Wir haben schon die dritte Lampe bestellt. Absolute Lieblingsmarke fuer alle, die das Besondere suchen.",
+            "author": "Anna & Peter",
+            "location": "Berlin"
+          }
+        }
+      },
+      "block_order": ["testimonial_1", "testimonial_2", "testimonial_3"]
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "title": "Bleib auf dem Laufenden",
+        "description": "Melde dich fuer unseren Newsletter an und erhalte exklusive Angebote, neue Produkte und Inspirationen direkt in dein Postfach.",
+        "placeholder": "Deine E-Mail-Adresse",
+        "button_text": "Anmelden",
+        "privacy_text": "Mit der Anmeldung stimmst du unserer Datenschutzerklaerung zu."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "featured_collection",
+    "collection_list",
+    "about",
+    "testimonials",
+    "newsletter"
+  ]
+}

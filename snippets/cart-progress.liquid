@@ -1,0 +1,153 @@
+{% comment %}
+  Cart Progress Bar Snippet - Configurable number of steps
+
+  Layout Logic:
+  - Progress bar goes from 0€ (left) to max threshold (right)
+  - Milestones are positioned at their percentage on the bar
+  - First milestone is NOT at 0, but at its threshold percentage
+  - Last milestone is always at 100% (right edge)
+{% endcomment %}
+
+{%- liquid
+  assign steps_count = settings.cart_progress_steps | default: '3' | plus: 0
+
+  assign cart_total_cents = cart.total_price
+  assign cart_total = cart_total_cents | divided_by: 100.0
+
+  assign threshold_1 = settings.cart_reward_1_threshold | default: 30
+  assign threshold_2 = settings.cart_reward_2_threshold | default: 60
+  assign threshold_3 = settings.cart_reward_3_threshold | default: 100
+
+  if steps_count == 1
+    assign max_threshold = threshold_1
+  elsif steps_count == 2
+    assign max_threshold = threshold_2
+  else
+    assign max_threshold = threshold_3
+  endif
+
+  if max_threshold > 0
+    assign progress_percent = cart_total | divided_by: max_threshold | times: 100.0
+    if progress_percent > 100
+      assign progress_percent = 100
+    endif
+  else
+    assign progress_percent = 0
+  endif
+
+  assign remaining_1 = threshold_1 | minus: cart_total | at_least: 0 | round
+  assign remaining_2 = threshold_2 | minus: cart_total | at_least: 0 | round
+  assign remaining_3 = threshold_3 | minus: cart_total | at_least: 0 | round
+
+  comment
+    Calculate milestone positions as percentages of max_threshold
+    Each milestone is positioned at (threshold / max_threshold * 100)%
+  endcomment
+  if max_threshold > 0
+    assign pos_1 = threshold_1 | times: 100.0 | divided_by: max_threshold
+    assign pos_2 = threshold_2 | times: 100.0 | divided_by: max_threshold
+    assign pos_3 = 100
+  else
+    assign pos_1 = 33
+    assign pos_2 = 66
+    assign pos_3 = 100
+  endif
+-%}
+
+<div class="cart-progress px-6 py-4 border-b border-border" id="cart-progress-bar" data-cart-total="{{ cart_total }}">
+
+  {% comment %} Progress Message {% endcomment %}
+  <div class="text-sm mb-4" style="text-align: left;">
+    {% if steps_count == 1 %}
+      {% if cart_total >= threshold_1 %}
+        <span class="text-primary font-medium">🎉 {{ settings.cart_reward_1_text }} freigeschaltet!</span>
+      {% else %}
+        <span>Noch <strong>{{ remaining_1 }}€</strong> bis {{ settings.cart_reward_1_text }}</span>
+      {% endif %}
+    {% elsif steps_count == 2 %}
+      {% if cart_total >= threshold_2 %}
+        <span class="text-primary font-medium">🎉 Alle Belohnungen freigeschaltet!</span>
+      {% elsif cart_total >= threshold_1 %}
+        <span>Noch <strong>{{ remaining_2 }}€</strong> bis {{ settings.cart_reward_2_text }}</span>
+      {% else %}
+        <span>Noch <strong>{{ remaining_1 }}€</strong> bis {{ settings.cart_reward_1_text }}</span>
+      {% endif %}
+    {% else %}
+      {% if cart_total >= threshold_3 %}
+        <span class="text-primary font-medium">🎉 Alle Belohnungen freigeschaltet!</span>
+      {% elsif cart_total >= threshold_2 %}
+        <span>Noch <strong>{{ remaining_3 }}€</strong> bis {{ settings.cart_reward_3_text }}</span>
+      {% elsif cart_total >= threshold_1 %}
+        <span>Noch <strong>{{ remaining_2 }}€</strong> bis {{ settings.cart_reward_2_text }}</span>
+      {% else %}
+        <span>Noch <strong>{{ remaining_1 }}€</strong> bis {{ settings.cart_reward_1_text }}</span>
+      {% endif %}
+    {% endif %}
+  </div>
+
+  {% comment %} Progress Bar with Milestones {% endcomment %}
+  <div class="progress-bar-container relative" style="padding-bottom: 2.5rem;">
+
+    {% comment %} Track - Gray line always visible {% endcomment %}
+    <div class="progress-track" style="height: 6px; background-color: var(--color-border); border-radius: 9999px; position: relative;">
+      {% comment %} Fill - Colored progress on top {% endcomment %}
+      <div
+        class="progress-fill"
+        style="position: absolute; top: 0; bottom: 0; left: 0; width: {{ progress_percent }}%; background-color: var(--color-primary); border-radius: 9999px; transition: width 0.5s ease;"
+        id="cart-progress-fill"
+      ></div>
+    </div>
+
+    {% comment %}
+      Milestones - Absolutely positioned on the bar
+      Each milestone sits at its percentage position
+    {% endcomment %}
+
+    {% comment %} Milestone 1 {% endcomment %}
+    {% if steps_count >= 1 %}
+      <div class="milestone absolute" style="left: {{ pos_1 }}%; transform: translateX(-50%); top: -7px;">
+        <div style="width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; {% if cart_total >= threshold_1 %}background-color: var(--color-primary); border: 2px solid var(--color-primary);{% else %}background-color: var(--color-border); border: 2px solid var(--color-border);{% endif %}">
+          {% if cart_total >= threshold_1 %}
+            <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          {% endif %}
+        </div>
+        <div class="text-center mt-2 whitespace-nowrap">
+          <div class="text-xs font-medium {% if cart_total >= threshold_1 %}text-primary{% else %}text-text-muted{% endif %}">{{ threshold_1 }}€</div>
+          <div class="text-xs {% if cart_total >= threshold_1 %}text-primary{% else %}text-text-muted{% endif %} max-w-16 truncate">{{ settings.cart_reward_1_text }}</div>
+        </div>
+      </div>
+    {% endif %}
+
+    {% comment %} Milestone 2 {% endcomment %}
+    {% if steps_count >= 2 %}
+      <div class="milestone absolute" style="left: {{ pos_2 }}%; transform: translateX(-50%); top: -7px;">
+        <div style="width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; {% if cart_total >= threshold_2 %}background-color: var(--color-primary); border: 2px solid var(--color-primary);{% else %}background-color: var(--color-border); border: 2px solid var(--color-border);{% endif %}">
+          {% if cart_total >= threshold_2 %}
+            <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          {% endif %}
+        </div>
+        <div class="text-center mt-2 whitespace-nowrap">
+          <div class="text-xs font-medium {% if cart_total >= threshold_2 %}text-primary{% else %}text-text-muted{% endif %}">{{ threshold_2 }}€</div>
+          <div class="text-xs {% if cart_total >= threshold_2 %}text-primary{% else %}text-text-muted{% endif %} max-w-16 truncate">{{ settings.cart_reward_2_text }}</div>
+        </div>
+      </div>
+    {% endif %}
+
+    {% comment %} Milestone 3 (always at 100% when 3 steps) {% endcomment %}
+    {% if steps_count >= 3 %}
+      <div class="milestone absolute" style="left: 100%; transform: translateX(-50%); top: -7px;">
+        <div style="width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; {% if cart_total >= threshold_3 %}background-color: var(--color-primary); border: 2px solid var(--color-primary);{% else %}background-color: var(--color-border); border: 2px solid var(--color-border);{% endif %}">
+          {% if cart_total >= threshold_3 %}
+            <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          {% endif %}
+        </div>
+        <div class="text-center mt-2 whitespace-nowrap">
+          <div class="text-xs font-medium {% if cart_total >= threshold_3 %}text-primary{% else %}text-text-muted{% endif %}">{{ threshold_3 }}€</div>
+          <div class="text-xs {% if cart_total >= threshold_3 %}text-primary{% else %}text-text-muted{% endif %} max-w-16 truncate">{{ settings.cart_reward_3_text }}</div>
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+
+</div>

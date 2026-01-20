@@ -1,0 +1,119 @@
+{
+  "general": {
+    "scroll": "Scroll",
+    "back_to_top": "Back to top",
+    "view_all": "View all",
+    "breadcrumbs": {
+      "home": "Home"
+    },
+    "pagination": {
+      "label": "Page navigation",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "404": {
+      "title": "Page not found",
+      "description": "The requested page does not exist or has been moved.",
+      "back_home": "Back to home"
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "main_navigation": "Main navigation",
+    "toggle_menu": "Toggle menu",
+    "search": "Search",
+    "account": "My account",
+    "cart": "Cart",
+    "close": "Close"
+  },
+  "navigation": {
+    "menu": "Menu"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search products...",
+    "submit": "Search",
+    "popular": "Popular searches",
+    "results_count": "{{ count }} results for \"{{ terms }}\"",
+    "no_results": "No results for \"{{ terms }}\""
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty",
+    "empty_title": "Your cart is empty",
+    "empty_description": "Discover our products and add them to your cart.",
+    "continue_shopping": "Continue shopping",
+    "checkout": "Checkout",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "shipping": "Shipping",
+    "shipping_at_checkout": "Calculated at checkout",
+    "total": "Total",
+    "taxes_included": "Tax included",
+    "summary": "Summary",
+    "decrease_quantity": "Decrease quantity",
+    "increase_quantity": "Increase quantity",
+    "remove": "Remove",
+    "reward_progress": "{{ amount }} EUR until {{ reward }}",
+    "all_rewards_unlocked": "All rewards unlocked!",
+    "general": {
+      "error": "An error occurred. Please try again.",
+      "quantity_error": "Only {{ quantity }} items available."
+    }
+  },
+  "products": {
+    "product": {
+      "on_sale": "Sale",
+      "quick_view": "Quick view",
+      "add_to_wishlist": "Add to wishlist",
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out",
+      "quantity": "Quantity",
+      "share": "Share",
+      "price_vat": "Tax included",
+      "free_shipping": "Free shipping",
+      "secure_payment": "Secure payment",
+      "gift_wrapping": "Gift wrapping"
+    }
+  },
+  "collections": {
+    "general": {
+      "title": "Collections",
+      "collections_count": "collections",
+      "products_count": "{{ count }} products",
+      "no_matches": "No products found",
+      "no_matches_text": "Try different filter options."
+    },
+    "filtering": {
+      "filter": "Filter",
+      "clear_all": "Clear all",
+      "apply": "Apply"
+    },
+    "sorting": {
+      "title": "Sort"
+    }
+  },
+  "collection": {
+    "products": "products"
+  },
+  "newsletter": {
+    "success": "Thank you for subscribing!"
+  },
+  "customer": {
+    "account": {
+      "title": "My Account"
+    }
+  },
+  "localization": {
+    "language": "Language"
+  },
+  "social": {
+    "follow_instagram": "Follow on Instagram",
+    "follow_tiktok": "Follow on TikTok",
+    "follow_facebook": "Follow on Facebook"
+  },
+  "footer": {
+    "copyright": "All rights reserved.",
+    "secure_payment": "Secure payment"
+  }
+}

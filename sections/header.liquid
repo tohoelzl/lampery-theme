@@ -1,0 +1,1024 @@
+{% comment %}
+  Header Section
+  Features: Announcement bar, Logo, Navigation (Normal oder Mega Menu), Search, Account, Cart
+{% endcomment %}
+
+{%- liquid
+  assign mega_menu_enabled = false
+  if section.settings.navigation_type == 'mega'
+    assign mega_menu_enabled = true
+  endif
+-%}
+
+<header class="site-header {% if section.settings.logo_overflow %}header--logo-overflow{% endif %} sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border"
+        style="--header-height: {{ section.settings.header_height }}px; --logo-overflow: {{ section.settings.logo_overflow_amount }}px; --logo-top-padding: {{ section.settings.logo_top_padding }}px;"
+        x-data="{ scrolled: false, megaMenu: null, megaMenuTimeout: null }"
+        @scroll.window="scrolled = window.scrollY > 20"
+        @keydown.escape.window="megaMenu = null">
+
+  {% comment %} Announcement Bar {% endcomment %}
+  {% if section.settings.show_announcement and section.settings.announcement_text != blank %}
+    <div class="announcement-bar bg-primary text-white text-center py-2 px-4 text-sm">
+      {% if section.settings.announcement_link != blank %}
+        <a href="{{ section.settings.announcement_link }}" class="hover:underline">
+          {{ section.settings.announcement_text }}
+        </a>
+      {% else %}
+        {{ section.settings.announcement_text }}
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% comment %} Main Header {% endcomment %}
+  <div class="header-container">
+    <nav role="navigation" aria-label="{{ 'accessibility.main_navigation' | t }}">
+
+      {% comment %} Mobile Menu Toggle {% endcomment %}
+      <button
+        class="lg:hidden p-2 -ml-2 text-text hover:text-primary transition-colors"
+        @click="mobileMenuOpen = !mobileMenuOpen"
+        :aria-expanded="mobileMenuOpen"
+        aria-controls="mobile-menu"
+        aria-label="{{ 'accessibility.toggle_menu' | t }}"
+      >
+        <span x-show="!mobileMenuOpen">
+          {% render 'icon-menu' %}
+        </span>
+        <span x-show="mobileMenuOpen" x-cloak>
+          {% render 'icon-close' %}
+        </span>
+      </button>
+
+      {% comment %} Logo {% endcomment %}
+      <div class="site-branding">
+        <a href="{{ routes.root_url }}" class="flex items-center">
+          {% if section.settings.logo != blank %}
+            <img
+              src="{{ section.settings.logo | image_url: width: 200 }}"
+              alt="{{ shop.name }}"
+              width="{{ section.settings.logo_width }}"
+              height="auto"
+              loading="eager"
+            >
+          {% else %}
+            <span class="text-xl lg:text-2xl font-semibold tracking-tight text-text hover:text-primary transition-colors">
+              {{ shop.name }}
+            </span>
+          {% endif %}
+        </a>
+      </div>
+
+      {% comment %} Rechte Seite: Navigation + Actions {% endcomment %}
+      <div class="header-right">
+
+        {% if mega_menu_enabled %}
+          {%- comment -%} ========== MEGA MENU ========== {%- endcomment -%}
+          <div class="header-mega-menu hidden lg:block">
+            <ul class="flex items-center" role="menubar">
+              {% for link in linklists[section.settings.menu].links %}
+                <li
+                  class="mega-menu__item"
+                  role="none"
+                  @mouseenter="clearTimeout(megaMenuTimeout); megaMenuTimeout = setTimeout(() => megaMenu = {{ forloop.index0 }}, 80)"
+                  @mouseleave="megaMenuTimeout = setTimeout(() => megaMenu = null, 150)"
+                >
+                  {% if link.links.size > 0 %}
+                    <a
+                      href="{{ link.url }}"
+                      class="mega-menu__trigger"
+                      :class="{ 'is-active': megaMenu === {{ forloop.index0 }} }"
+                      :aria-expanded="megaMenu === {{ forloop.index0 }}"
+                      aria-haspopup="true"
+                      role="menuitem"
+                    >
+                      <span>{{ link.title }}</span>
+                      <svg class="mega-menu__chevron" :class="{ 'is-open': megaMenu === {{ forloop.index0 }} }" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                        <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </a>
+
+                    {%- comment -%} Mega Dropdown Panel {%- endcomment -%}
+                    <div
+                      class="mega-menu__dropdown"
+                      x-show="megaMenu === {{ forloop.index0 }}"
+                      x-transition:enter="transition ease-out duration-200"
+                      x-transition:enter-start="opacity-0 -translate-y-1"
+                      x-transition:enter-end="opacity-100 translate-y-0"
+                      x-transition:leave="transition ease-in duration-150"
+                      x-transition:leave-start="opacity-100 translate-y-0"
+                      x-transition:leave-end="opacity-0 -translate-y-1"
+                      x-cloak
+                      @mouseenter="clearTimeout(megaMenuTimeout)"
+                      @mouseleave="megaMenuTimeout = setTimeout(() => megaMenu = null, 150)"
+                      role="menu"
+                    >
+                      <div class="mega-menu__dropdown-inner">
+                        <div class="mega-menu__grid">
+
+                          {%- comment -%} Links Column {%- endcomment -%}
+                          <div class="mega-menu__links">
+                            <span class="mega-menu__links-title">{{ link.title }}</span>
+                            <ul class="mega-menu__links-list" role="menu">
+                              {% for child_link in link.links %}
+                                <li role="none">
+                                  <a
+                                    href="{{ child_link.url }}"
+                                    class="mega-menu__link"
+                                    role="menuitem"
+                                    {% if child_link.current %}aria-current="page"{% endif %}
+                                  >
+                                    {{ child_link.title }}
+                                  </a>
+                                  {% if child_link.links.size > 0 %}
+                                    <ul class="mega-menu__sublinks">
+                                      {% for grandchild_link in child_link.links %}
+                                        <li>
+                                          <a href="{{ grandchild_link.url }}" class="mega-menu__sublink">
+                                            {{ grandchild_link.title }}
+                                          </a>
+                                        </li>
+                                      {% endfor %}
+                                    </ul>
+                                  {% endif %}
+                                </li>
+                              {% endfor %}
+                            </ul>
+                            {% if section.settings.show_view_all %}
+                              <a href="{{ link.url }}" class="mega-menu__view-all">
+                                {{ 'general.view_all' | t | default: 'Alle anzeigen' }}
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                  <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                              </a>
+                            {% endif %}
+                          </div>
+
+                          {%- comment -%} Promotions Column {%- endcomment -%}
+                          {%- assign current_menu_title = link.title -%}
+                          {%- assign has_promos = false -%}
+                          {%- for block in section.blocks -%}
+                            {%- if block.type == 'promotion' and block.settings.menu_handle == current_menu_title -%}
+                              {%- assign has_promos = true -%}
+                              {%- break -%}
+                            {%- endif -%}
+                          {%- endfor -%}
+
+                          {%- if has_promos -%}
+                            <div class="mega-menu__promos">
+                              {%- for block in section.blocks -%}
+                                {%- if block.type == 'promotion' and block.settings.menu_handle == current_menu_title -%}
+                                  {%- assign layout = block.settings.layout_type | default: 'image_text' -%}
+                                  {%- assign ratio = block.settings.image_ratio | default: 'landscape' -%}
+                                  {%- assign overlay = block.settings.overlay_text -%}
+                                  {%- assign rounded = block.settings.rounded_corners -%}
+
+                                  {%- comment -%} Featured Product Layout {%- endcomment -%}
+                                  {%- if layout == 'featured_product' and block.settings.product != blank -%}
+                                    {%- assign promo_product = block.settings.product -%}
+                                    <a
+                                      href="{{ promo_product.url }}"
+                                      class="mega-menu__promo mega-menu__promo--product mega-menu__promo--ratio-{{ ratio }}{% if rounded %} mega-menu__promo--rounded{% endif %}"
+                                      {{ block.shopify_attributes }}
+                                    >
+                                      <div class="mega-menu__promo-image">
+                                        {%- if promo_product.featured_image != blank -%}
+                                          {{ promo_product.featured_image | image_url: width: 800 | image_tag:
+                                            loading: 'lazy',
+                                            widths: '300, 400, 600, 800',
+                                            sizes: '(min-width: 1024px) 300px, 200px'
+                                          }}
+                                        {%- endif -%}
+                                      </div>
+                                      <div class="mega-menu__promo-content">
+                                        <span class="mega-menu__promo-title">{{ promo_product.title }}</span>
+                                        <span class="mega-menu__promo-price">{{ promo_product.price | money }}</span>
+                                      </div>
+                                    </a>
+
+                                  {%- comment -%} Image Only Layout {%- endcomment -%}
+                                  {%- elsif layout == 'image_only' -%}
+                                    <a
+                                      href="{{ block.settings.link | default: '#' }}"
+                                      class="mega-menu__promo mega-menu__promo--image-only mega-menu__promo--ratio-{{ ratio }}{% if rounded %} mega-menu__promo--rounded{% endif %}"
+                                      {{ block.shopify_attributes }}
+                                    >
+                                      {%- if block.settings.image != blank -%}
+                                        <div class="mega-menu__promo-image">
+                                          {{ block.settings.image | image_url: width: 800 | image_tag:
+                                            loading: 'lazy',
+                                            widths: '300, 400, 600, 800',
+                                            sizes: '(min-width: 1024px) 300px, 200px'
+                                          }}
+                                        </div>
+                                      {%- endif -%}
+                                    </a>
+
+                                  {%- comment -%} Image + Text + Button Layout {%- endcomment -%}
+                                  {%- elsif layout == 'image_text_button' -%}
+                                    <div class="mega-menu__promo mega-menu__promo--with-button mega-menu__promo--ratio-{{ ratio }}{% if overlay %} mega-menu__promo--overlay{% endif %}{% if rounded %} mega-menu__promo--rounded{% endif %}" {{ block.shopify_attributes }}>
+                                      {%- if block.settings.image != blank -%}
+                                        <div class="mega-menu__promo-image">
+                                          {{ block.settings.image | image_url: width: 800 | image_tag:
+                                            loading: 'lazy',
+                                            widths: '300, 400, 600, 800',
+                                            sizes: '(min-width: 1024px) 300px, 200px'
+                                          }}
+                                        </div>
+                                      {%- endif -%}
+                                      <div class="mega-menu__promo-content">
+                                        {%- if block.settings.title != blank -%}
+                                          <span class="mega-menu__promo-title">{{ block.settings.title }}</span>
+                                        {%- endif -%}
+                                        {%- if block.settings.text != blank -%}
+                                          <span class="mega-menu__promo-text">{{ block.settings.text }}</span>
+                                        {%- endif -%}
+                                        {%- if block.settings.button_text != blank and block.settings.link != blank -%}
+                                          <a href="{{ block.settings.link }}" class="mega-menu__promo-button">
+                                            {{ block.settings.button_text }}
+                                          </a>
+                                        {%- endif -%}
+                                      </div>
+                                    </div>
+
+                                  {%- comment -%} Default: Image + Text Layout {%- endcomment -%}
+                                  {%- else -%}
+                                    <a
+                                      href="{{ block.settings.link | default: '#' }}"
+                                      class="mega-menu__promo mega-menu__promo--ratio-{{ ratio }}{% if overlay %} mega-menu__promo--overlay{% endif %}{% if rounded %} mega-menu__promo--rounded{% endif %}"
+                                      {{ block.shopify_attributes }}
+                                    >
+                                      {%- if block.settings.image != blank -%}
+                                        <div class="mega-menu__promo-image">
+                                          {{ block.settings.image | image_url: width: 800 | image_tag:
+                                            loading: 'lazy',
+                                            widths: '300, 400, 600, 800',
+                                            sizes: '(min-width: 1024px) 300px, 200px'
+                                          }}
+                                        </div>
+                                      {%- else -%}
+                                        <div class="mega-menu__promo-image mega-menu__promo-placeholder">
+                                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                                            <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+                                            <path d="M21 15L16 10L6 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                          </svg>
+                                        </div>
+                                      {%- endif -%}
+                                      <div class="mega-menu__promo-content">
+                                        {%- if block.settings.title != blank -%}
+                                          <span class="mega-menu__promo-title">{{ block.settings.title }}</span>
+                                        {%- endif -%}
+                                        {%- if block.settings.text != blank -%}
+                                          <span class="mega-menu__promo-text">{{ block.settings.text }}</span>
+                                        {%- endif -%}
+                                      </div>
+                                    </a>
+                                  {%- endif -%}
+                                {%- endif -%}
+                              {%- endfor -%}
+                            </div>
+                          {%- endif -%}
+
+                        </div>
+                      </div>
+                    </div>
+                  {% else %}
+                    <a
+                      href="{{ link.url }}"
+                      class="mega-menu__trigger"
+                      role="menuitem"
+                      {% if link.current %}aria-current="page"{% endif %}
+                    >
+                      <span>{{ link.title }}</span>
+                    </a>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+
+        {% else %}
+          {%- comment -%} ========== NORMAL NAVIGATION ========== {%- endcomment -%}
+          <div class="hidden lg:block">
+            {% if section.settings.menu != blank %}
+              <ul class="flex items-center space-x-8">
+                {% for link in linklists[section.settings.menu].links %}
+                  <li class="relative group">
+                    <a
+                      href="{{ link.url }}"
+                      class="nav-link text-text hover:text-primary transition-colors py-2 {% if link.active %}text-primary{% endif %}"
+                      {% if link.current %}aria-current="page"{% endif %}
+                    >
+                      <span class="relative">{{ link.title }}</span>
+                    </a>
+                    {% if link.links.size > 0 %}
+                      <ul class="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 min-w-48 bg-background border border-border rounded-lg shadow-lg py-2 z-50">
+                        {% for child_link in link.links %}
+                          <li>
+                            <a
+                              href="{{ child_link.url }}"
+                              class="block px-4 py-2 text-sm text-text hover:text-primary hover:bg-background-alt transition-colors {% if child_link.active %}text-primary{% endif %}"
+                            >
+                              {{ child_link.title }}
+                            </a>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% comment %} Header Actions {% endcomment %}
+        <div class="header-actions">
+          <button
+            class="p-2 text-text hover:text-primary transition-colors"
+            @click="searchOpen = !searchOpen"
+            aria-label="{{ 'accessibility.search' | t }}"
+          >
+            {% render 'icon-search' %}
+          </button>
+
+          <a
+            href="{{ routes.account_url | default: routes.account_login_url }}"
+            class="hidden lg:block p-2 text-text hover:text-primary transition-colors"
+            aria-label="{{ 'accessibility.account' | t }}"
+          >
+            {% render 'icon-user' %}
+          </a>
+
+          <button
+            class="relative p-2 text-text hover:text-primary transition-colors"
+            @click="cartOpen = !cartOpen"
+            aria-label="{{ 'accessibility.cart' | t }}"
+          >
+            {% render 'icon-cart' %}
+            <span
+              class="cart-count absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs font-medium bg-primary text-white rounded-full {% if cart.item_count == 0 %}hidden{% endif %}"
+              data-cart-count
+            >
+              {{ cart.item_count }}
+            </span>
+          </button>
+        </div>
+      </div>
+
+    </nav>
+  </div>
+
+</header>
+
+{% comment %} Mega Menu Styles {% endcomment %}
+{% if mega_menu_enabled %}
+<style>
+  /* Mega Menu Item */
+  .mega-menu__item {
+    position: static;
+  }
+
+  .mega-menu__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    font-family: var(--font-body-family);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-text);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .mega-menu__trigger:hover,
+  .mega-menu__trigger.is-active {
+    color: var(--color-primary);
+  }
+
+  .mega-menu__chevron {
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .mega-menu__chevron.is-open {
+    transform: rotate(180deg);
+  }
+
+  /* Dropdown Panel */
+  .mega-menu__dropdown {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background-color: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+  }
+
+  .mega-menu__dropdown-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .mega-menu__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 1024px) {
+    .mega-menu__grid {
+      grid-template-columns: 2fr 1fr;
+      gap: 3rem;
+    }
+  }
+
+  /* Links */
+  .mega-menu__links-title {
+    display: block;
+    font-family: var(--font-heading-family);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .mega-menu__links-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.25rem 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mega-menu__link {
+    display: block;
+    padding: 0.5rem 0;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-text);
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+
+  .mega-menu__link:hover {
+    color: var(--color-primary);
+    transform: translateX(4px);
+  }
+
+  .mega-menu__sublinks {
+    list-style: none;
+    margin: 0 0 0.5rem 0;
+    padding: 0 0 0 1rem;
+  }
+
+  .mega-menu__sublink {
+    display: block;
+    padding: 0.25rem 0;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    transition: color 0.15s ease;
+  }
+
+  .mega-menu__sublink:hover {
+    color: var(--color-primary);
+  }
+
+  .mega-menu__view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    transition: gap 0.2s ease;
+  }
+
+  .mega-menu__view-all:hover {
+    gap: 0.75rem;
+  }
+
+  /* Promotions */
+  .mega-menu__promos {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .mega-menu__promo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-background-alt);
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  .mega-menu__promo--rounded {
+    border-radius: 0.75rem;
+  }
+
+  .mega-menu__promo--rounded .mega-menu__promo-image {
+    border-radius: 0.75rem 0.75rem 0 0;
+  }
+
+  .mega-menu__promo-image {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+  }
+
+  .mega-menu__promo-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Hover effects only for product and with-button layouts */
+  .mega-menu__promo--product,
+  .mega-menu__promo--with-button {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .mega-menu__promo--product:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.15);
+  }
+
+  .mega-menu__promo--product .mega-menu__promo-image img,
+  .mega-menu__promo--with-button .mega-menu__promo-image img {
+    transition: transform 0.3s ease;
+  }
+
+  .mega-menu__promo--product:hover .mega-menu__promo-image img,
+  .mega-menu__promo--with-button:hover .mega-menu__promo-image img {
+    transform: scale(1.05);
+  }
+
+  .mega-menu__promo-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-border);
+    color: var(--color-text-muted);
+  }
+
+  .mega-menu__promo-content {
+    padding: 1rem;
+  }
+
+  .mega-menu__promo-title {
+    display: block;
+    font-family: var(--font-heading-family);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 0.25rem;
+  }
+
+  .mega-menu__promo-text {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  /* Image Ratio Variants */
+  .mega-menu__promo--ratio-square .mega-menu__promo-image {
+    aspect-ratio: 1/1;
+  }
+
+  .mega-menu__promo--ratio-portrait .mega-menu__promo-image {
+    aspect-ratio: 3/4;
+  }
+
+  .mega-menu__promo--ratio-landscape .mega-menu__promo-image {
+    aspect-ratio: 4/3;
+  }
+
+  .mega-menu__promo--ratio-wide .mega-menu__promo-image {
+    aspect-ratio: 16/9;
+  }
+
+  /* Image Only Layout */
+  .mega-menu__promo--image-only {
+    overflow: hidden;
+  }
+
+  .mega-menu__promo--image-only.mega-menu__promo--rounded .mega-menu__promo-image {
+    border-radius: 0.75rem;
+  }
+
+  /* Product Layout */
+  .mega-menu__promo--product .mega-menu__promo-price {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-top: 0.25rem;
+  }
+
+  /* With Button Layout */
+  .mega-menu__promo--with-button {
+    cursor: default;
+  }
+
+  .mega-menu__promo--with-button:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .mega-menu__promo-button {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .mega-menu__promo-button:hover {
+    background-color: var(--color-text);
+    transform: translateY(-1px);
+  }
+
+  /* Overlay Text Layout */
+  .mega-menu__promo--overlay {
+    position: relative;
+  }
+
+  .mega-menu__promo--overlay .mega-menu__promo-image {
+    position: relative;
+  }
+
+  .mega-menu__promo--overlay .mega-menu__promo-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 60%);
+    pointer-events: none;
+  }
+
+  .mega-menu__promo--overlay .mega-menu__promo-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    z-index: 1;
+  }
+
+  .mega-menu__promo--overlay .mega-menu__promo-title,
+  .mega-menu__promo--overlay .mega-menu__promo-text {
+    color: #ffffff;
+  }
+
+  .mega-menu__promo--overlay .mega-menu__promo-text {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .mega-menu__promo--overlay .mega-menu__promo-button {
+    background-color: #ffffff;
+    color: var(--color-text);
+  }
+
+  .mega-menu__promo--overlay .mega-menu__promo-button:hover {
+    background-color: var(--color-primary);
+    color: #ffffff;
+  }
+</style>
+{% endif %}
+
+<style>
+  /* Header Height and Layout */
+  .site-header .header-container {
+    height: var(--header-height, 80px);
+    display: flex;
+    align-items: center;
+  }
+
+  .site-header .header-container > nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Logo styling with overflow support */
+  .site-header .site-branding {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  .site-header .site-branding a {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  /* Logo Overflow Mode */
+  .header--logo-overflow .site-branding {
+    position: relative;
+    z-index: 60;
+  }
+
+  .header--logo-overflow .site-branding img {
+    padding-top: var(--logo-top-padding, 15px);
+    margin-bottom: calc(-1 * var(--logo-overflow, 30px));
+    position: relative;
+  }
+
+  /* Header right side - vertically centered */
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 100%;
+  }
+
+  .header-mega-menu {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  .header-mega-menu > ul {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 100%;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "header-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "default": 150,
+      "unit": "px",
+      "label": "Logo Breite"
+    },
+    {
+      "type": "header",
+      "content": "Header Layout"
+    },
+    {
+      "type": "range",
+      "id": "header_height",
+      "min": 60,
+      "max": 140,
+      "step": 5,
+      "default": 80,
+      "unit": "px",
+      "label": "Header Hoehe"
+    },
+    {
+      "type": "checkbox",
+      "id": "logo_overflow",
+      "default": false,
+      "label": "Logo Overflow aktivieren",
+      "info": "Das Logo ragt nach unten ueber den Header hinaus"
+    },
+    {
+      "type": "range",
+      "id": "logo_overflow_amount",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "default": 30,
+      "unit": "px",
+      "label": "Logo Overflow Betrag"
+    },
+    {
+      "type": "range",
+      "id": "logo_top_padding",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "default": 15,
+      "unit": "px",
+      "label": "Logo Abstand nach oben"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "select",
+      "id": "navigation_type",
+      "label": "Navigationstyp",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Standard Dropdown"
+        },
+        {
+          "value": "mega",
+          "label": "Mega Menu"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "Menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "\"Alle anzeigen\" Link (Mega Menu)",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Ankuendigungsleiste"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "default": false,
+      "label": "Ankuendigungsleiste anzeigen"
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Ankuendigungstext",
+      "default": "Kostenloser Versand ab 100 EUR"
+    },
+    {
+      "type": "url",
+      "id": "announcement_link",
+      "label": "Ankuendigungslink"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "promotion",
+      "name": "Mega Menu Promotion",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Zuweisung"
+        },
+        {
+          "type": "text",
+          "id": "menu_handle",
+          "label": "Menuepunkt Name",
+          "info": "Gib den exakten Namen des Menuepunkts ein (z.B. 'Lampen', 'Wohnen'). Gross-/Kleinschreibung beachten!"
+        },
+        {
+          "type": "header",
+          "content": "Layout"
+        },
+        {
+          "type": "select",
+          "id": "layout_type",
+          "label": "Darstellung",
+          "options": [
+            {
+              "value": "image_only",
+              "label": "Nur Bild"
+            },
+            {
+              "value": "image_text",
+              "label": "Bild + Text"
+            },
+            {
+              "value": "image_text_button",
+              "label": "Bild + Text + Button"
+            },
+            {
+              "value": "featured_product",
+              "label": "Produkt anzeigen"
+            }
+          ],
+          "default": "image_text"
+        },
+        {
+          "type": "header",
+          "content": "Inhalt"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Bild"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titel",
+          "default": "Neu eingetroffen"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Beschreibung"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "Jetzt entdecken"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Produkt (nur bei 'Produkt anzeigen')"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Produkt"
+        },
+        {
+          "type": "header",
+          "content": "Styling"
+        },
+        {
+          "type": "select",
+          "id": "image_ratio",
+          "label": "Bild-Verhaeltnis",
+          "options": [
+            {
+              "value": "square",
+              "label": "Quadratisch (1:1)"
+            },
+            {
+              "value": "portrait",
+              "label": "Hochformat (3:4)"
+            },
+            {
+              "value": "landscape",
+              "label": "Querformat (4:3)"
+            },
+            {
+              "value": "wide",
+              "label": "Breit (16:9)"
+            }
+          ],
+          "default": "landscape"
+        },
+        {
+          "type": "checkbox",
+          "id": "overlay_text",
+          "label": "Text ueber Bild",
+          "default": false,
+          "info": "Zeigt Text als Overlay auf dem Bild"
+        },
+        {
+          "type": "checkbox",
+          "id": "rounded_corners",
+          "label": "Abgerundete Ecken",
+          "default": true,
+          "info": "Zeigt das Bild mit abgerundeten Ecken"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

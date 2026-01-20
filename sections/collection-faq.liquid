@@ -1,0 +1,333 @@
+{% comment %}
+  Collection FAQ Section
+  Features: Accordion FAQ, JSON-LD Schema for Google Rich Snippets
+{% endcomment %}
+
+{% if section.blocks.size > 0 %}
+<section class="collection-faq">
+  <div class="collection-faq__container">
+
+    {% if section.settings.title != blank %}
+      <h2 class="collection-faq__title">{{ section.settings.title }}</h2>
+    {% endif %}
+
+    {% if section.settings.description != blank %}
+      <p class="collection-faq__description">{{ section.settings.description }}</p>
+    {% endif %}
+
+    <div class="collection-faq__list" x-data="{ openItem: {{ section.settings.first_open | default: 0 }} }">
+      {% for block in section.blocks %}
+        {% if block.type == 'faq_item' %}
+          <div class="collection-faq__item" {{ block.shopify_attributes }}>
+            <button
+              type="button"
+              class="collection-faq__question"
+              :class="{ 'is-open': openItem === {{ forloop.index }} }"
+              @click="openItem = openItem === {{ forloop.index }} ? 0 : {{ forloop.index }}"
+              aria-expanded="false"
+              :aria-expanded="openItem === {{ forloop.index }}"
+            >
+              <span class="collection-faq__question-text">{{ block.settings.question }}</span>
+              <span class="collection-faq__icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" :class="{ 'rotate-180': openItem === {{ forloop.index }} }">
+                  <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </button>
+            <div
+              class="collection-faq__answer"
+              x-show="openItem === {{ forloop.index }}"
+              x-collapse
+              x-cloak
+            >
+              <div class="collection-faq__answer-content">
+                {{ block.settings.answer }}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+{% comment %} JSON-LD FAQ Schema for Google Rich Snippets {% endcomment %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'faq_item' and block.settings.question != blank and block.settings.answer != blank -%}
+        {
+          "@type": "Question",
+          "name": {{ block.settings.question | json }},
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": {{ block.settings.answer | strip_html | json }}
+          }
+        }{% unless forloop.last %},{% endunless %}
+      {%- endif -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+{% endif %}
+
+<style>
+  .collection-faq {
+    padding: 3rem 0;
+    background: var(--color-background);
+  }
+
+  @media (min-width: 1024px) {
+    .collection-faq {
+      padding: 4rem 0;
+    }
+  }
+
+  .collection-faq__container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    .collection-faq__container {
+      padding: 0 2rem;
+    }
+  }
+
+  /* Header */
+  .collection-faq__title {
+    font-family: var(--font-heading-family);
+    font-size: 1.75rem;
+    font-weight: 600;
+    text-align: center;
+    margin: 0 0 0.75rem;
+    color: var(--color-text);
+  }
+
+  @media (min-width: 1024px) {
+    .collection-faq__title {
+      font-size: 2.25rem;
+    }
+  }
+
+  .collection-faq__description {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* FAQ List */
+  .collection-faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* FAQ Item */
+  .collection-faq__item {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .collection-faq__item:first-child {
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* Question Button */
+  .collection-faq__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    padding: 1.25rem 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text);
+    transition: color 0.2s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .collection-faq__question {
+      padding: 1.5rem 0;
+      font-size: 1.0625rem;
+    }
+  }
+
+  .collection-faq__question:hover {
+    color: var(--color-primary);
+  }
+
+  .collection-faq__question.is-open {
+    color: var(--color-primary);
+  }
+
+  .collection-faq__question-text {
+    flex: 1;
+  }
+
+  /* Icon */
+  .collection-faq__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    transition: color 0.2s ease;
+  }
+
+  .collection-faq__question:hover .collection-faq__icon,
+  .collection-faq__question.is-open .collection-faq__icon {
+    color: var(--color-primary);
+  }
+
+  .collection-faq__icon svg {
+    transition: transform 0.3s ease;
+  }
+
+  .collection-faq__icon svg.rotate-180 {
+    transform: rotate(180deg);
+  }
+
+  /* Answer */
+  .collection-faq__answer {
+    overflow: hidden;
+  }
+
+  .collection-faq__answer-content {
+    padding: 0 0 1.5rem;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 1024px) {
+    .collection-faq__answer-content {
+      font-size: 1rem;
+      padding-right: 3rem;
+    }
+  }
+
+  .collection-faq__answer-content p {
+    margin: 0 0 1rem;
+  }
+
+  .collection-faq__answer-content p:last-child {
+    margin-bottom: 0;
+  }
+
+  .collection-faq__answer-content ul,
+  .collection-faq__answer-content ol {
+    margin: 0 0 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .collection-faq__answer-content li {
+    margin-bottom: 0.5rem;
+  }
+
+  .collection-faq__answer-content a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .collection-faq__answer-content a:hover {
+    text-decoration: none;
+  }
+
+  /* x-cloak for Alpine.js */
+  [x-cloak] {
+    display: none !important;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Kollektion FAQ",
+  "class": "section-collection-faq",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Häufig gestellte Fragen"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Beschreibung"
+    },
+    {
+      "type": "checkbox",
+      "id": "first_open",
+      "label": "Erste Frage standardmäßig öffnen",
+      "default": true,
+      "info": "Wenn aktiviert, wird die erste Frage beim Laden geöffnet angezeigt"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Eintrag",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Frage",
+          "default": "Was ist die Frage?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Antwort",
+          "default": "<p>Hier kommt die Antwort auf die Frage.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kollektion FAQ",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Welche Lampenarten bieten Sie an?",
+            "answer": "<p>Wir bieten eine vielfältige Auswahl an hochwertigen Lampen: Tischlampen, Stehlampen, Pendelleuchten, Wandlampen und Deckenleuchten. Jedes Stück wird sorgfältig ausgewählt, um höchste Qualität und zeitloses Design zu gewährleisten.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Wie wähle ich die richtige Lampengröße?",
+            "answer": "<p>Die richtige Größe hängt vom Raum und Verwendungszweck ab. Als Faustregel gilt: Tischlampen sollten etwa 1/3 der Tischhöhe haben. Pendelleuchten über dem Esstisch sollten 60-75cm über der Tischplatte hängen. Bei Fragen beraten wir Sie gerne persönlich.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Sind LED-Leuchtmittel enthalten?",
+            "answer": "<p>Die meisten unserer Lampen werden ohne Leuchtmittel geliefert, damit Sie die Lichtfarbe und Helligkeit selbst wählen können. In der Produktbeschreibung finden Sie die empfohlene Fassung und Wattzahl. Einige Modelle haben integrierte LEDs - dies ist entsprechend gekennzeichnet.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

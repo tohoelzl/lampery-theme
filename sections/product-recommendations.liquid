@@ -1,0 +1,140 @@
+{% comment %}
+  Product Recommendations Section
+  Lädt Empfehlungen via Shopify Product Recommendations API
+{% endcomment %}
+
+<div
+  id="product-recommendations"
+  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.products_to_show }}"
+  data-product-id="{{ product.id }}"
+>
+  {% if recommendations.performed and recommendations.products_count > 0 %}
+    <section class="product-recommendations section">
+      <div class="container mx-auto px-4 lg:px-8">
+
+        <div class="section-header">
+          <span class="product-recommendations__label">{{ section.settings.label }}</span>
+          <h2 class="section-title">{{ section.settings.heading }}</h2>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          {% for product in recommendations.products limit: section.settings.products_to_show %}
+            {% render 'product-card', product: product %}
+          {% endfor %}
+        </div>
+
+      </div>
+    </section>
+  {% endif %}
+</div>
+
+<style>
+  .product-recommendations {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  @media (min-width: 1024px) {
+    .product-recommendations {
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+    }
+  }
+
+  .product-recommendations__label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Loading State */
+  .product-recommendations--loading {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-recommendations--loading::after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('product-recommendations');
+    if (!container) return;
+
+    const url = container.dataset.url;
+    if (!url) return;
+
+    // Prüfen ob schon Empfehlungen vorhanden (Server-Side Rendering)
+    if (container.querySelector('.product-recommendations')) return;
+
+    // Loading State
+    container.innerHTML = '<div class="product-recommendations--loading"></div>';
+
+    // Fetch Recommendations
+    fetch(url)
+      .then(response => response.text())
+      .then(text => {
+        const html = document.createElement('div');
+        html.innerHTML = text;
+
+        const recommendations = html.querySelector('#product-recommendations');
+        if (recommendations && recommendations.innerHTML.trim().length) {
+          container.innerHTML = recommendations.innerHTML;
+        } else {
+          container.innerHTML = '';
+        }
+      })
+      .catch(error => {
+        console.error('Error loading product recommendations:', error);
+        container.innerHTML = '';
+      });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Produktempfehlungen",
+  "class": "section-product-recommendations",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label (klein)",
+      "default": "Fuer dich ausgewaehlt"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Ueberschrift",
+      "default": "Das koennte dir auch gefallen"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "label": "Anzahl Produkte"
+    }
+  ]
+}
+{% endschema %}

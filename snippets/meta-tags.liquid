@@ -1,0 +1,80 @@
+{% comment %}
+  Meta Tags Snippet - SEO and Social Media Meta Tags
+{% endcomment %}
+
+{% comment %} Open Graph {% endcomment %}
+<meta property="og:site_name" content="{{ shop.name }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:title" content="{{ page_title }}">
+<meta property="og:type" content="{% if template.name == 'product' %}product{% elsif template.name == 'article' %}article{% else %}website{% endif %}">
+
+{% if page_description %}
+  <meta property="og:description" content="{{ page_description | escape }}">
+{% endif %}
+
+{% if template.name == 'product' %}
+  <meta property="og:price:amount" content="{{ product.price | money_without_currency }}">
+  <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
+  {% if product.featured_image %}
+    <meta property="og:image" content="https:{{ product.featured_image | image_url: width: 1200 }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="{{ 1200 | divided_by: product.featured_image.aspect_ratio | round }}">
+  {% endif %}
+{% elsif template.name == 'article' %}
+  {% if article.image %}
+    <meta property="og:image" content="https:{{ article.image | image_url: width: 1200 }}">
+  {% endif %}
+{% elsif template.name == 'collection' %}
+  {% if collection.image %}
+    <meta property="og:image" content="https:{{ collection.image | image_url: width: 1200 }}">
+  {% endif %}
+{% endif %}
+
+{% comment %} Twitter Card {% endcomment %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ page_title }}">
+{% if page_description %}
+  <meta name="twitter:description" content="{{ page_description | escape }}">
+{% endif %}
+
+{% comment %} Schema.org JSON-LD {% endcomment %}
+{%- capture search_target -%}{{ shop.url }}{{ routes.search_url }}?q={search_term_string}{%- endcapture -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": {{ shop.name | json }},
+  "url": {{ shop.url | json }},
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {{ search_target | json }},
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+{% if template.name == 'product' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "description": {{ product.description | strip_html | truncate: 200 | json }},
+  "url": {{ canonical_url | json }},
+  {% if product.featured_image %}
+  "image": {{ product.featured_image | image_url: width: 1200 | prepend: 'https:' | json }},
+  {% endif %}
+  "brand": {
+    "@type": "Brand",
+    "name": {{ product.vendor | json }}
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": {{ canonical_url | json }},
+    "priceCurrency": {{ cart.currency.iso_code | json }},
+    "price": {{ product.price | money_without_currency | json }},
+    "availability": "{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
+  }
+}
+</script>
+{% endif %}

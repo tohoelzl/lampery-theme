@@ -1,0 +1,190 @@
+{% comment %}
+  Quick View Modal
+  Shows product details in a modal without leaving the page
+  Triggered by product card quick view button
+{% endcomment %}
+
+<div
+  id="quick-view-modal"
+  class="quick-view-overlay"
+  x-data="quickView()"
+  x-show="isOpen"
+  x-cloak
+  @keydown.escape.window="close()"
+  @quick-view.window="open($event.detail)"
+>
+  {% comment %} Backdrop {% endcomment %}
+  <div
+    class="quick-view-backdrop"
+    @click="close()"
+    x-show="isOpen"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+  ></div>
+
+  {% comment %} Modal {% endcomment %}
+  <div
+    class="quick-view-modal"
+    role="dialog"
+    aria-modal="true"
+    x-show="isOpen"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0 scale-95"
+    x-transition:enter-end="opacity-100 scale-100"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100 scale-100"
+    x-transition:leave-end="opacity-0 scale-95"
+    @click.stop
+  >
+    {% comment %} Close Button {% endcomment %}
+    <button type="button" class="quick-view-close" @click="close()" aria-label="Schließen">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    {% comment %} Loading State {% endcomment %}
+    <div class="quick-view-loading" x-show="loading">
+      <div class="quick-view-spinner"></div>
+    </div>
+
+    {% comment %} Content {% endcomment %}
+    <div class="quick-view-content" x-show="!loading" x-html="content"></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('quickView', () => ({
+    isOpen: false,
+    loading: false,
+    content: '',
+    productHandle: '',
+
+    open(detail) {
+      this.productHandle = detail.handle;
+      this.isOpen = true;
+      this.loading = true;
+      document.body.style.overflow = 'hidden';
+
+      // Fetch product data
+      fetch(`/products/${this.productHandle}?section_id=quick-view-content`)
+        .then(response => response.text())
+        .then(html => {
+          this.content = html;
+          this.loading = false;
+        })
+        .catch(error => {
+          console.error('Quick view error:', error);
+          this.loading = false;
+          this.content = '<p class="quick-view-error">Fehler beim Laden. Bitte versuchen Sie es erneut.</p>';
+        });
+    },
+
+    close() {
+      this.isOpen = false;
+      document.body.style.overflow = '';
+      setTimeout(() => {
+        this.content = '';
+        this.productHandle = '';
+      }, 300);
+    }
+  }));
+});
+</script>
+
+<style>
+  .quick-view-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .quick-view-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  .quick-view-modal {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    max-height: 90vh;
+    background: var(--color-background, #fff);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+
+  .quick-view-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--color-background, #fff);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--color-text, #1a1a1a);
+    transition: background 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .quick-view-close:hover {
+    background: var(--color-background-alt, #f5f5f5);
+    transform: scale(1.05);
+  }
+
+  /* Loading */
+  .quick-view-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+  }
+
+  .quick-view-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-border, #e5e5e5);
+    border-top-color: var(--color-primary, #1a1a1a);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Content */
+  .quick-view-content {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .quick-view-error {
+    padding: 3rem;
+    text-align: center;
+    color: var(--color-text-muted, #666);
+  }
+
+  /* x-cloak */
+  [x-cloak] {
+    display: none !important;
+  }
+</style>

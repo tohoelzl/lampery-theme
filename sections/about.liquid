@@ -1,0 +1,178 @@
+{% comment %}
+  About Section - Converted from WooCommerce front-page.php About/Story Section
+{% endcomment %}
+
+<section class="section-lg">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+      {% comment %} Image {% endcomment %}
+      <div class="relative">
+        <div class="relative aspect-[4/3] rounded-2xl overflow-hidden">
+          {% if section.settings.image != blank %}
+            <img
+              src="{{ section.settings.image | image_url: width: 800 }}"
+              srcset="{{ section.settings.image | image_url: width: 400 }} 400w,
+                      {{ section.settings.image | image_url: width: 600 }} 600w,
+                      {{ section.settings.image | image_url: width: 800 }} 800w"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              alt="{{ section.settings.image.alt | default: section.settings.title }}"
+              width="{{ section.settings.image.width }}"
+              height="{{ section.settings.image.height }}"
+              class="w-full h-full object-cover"
+              loading="lazy"
+            >
+          {% else %}
+            <div class="w-full h-full bg-gradient-to-br from-primary/10 to-accent-soft flex items-center justify-center">
+              {% render 'icon-lamp', class: 'w-20 h-20 text-primary/30' %}
+            </div>
+          {% endif %}
+        </div>
+
+        {% comment %} Decorative Badge {% endcomment %}
+        {% if section.settings.badge_number != blank %}
+          <div class="absolute -bottom-4 -right-4 lg:-bottom-6 lg:-right-6 bg-primary text-white px-6 py-4 rounded-xl shadow-lg">
+            <span class="block text-3xl lg:text-4xl font-semibold">{{ section.settings.badge_number }}</span>
+            <span class="text-sm text-white/80">{{ section.settings.badge_text }}</span>
+          </div>
+        {% endif %}
+      </div>
+
+      {% comment %} Content {% endcomment %}
+      <div>
+        <span class="inline-block text-sm font-medium text-primary uppercase tracking-wider mb-4">
+          {{ section.settings.subtitle }}
+        </span>
+
+        <h2 class="text-3xl lg:text-4xl font-semibold mb-6">
+          {{ section.settings.title }}
+        </h2>
+
+        <div class="prose prose-lg text-text-muted mb-8">
+          {{ section.settings.text }}
+        </div>
+
+        {% comment %} Features Grid {% endcomment %}
+        <div class="grid sm:grid-cols-2 gap-6">
+          {% for block in section.blocks %}
+            <div class="flex items-start space-x-4" {{ block.shopify_attributes }}>
+              <div class="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                {% render block.settings.icon, class: 'w-6 h-6 text-primary' %}
+              </div>
+              <div>
+                <h4 class="font-medium mb-1">{{ block.settings.title }}</h4>
+                <p class="text-sm text-text-muted">{{ block.settings.text }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Ueber uns",
+  "class": "section-about",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Bild"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Bild"
+    },
+    {
+      "type": "header",
+      "content": "Badge"
+    },
+    {
+      "type": "text",
+      "id": "badge_number",
+      "label": "Badge Zahl",
+      "default": "10+"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge Text",
+      "default": "Jahre Erfahrung"
+    },
+    {
+      "type": "header",
+      "content": "Inhalt"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Untertitel",
+      "default": "Unsere Geschichte"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Mit Liebe zum Detail"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Jede Lampe erzaehlt eine Geschichte. Wir verbinden traditionelles Handwerk mit zeitlosem Design, um Lichtobjekte zu schaffen, die Raeume in Wohlfuehlorte verwandeln.</p><p>Unsere Materialien stammen aus nachhaltigen Quellen, und jedes Stueck wird in unserer Werkstatt von Hand gefertigt.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "icon-hand", "label": "Hand / Handgemacht" },
+            { "value": "icon-globe", "label": "Globus / Nachhaltigkeit" },
+            { "value": "icon-clock", "label": "Uhr / Zeit" },
+            { "value": "icon-heart", "label": "Herz" },
+            { "value": "icon-star", "label": "Stern" },
+            { "value": "icon-shield", "label": "Schild / Schutz" },
+            { "value": "icon-truck", "label": "LKW / Versand" },
+            { "value": "icon-gift", "label": "Geschenk" },
+            { "value": "icon-check", "label": "Haekchen" }
+          ],
+          "default": "icon-hand"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titel",
+          "default": "Handgefertigt"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Jedes Stueck ein Unikat"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ueber uns",
+      "category": "Content",
+      "blocks": [
+        { "type": "feature", "settings": { "icon": "icon-hand", "title": "Handgefertigt", "text": "Jedes Stueck ein Unikat" } },
+        { "type": "feature", "settings": { "icon": "icon-globe", "title": "Nachhaltig", "text": "Verantwortungsvolle Materialien" } },
+        { "type": "feature", "settings": { "icon": "icon-clock", "title": "Langlebig", "text": "Qualitaet fuer Generationen" } },
+        { "type": "feature", "settings": { "icon": "icon-heart", "title": "Made in Germany", "text": "Designed & gefertigt" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,195 @@
+{% comment %}
+  Main Cart Section - Converted from WooCommerce cart/cart.php
+{% endcomment %}
+
+<section class="section bg-background">
+  <div class="container mx-auto px-4 lg:px-8">
+
+    {% if cart.item_count > 0 %}
+      <div class="grid lg:grid-cols-3 gap-8 lg:gap-12">
+
+        {% comment %} Cart Items {% endcomment %}
+        <div class="lg:col-span-2">
+          <h1 class="text-2xl lg:text-3xl font-semibold mb-8">
+            {{ 'cart.title' | t }} ({{ cart.item_count }})
+          </h1>
+
+          {% comment %} Cart Progress {% endcomment %}
+          {% if settings.cart_progress_enabled %}
+            <div class="mb-8">
+              {% render 'cart-progress' %}
+            </div>
+          {% endif %}
+
+          {% comment %} Cart Items List {% endcomment %}
+          <div class="space-y-6">
+            {% for item in cart.items %}
+              <div class="flex gap-4 lg:gap-6 pb-6 border-b border-border" data-cart-item="{{ item.key }}">
+                {% comment %} Item Image {% endcomment %}
+                <a href="{{ item.url }}" class="flex-shrink-0 w-24 lg:w-32 aspect-product rounded-lg overflow-hidden bg-background-alt">
+                  {% if item.image %}
+                    <img
+                      src="{{ item.image | image_url: width: 200 }}"
+                      alt="{{ item.title | escape }}"
+                      width="128"
+                      height="160"
+                      class="w-full h-full object-cover"
+                      loading="lazy"
+                    >
+                  {% endif %}
+                </a>
+
+                {% comment %} Item Details {% endcomment %}
+                <div class="flex-1 min-w-0">
+                  <a href="{{ item.url }}" class="font-medium hover:text-primary transition-colors">
+                    {{ item.product.title }}
+                  </a>
+
+                  {% if item.variant.title != 'Default Title' %}
+                    <p class="text-sm text-text-muted mt-1">{{ item.variant.title }}</p>
+                  {% endif %}
+
+                  {% comment %} Price {% endcomment %}
+                  <div class="mt-2">
+                    {% if item.original_line_price != item.final_line_price %}
+                      <span class="text-accent font-medium">{{ item.final_line_price | money }}</span>
+                      <span class="text-text-muted text-sm line-through ml-2">{{ item.original_line_price | money }}</span>
+                    {% else %}
+                      <span class="font-medium">{{ item.final_line_price | money }}</span>
+                    {% endif %}
+                  </div>
+
+                  {% comment %} Quantity & Remove {% endcomment %}
+                  <div class="flex items-center justify-between mt-4">
+                    <div class="flex items-center border border-border rounded-lg">
+                      <button
+                        type="button"
+                        class="w-10 h-10 flex items-center justify-center hover:bg-background-alt transition-colors"
+                        data-quantity-minus="{{ item.key }}"
+                      >
+                        {% render 'icon-minus', class: 'w-4 h-4' %}
+                      </button>
+                      <input
+                        type="number"
+                        value="{{ item.quantity }}"
+                        min="1"
+                        class="w-12 h-10 text-center border-x border-border focus:outline-none"
+                        data-quantity-input="{{ item.key }}"
+                      >
+                      <button
+                        type="button"
+                        class="w-10 h-10 flex items-center justify-center hover:bg-background-alt transition-colors"
+                        data-quantity-plus="{{ item.key }}"
+                      >
+                        {% render 'icon-plus', class: 'w-4 h-4' %}
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      class="text-text-muted hover:text-accent transition-colors"
+                      data-cart-remove="{{ item.key }}"
+                    >
+                      {% render 'icon-trash', class: 'w-5 h-5' %}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        {% comment %} Cart Summary {% endcomment %}
+        <div class="lg:col-span-1">
+          <div class="bg-background-alt rounded-xl p-6 lg:p-8 sticky top-24">
+            <h2 class="text-xl font-semibold mb-6">{{ 'cart.summary' | t }}</h2>
+
+            <div class="space-y-4 mb-6">
+              <div class="flex items-center justify-between">
+                <span class="text-text-muted">{{ 'cart.subtotal' | t }}</span>
+                <span class="font-medium">{{ cart.total_price | money }}</span>
+              </div>
+
+              {% if cart.total_discount > 0 %}
+                <div class="flex items-center justify-between text-accent">
+                  <span>{{ 'cart.discount' | t }}</span>
+                  <span>-{{ cart.total_discount | money }}</span>
+                </div>
+              {% endif %}
+
+              <div class="flex items-center justify-between text-sm text-text-muted">
+                <span>{{ 'cart.shipping' | t }}</span>
+                <span>{{ 'cart.shipping_at_checkout' | t }}</span>
+              </div>
+            </div>
+
+            <div class="border-t border-border pt-4 mb-6">
+              <div class="flex items-center justify-between text-lg font-semibold">
+                <span>{{ 'cart.total' | t }}</span>
+                <span>{{ cart.total_price | money }}</span>
+              </div>
+              <p class="text-xs text-text-muted mt-1">{{ 'cart.taxes_included' | t }}</p>
+            </div>
+
+            <a href="{{ routes.checkout_url }}" class="btn-primary w-full justify-center text-lg py-4">
+              {{ 'cart.checkout' | t }}
+            </a>
+
+            <a href="{{ routes.all_products_collection_url }}" class="btn-ghost w-full justify-center mt-3">
+              {{ 'cart.continue_shopping' | t }}
+            </a>
+          </div>
+        </div>
+
+      </div>
+    {% else %}
+      {% comment %} Empty Cart {% endcomment %}
+      <div class="text-center py-16 lg:py-24">
+        {% render 'icon-cart', class: 'w-24 h-24 mx-auto text-border mb-6' %}
+        <h1 class="text-2xl font-semibold mb-4">{{ 'cart.empty_title' | t }}</h1>
+        <p class="text-text-muted mb-8">{{ 'cart.empty_description' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn-primary">
+          {{ 'cart.continue_shopping' | t }}
+        </a>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Warenkorb",
+  "class": "section-main-cart",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "Hersteller anzeigen"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "title",
+      "name": "Titel",
+      "limit": 1
+    },
+    {
+      "type": "items",
+      "name": "Artikel",
+      "limit": 1
+    },
+    {
+      "type": "subtotal",
+      "name": "Zwischensumme",
+      "limit": 1
+    },
+    {
+      "type": "checkout_button",
+      "name": "Checkout Button",
+      "limit": 1
+    }
+  ]
+}
+{% endschema %}

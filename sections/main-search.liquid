@@ -1,0 +1,119 @@
+{% comment %}
+  Main Search Section
+{% endcomment %}
+
+<section class="section bg-background">
+  <div class="container mx-auto px-4 lg:px-8">
+
+    {% comment %} Search Header {% endcomment %}
+    <div class="max-w-2xl mx-auto text-center mb-12">
+      <h1 class="text-3xl lg:text-4xl font-semibold mb-6">
+        {{ 'search.title' | t }}
+      </h1>
+
+      <form action="{{ routes.search_url }}" method="get" class="relative">
+        <input
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'search.placeholder' | t }}"
+          class="w-full px-6 py-4 pr-14 text-lg border border-border rounded-lg focus:outline-none focus:border-primary transition-colors"
+        >
+        <input type="hidden" name="type" value="product">
+        <button
+          type="submit"
+          class="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary transition-colors"
+        >
+          {% render 'icon-search', class: 'w-6 h-6' %}
+        </button>
+      </form>
+    </div>
+
+    {% comment %} Search Results {% endcomment %}
+    {% if search.performed %}
+      {% if search.results_count > 0 %}
+        <p class="text-text-muted mb-8">
+          {{ 'search.results_count' | t: count: search.results_count, terms: search.terms }}
+        </p>
+
+        {% paginate search.results by section.settings.products_per_page %}
+          <div class="grid grid-cols-2 lg:grid-cols-{{ section.settings.columns_desktop }} gap-6 lg:gap-8">
+            {% for result in search.results %}
+              {% if result.object_type == 'product' %}
+                {% render 'product-card', product: result %}
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          {% if paginate.pages > 1 %}
+            <nav class="pagination flex items-center justify-center gap-2 mt-12">
+              {% if paginate.previous %}
+                <a href="{{ paginate.previous.url }}" class="p-2 rounded-lg border border-border hover:border-primary hover:text-primary transition-colors">
+                  {% render 'icon-arrow-left', class: 'w-5 h-5' %}
+                </a>
+              {% endif %}
+
+              {% for part in paginate.parts %}
+                {% if part.is_link %}
+                  <a href="{{ part.url }}" class="w-10 h-10 flex items-center justify-center rounded-lg border border-border hover:border-primary hover:text-primary transition-colors">
+                    {{ part.title }}
+                  </a>
+                {% else %}
+                  {% if part.title == paginate.current_page %}
+                    <span class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white">
+                      {{ part.title }}
+                    </span>
+                  {% else %}
+                    <span class="w-10 h-10 flex items-center justify-center text-text-muted">
+                      {{ part.title }}
+                    </span>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+
+              {% if paginate.next %}
+                <a href="{{ paginate.next.url }}" class="p-2 rounded-lg border border-border hover:border-primary hover:text-primary transition-colors">
+                  {% render 'icon-arrow-right', class: 'w-5 h-5' %}
+                </a>
+              {% endif %}
+            </nav>
+          {% endif %}
+        {% endpaginate %}
+      {% else %}
+        <div class="text-center py-16">
+          <p class="text-text-muted">
+            {{ 'search.no_results' | t: terms: search.terms }}
+          </p>
+        </div>
+      {% endif %}
+    {% endif %}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Suchergebnisse",
+  "class": "section-main-search",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 24,
+      "step": 4,
+      "default": 12,
+      "label": "Produkte pro Seite"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "Spalten (Desktop)"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,33 @@
+{% comment %}
+  404 Page Section
+{% endcomment %}
+
+<section class="section-lg bg-background">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="max-w-2xl mx-auto text-center py-16">
+
+      <span class="text-9xl font-bold text-border">404</span>
+
+      <h1 class="text-3xl font-semibold mt-8 mb-4">
+        {{ 'general.404.title' | t }}
+      </h1>
+
+      <p class="text-text-muted mb-8">
+        {{ 'general.404.description' | t }}
+      </p>
+
+      <a href="{{ routes.root_url }}" class="btn-primary">
+        {{ 'general.404.back_home' | t }}
+      </a>
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "404 Seite",
+  "class": "section-main-404",
+  "settings": []
+}
+{% endschema %}

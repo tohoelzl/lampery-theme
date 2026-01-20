@@ -1,0 +1,224 @@
+{% comment %}
+  Wishlist Functionality
+  Uses localStorage to store wishlist items
+  Include this snippet in theme.liquid before </body>
+{% endcomment %}
+
+<script>
+document.addEventListener('alpine:init', () => {
+  // Global Wishlist Store
+  Alpine.store('wishlist', {
+    items: [],
+
+    init() {
+      // Load from localStorage
+      const saved = localStorage.getItem('lampery_wishlist');
+      if (saved) {
+        try {
+          this.items = JSON.parse(saved);
+        } catch (e) {
+          this.items = [];
+        }
+      }
+    },
+
+    save() {
+      localStorage.setItem('lampery_wishlist', JSON.stringify(this.items));
+    },
+
+    add(productId, productHandle, productTitle, productImage, productPrice, productUrl) {
+      if (!this.has(productId)) {
+        this.items.push({
+          id: productId,
+          handle: productHandle,
+          title: productTitle,
+          image: productImage,
+          price: productPrice,
+          url: productUrl,
+          addedAt: Date.now()
+        });
+        this.save();
+        this.showNotification('added', productTitle);
+      }
+    },
+
+    remove(productId) {
+      const item = this.items.find(i => i.id === productId);
+      this.items = this.items.filter(i => i.id !== productId);
+      this.save();
+      if (item) {
+        this.showNotification('removed', item.title);
+      }
+    },
+
+    toggle(productId, productHandle, productTitle, productImage, productPrice, productUrl) {
+      if (this.has(productId)) {
+        this.remove(productId);
+      } else {
+        this.add(productId, productHandle, productTitle, productImage, productPrice, productUrl);
+      }
+    },
+
+    has(productId) {
+      return this.items.some(i => i.id === productId);
+    },
+
+    count() {
+      return this.items.length;
+    },
+
+    clear() {
+      this.items = [];
+      this.save();
+    },
+
+    showNotification(type, title) {
+      const event = new CustomEvent('wishlist-notification', {
+        detail: { type, title }
+      });
+      window.dispatchEvent(event);
+    }
+  });
+});
+
+// Initialize wishlist on page load
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.Alpine && Alpine.store('wishlist')) {
+    Alpine.store('wishlist').init();
+  }
+});
+</script>
+
+{% comment %} Wishlist Notification Toast {% endcomment %}
+<div
+  id="wishlist-notification"
+  x-data="wishlistNotification()"
+  x-show="show"
+  x-cloak
+  @wishlist-notification.window="showToast($event.detail)"
+  x-transition:enter="transition ease-out duration-300"
+  x-transition:enter-start="opacity-0 translate-y-4"
+  x-transition:enter-end="opacity-100 translate-y-0"
+  x-transition:leave="transition ease-in duration-200"
+  x-transition:leave-start="opacity-100 translate-y-0"
+  x-transition:leave-end="opacity-0 translate-y-4"
+  class="wishlist-notification"
+>
+  <div class="wishlist-notification__icon" :class="type === 'added' ? 'is-added' : 'is-removed'">
+    <svg x-show="type === 'added'" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    </svg>
+    <svg x-show="type === 'removed'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    </svg>
+  </div>
+  <div class="wishlist-notification__text">
+    <span x-text="type === 'added' ? 'Zur Wunschliste hinzugefügt' : 'Von Wunschliste entfernt'"></span>
+    <span class="wishlist-notification__title" x-text="title"></span>
+  </div>
+  <button type="button" class="wishlist-notification__close" @click="show = false">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M18 6L6 18M6 6L18 18"/>
+    </svg>
+  </button>
+</div>
+
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('wishlistNotification', () => ({
+    show: false,
+    type: 'added',
+    title: '',
+    timeout: null,
+
+    showToast(detail) {
+      this.type = detail.type;
+      this.title = detail.title;
+      this.show = true;
+
+      // Clear existing timeout
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+      }
+
+      // Auto hide after 3 seconds
+      this.timeout = setTimeout(() => {
+        this.show = false;
+      }, 3000);
+    }
+  }));
+});
+</script>
+
+<style>
+  .wishlist-notification {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    background: var(--color-text, #1a1a1a);
+    color: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    max-width: calc(100vw - 2rem);
+  }
+
+  .wishlist-notification__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wishlist-notification__icon.is-added {
+    color: #ef4444;
+  }
+
+  .wishlist-notification__icon.is-removed {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .wishlist-notification__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    font-size: 0.875rem;
+    line-height: 1.3;
+  }
+
+  .wishlist-notification__title {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
+  .wishlist-notification__close {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: color 0.2s ease;
+    margin-left: 0.5rem;
+  }
+
+  .wishlist-notification__close:hover {
+    color: white;
+  }
+
+  [x-cloak] {
+    display: none !important;
+  }
+</style>

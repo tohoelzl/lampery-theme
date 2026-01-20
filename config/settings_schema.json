@@ -1,0 +1,414 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Lampery",
+    "theme_version": "1.0.0",
+    "theme_author": "Lampery",
+    "theme_documentation_url": "https://lampery.de",
+    "theme_support_url": "https://lampery.de/support"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Hauptfarben"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Hintergrundfarbe",
+        "default": "#FDFBF7"
+      },
+      {
+        "type": "color",
+        "id": "color_background_alt",
+        "label": "Alternative Hintergrundfarbe",
+        "default": "#F5F3EE"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Textfarbe",
+        "default": "#2D2D2D"
+      },
+      {
+        "type": "color",
+        "id": "color_text_muted",
+        "label": "Gedaempfte Textfarbe",
+        "default": "#6B6B6B"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Rahmenfarbe",
+        "default": "#E8E4DE"
+      },
+      {
+        "type": "header",
+        "content": "Akzentfarben"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primaerfarbe (Salbei)",
+        "default": "#8B9A7E"
+      },
+      {
+        "type": "color",
+        "id": "color_primary_light",
+        "label": "Primaerfarbe Hell",
+        "default": "#A8B59E"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Sekundaerfarbe (Sand)",
+        "default": "#C9B99A"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Akzentfarbe",
+        "default": "#D4A574"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_soft",
+        "label": "Weiche Akzentfarbe",
+        "default": "#E8D4C4"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "type_header_font",
+        "label": "Ueberschriften Schriftart",
+        "default": "manrope_n6"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "label": "Text Schriftart",
+        "default": "manrope_n4"
+      },
+      {
+        "type": "range",
+        "id": "type_base_size",
+        "label": "Basis Schriftgroesse",
+        "min": 14,
+        "max": 18,
+        "step": 1,
+        "default": 16,
+        "unit": "px"
+      }
+    ]
+  },
+  {
+    "name": "Social Media",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Social Media Links"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram URL"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest_link",
+        "label": "Pinterest URL"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_link",
+        "label": "Facebook URL"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok_link",
+        "label": "TikTok URL"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Warenkorb Animation"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_animation_enabled",
+        "label": "Animation aktivieren",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "cart_animation_color",
+        "label": "Button Erfolgsfarbe",
+        "default": "#22c55e"
+      },
+      {
+        "type": "text",
+        "id": "cart_animation_text",
+        "label": "Erfolgstext",
+        "default": "Hinzugefuegt!"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_confetti_enabled",
+        "label": "Konfetti anzeigen",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Fortschritts-Timeline"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_progress_enabled",
+        "label": "Fortschritts-Timeline aktivieren",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "cart_progress_steps",
+        "label": "Anzahl der Stufen",
+        "options": [
+          {
+            "value": "1",
+            "label": "1 Stufe"
+          },
+          {
+            "value": "2",
+            "label": "2 Stufen"
+          },
+          {
+            "value": "3",
+            "label": "3 Stufen"
+          }
+        ],
+        "default": "3"
+      },
+      {
+        "type": "color",
+        "id": "cart_progress_color",
+        "label": "Fortschrittsfarbe",
+        "default": "#8B9A7E"
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_1_threshold",
+        "label": "Belohnung 1 - Ab Betrag",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "default": 30,
+        "unit": "EUR"
+      },
+      {
+        "type": "text",
+        "id": "cart_reward_1_text",
+        "label": "Belohnung 1 - Text",
+        "default": "Gratis Geschenk"
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_2_threshold",
+        "label": "Belohnung 2 - Ab Betrag",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "default": 60,
+        "unit": "EUR"
+      },
+      {
+        "type": "text",
+        "id": "cart_reward_2_text",
+        "label": "Belohnung 2 - Text",
+        "default": "10% Rabatt"
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_3_threshold",
+        "label": "Belohnung 3 - Ab Betrag",
+        "min": 0,
+        "max": 300,
+        "step": 5,
+        "default": 100,
+        "unit": "EUR"
+      },
+      {
+        "type": "text",
+        "id": "cart_reward_3_text",
+        "label": "Belohnung 3 - Text",
+        "default": "Kostenloser Versand"
+      }
+    ]
+  },
+  {
+    "name": "Buttons",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Button Stil"
+      },
+      {
+        "type": "select",
+        "id": "button_style",
+        "label": "Ecken-Stil",
+        "options": [
+          {
+            "value": "rounded",
+            "label": "Abgerundet"
+          },
+          {
+            "value": "slightly_rounded",
+            "label": "Leicht abgerundet"
+          },
+          {
+            "value": "square",
+            "label": "Eckig"
+          },
+          {
+            "value": "pill",
+            "label": "Pill (sehr rund)"
+          }
+        ],
+        "default": "slightly_rounded"
+      },
+      {
+        "type": "header",
+        "content": "Hover Effekt"
+      },
+      {
+        "type": "select",
+        "id": "button_hover_effect",
+        "label": "Hover Effekt",
+        "options": [
+          {
+            "value": "none",
+            "label": "Keiner (nur Farbwechsel)"
+          },
+          {
+            "value": "fill_left",
+            "label": "Fuellen von links"
+          },
+          {
+            "value": "fill_right",
+            "label": "Fuellen von rechts"
+          },
+          {
+            "value": "fill_bottom",
+            "label": "Fuellen von unten"
+          },
+          {
+            "value": "fill_top",
+            "label": "Fuellen von oben (Guillotine)"
+          },
+          {
+            "value": "fill_center",
+            "label": "Fuellen von Mitte"
+          },
+          {
+            "value": "shine",
+            "label": "Glanz-Effekt"
+          },
+          {
+            "value": "scale",
+            "label": "Vergroessern"
+          }
+        ],
+        "default": "fill_left",
+        "info": "Animationseffekt beim Ueberfahren mit der Maus"
+      },
+      {
+        "type": "range",
+        "id": "button_hover_speed",
+        "label": "Hover Geschwindigkeit",
+        "min": 100,
+        "max": 500,
+        "step": 50,
+        "default": 300,
+        "unit": "ms"
+      }
+    ]
+  },
+  {
+    "name": "Product Cards",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Produkt-Karten Stil"
+      },
+      {
+        "type": "select",
+        "id": "product_card_style",
+        "label": "Ecken-Stil",
+        "options": [
+          {
+            "value": "rounded",
+            "label": "Abgerundet"
+          },
+          {
+            "value": "slightly_rounded",
+            "label": "Leicht abgerundet"
+          },
+          {
+            "value": "square",
+            "label": "Eckig"
+          }
+        ],
+        "default": "rounded",
+        "info": "Gilt fuer alle Produkt-Karten im Shop"
+      },
+      {
+        "type": "header",
+        "content": "Produkt-Bild"
+      },
+      {
+        "type": "select",
+        "id": "product_card_image_ratio",
+        "label": "Bild-Verhaeltnis",
+        "options": [
+          {
+            "value": "portrait",
+            "label": "Hochformat (3:4)"
+          },
+          {
+            "value": "square",
+            "label": "Quadratisch (1:1)"
+          },
+          {
+            "value": "landscape",
+            "label": "Querformat (4:3)"
+          }
+        ],
+        "default": "portrait"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_card_show_secondary_image",
+        "label": "Zweites Bild bei Hover zeigen",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon"
+      }
+    ]
+  }
+]

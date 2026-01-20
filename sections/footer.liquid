@@ -1,0 +1,246 @@
+{% comment %}
+  Footer Section - Converted from WooCommerce footer.php
+{% endcomment %}
+
+<footer class="site-footer bg-background-alt border-t border-border">
+
+  {% comment %} Footer Main {% endcomment %}
+  <div class="container mx-auto px-4 lg:px-8 py-16 lg:py-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+
+      {% comment %} Brand Column {% endcomment %}
+      <div class="lg:col-span-1">
+        {% if section.settings.footer_logo != blank %}
+          <div class="mb-6">
+            <img
+              src="{{ section.settings.footer_logo | image_url: width: 200 }}"
+              alt="{{ shop.name }}"
+              width="150"
+              height="auto"
+              loading="lazy"
+            >
+          </div>
+        {% else %}
+          <h3 class="text-xl font-semibold mb-6">{{ shop.name }}</h3>
+        {% endif %}
+
+        <p class="text-text-muted text-sm leading-relaxed mb-6">
+          {{ section.settings.footer_description | default: shop.description }}
+        </p>
+
+        {% comment %} Contact Info {% endcomment %}
+        {% if section.settings.contact_email != blank or section.settings.contact_phone != blank %}
+          <div class="space-y-2 mb-6">
+            {% if section.settings.contact_email != blank %}
+              <a href="mailto:{{ section.settings.contact_email }}" class="flex items-center text-sm text-text-muted hover:text-primary transition-colors">
+                {% render 'icon-mail' %}
+                <span class="ml-2">{{ section.settings.contact_email }}</span>
+              </a>
+            {% endif %}
+            {% if section.settings.contact_phone != blank %}
+              <a href="tel:{{ section.settings.contact_phone | replace: ' ', '' }}" class="flex items-center text-sm text-text-muted hover:text-primary transition-colors">
+                {% render 'icon-phone' %}
+                <span class="ml-2">{{ section.settings.contact_phone }}</span>
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% comment %} Social Links {% endcomment %}
+        <div class="flex items-center space-x-4">
+          {% if settings.social_instagram_link != blank %}
+            <a href="{{ settings.social_instagram_link }}" class="text-text-muted hover:text-primary transition-colors" aria-label="Instagram" target="_blank" rel="noopener">
+              {% render 'icon-instagram' %}
+            </a>
+          {% endif %}
+          {% if settings.social_pinterest_link != blank %}
+            <a href="{{ settings.social_pinterest_link }}" class="text-text-muted hover:text-primary transition-colors" aria-label="Pinterest" target="_blank" rel="noopener">
+              {% render 'icon-pinterest' %}
+            </a>
+          {% endif %}
+          {% if settings.social_facebook_link != blank %}
+            <a href="{{ settings.social_facebook_link }}" class="text-text-muted hover:text-primary transition-colors" aria-label="Facebook" target="_blank" rel="noopener">
+              {% render 'icon-facebook' %}
+            </a>
+          {% endif %}
+          {% if settings.social_tiktok_link != blank %}
+            <a href="{{ settings.social_tiktok_link }}" class="text-text-muted hover:text-primary transition-colors" aria-label="TikTok" target="_blank" rel="noopener">
+              {% render 'icon-tiktok' %}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      {% comment %} Footer Navigation Columns {% endcomment %}
+      <div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-8">
+
+        {% comment %} Column 1 {% endcomment %}
+        {% if section.settings.menu_1 != blank %}
+          <div>
+            <h4 class="text-sm font-semibold uppercase tracking-wider mb-4">{{ section.settings.menu_1_title }}</h4>
+            <ul class="space-y-2">
+              {% for link in linklists[section.settings.menu_1].links %}
+                <li>
+                  <a href="{{ link.url }}" class="text-sm text-text-muted hover:text-primary transition-colors">
+                    {{ link.title }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% comment %} Column 2 {% endcomment %}
+        {% if section.settings.menu_2 != blank %}
+          <div>
+            <h4 class="text-sm font-semibold uppercase tracking-wider mb-4">{{ section.settings.menu_2_title }}</h4>
+            <ul class="space-y-2">
+              {% for link in linklists[section.settings.menu_2].links %}
+                <li>
+                  <a href="{{ link.url }}" class="text-sm text-text-muted hover:text-primary transition-colors">
+                    {{ link.title }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% comment %} Column 3 {% endcomment %}
+        {% if section.settings.menu_3 != blank %}
+          <div>
+            <h4 class="text-sm font-semibold uppercase tracking-wider mb-4">{{ section.settings.menu_3_title }}</h4>
+            <ul class="space-y-2">
+              {% for link in linklists[section.settings.menu_3].links %}
+                <li>
+                  <a href="{{ link.url }}" class="text-sm text-text-muted hover:text-primary transition-colors">
+                    {{ link.title }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  {% comment %} Footer Bottom {% endcomment %}
+  <div class="border-t border-border">
+    <div class="container mx-auto px-4 lg:px-8 py-6">
+      <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 text-sm text-text-muted">
+
+        {% comment %} Copyright {% endcomment %}
+        <p>
+          &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ 'footer.copyright' | t }}
+        </p>
+
+        {% comment %} Payment Icons {% endcomment %}
+        {% if section.settings.show_payment_icons %}
+          <div class="flex items-center space-x-3">
+            <span class="text-xs text-text-muted">{{ 'footer.secure_payment' | t }}</span>
+            {% for type in shop.enabled_payment_types %}
+              {{ type | payment_type_svg_tag: class: 'h-6 w-auto' }}
+            {% endfor %}
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Branding"
+    },
+    {
+      "type": "image_picker",
+      "id": "footer_logo",
+      "label": "Footer Logo"
+    },
+    {
+      "type": "textarea",
+      "id": "footer_description",
+      "label": "Beschreibung",
+      "default": "Wir fertigen einzigartige Lampen und Wohnaccessoires mit Liebe zum Detail. Jedes Stueck wird in Deutschland handgefertigt."
+    },
+    {
+      "type": "header",
+      "content": "Kontakt"
+    },
+    {
+      "type": "text",
+      "id": "contact_email",
+      "label": "E-Mail Adresse"
+    },
+    {
+      "type": "text",
+      "id": "contact_phone",
+      "label": "Telefonnummer"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Spalte 1"
+    },
+    {
+      "type": "text",
+      "id": "menu_1_title",
+      "label": "Titel",
+      "default": "Ueber uns"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_1",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Spalte 2"
+    },
+    {
+      "type": "text",
+      "id": "menu_2_title",
+      "label": "Titel",
+      "default": "Kundenservice"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_2",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Spalte 3"
+    },
+    {
+      "type": "text",
+      "id": "menu_3_title",
+      "label": "Titel",
+      "default": "Rechtliches"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_3",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Footer Bottom"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "default": true,
+      "label": "Zahlungsarten-Icons anzeigen"
+    }
+  ]
+}
+{% endschema %}
