@@ -25,44 +25,42 @@
   endcase
 
   comment
-    Calculate actual columns based on card size
-    Smaller size = more columns, larger size = fewer columns
+    Card width in pixels based on size setting
+    Same values as featured-collection for consistency
   endcomment
   case card_size
     when 'small'
-      assign size_columns = columns | plus: 1
-      if size_columns > 6
-        assign size_columns = 6
-      endif
+      assign card_width = 220
       assign mobile_columns = 2
     when 'medium'
-      assign size_columns = columns
-      assign mobile_columns = 1
+      assign card_width = 280
+      assign mobile_columns = 2
     when 'large'
-      assign size_columns = columns | minus: 1
-      if size_columns < 2
-        assign size_columns = 2
-      endif
-      assign mobile_columns = 1
+      assign card_width = 340
+      assign mobile_columns = 2
     when 'extra_large'
-      assign size_columns = columns | minus: 2
-      if size_columns < 2
-        assign size_columns = 2
-      endif
+      assign card_width = 400
       assign mobile_columns = 1
     when 'xxl'
-      assign size_columns = columns | minus: 2
-      if size_columns < 1
-        assign size_columns = 1
-      endif
+      assign card_width = 480
       assign mobile_columns = 1
     else
-      assign size_columns = columns
-      assign mobile_columns = 1
+      assign card_width = 280
+      assign mobile_columns = 2
   endcase
+
+  comment
+    Calculate container width automatically:
+    container = (card_width * columns) + (gap * (columns - 1)) + padding (64px for 2rem each side)
+  endcomment
+  assign gaps_count = columns | minus: 1
+  assign total_gaps = gaps_count | times: card_gap
+  assign total_cards = columns | times: card_width
+  assign container_padding = 64
+  assign container_max = total_cards | plus: total_gaps | plus: container_padding
 -%}
 
-<section class="collections-page">
+<section class="collections-page" style="--container-max: {{ container_max }}px; --card-width: {{ card_width }}px;">
   <div class="collections-page__container">
 
     {% comment %} ========== PAGE HEADER ========== {% endcomment %}
@@ -194,6 +192,7 @@
 <style>
   /* Page Container */
   .collections-page {
+    width: 100%;
     padding: 2rem 0 4rem;
     background: var(--color-background);
   }
@@ -205,8 +204,9 @@
   }
 
   .collections-page__container {
-    max-width: 1400px;
-    margin: 0 auto;
+    max-width: var(--container-max, 1400px);
+    margin-left: auto;
+    margin-right: auto;
     padding: 0 1rem;
   }
 
@@ -292,19 +292,14 @@
   /* Collections Grid */
   .collections-grid {
     display: grid;
-    grid-template-columns: repeat({{ mobile_columns }}, 1fr);
+    grid-template-columns: repeat({{ columns }}, minmax(var(--card-width, 280px), 1fr));
     gap: var(--card-gap, 24px);
   }
 
-  @media (min-width: 640px) {
+  /* Mobile - use mobile columns */
+  @media (max-width: 1023px) {
     .collections-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .collections-grid {
-      grid-template-columns: repeat({{ size_columns }}, 1fr);
+      grid-template-columns: repeat({{ mobile_columns }}, 1fr);
     }
   }
 
@@ -594,27 +589,27 @@
       "options": [
         {
           "value": "small",
-          "label": "Klein"
+          "label": "Klein (220px)"
         },
         {
           "value": "medium",
-          "label": "Mittel"
+          "label": "Mittel (280px)"
         },
         {
           "value": "large",
-          "label": "Gross"
+          "label": "Gross (340px)"
         },
         {
           "value": "extra_large",
-          "label": "Sehr gross"
+          "label": "Sehr gross (400px)"
         },
         {
           "value": "xxl",
-          "label": "XXL"
+          "label": "XXL (480px)"
         }
       ],
       "default": "medium",
-      "info": "Groessere Karten = weniger Spalten"
+      "info": "Container-Breite passt sich automatisch an"
     },
     {
       "type": "range",
