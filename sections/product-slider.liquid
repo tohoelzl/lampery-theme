@@ -280,6 +280,15 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     padding: 0.5rem 0;
+    /* Extend scroll area so last card isn't cut off */
+    margin-right: calc(-1 * var(--card-gap, 24px));
+    padding-right: var(--card-gap, 24px);
+  }
+
+  /* Fix for last item cutoff - adds invisible space after last card */
+  .product-slider::after {
+    content: '';
+    flex: 0 0 1px;
   }
 
   .product-slider::-webkit-scrollbar {
