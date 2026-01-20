@@ -107,7 +107,7 @@
         "product_source": "all",
         "collection": "",
         "products_to_show": 12,
-        "card_size": "medium",
+        "card_size": "large",
         "card_gap": 24,
         "show_view_all": true,
         "view_all_text": "Alle Produkte ansehen"
