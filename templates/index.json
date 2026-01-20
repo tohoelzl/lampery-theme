@@ -89,7 +89,7 @@
         "subtitle": "Kollektionen",
         "title": "Nach Kategorie stoebern",
         "collections_per_row": 4,
-        "card_size": "large",
+        "card_size": "extra_large",
         "card_gap": 24,
         "card_style": "square",
         "aspect_ratio": "aspect-[4/3]"
