@@ -12,8 +12,8 @@
     "main": {
       "type": "main-list-collections",
       "settings": {
-        "title": "Alle Kollektionen",
-        "description": "Entdecke unsere handverlesene Auswahl an hochwertigen Lampen und Wohnaccessoires.",
+        "title": "Alle Kategorien",
+        "description": "Entdecke unsere hochwertigen Lampen und Wohnaccessoires.",
         "show_breadcrumbs": true,
         "show_count": true,
         "show_product_count": true,
