@@ -53,8 +53,8 @@
     </div>
 
     {% if has_products %}
-      {% comment %} Products Slider with Navigation {% endcomment %}
-      <div class="product-slider-track">
+      {% comment %} Outer wrapper for positioning arrows {% endcomment %}
+      <div class="product-slider-outer">
         {% comment %} Left Arrow {% endcomment %}
         <button type="button" class="product-slider-arrow product-slider-arrow--prev" data-slider-prev="{{ section_id }}" aria-label="Vorherige Produkte">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -62,35 +62,29 @@
           </svg>
         </button>
 
-        {% comment %} Slider {% endcomment %}
-        <div class="product-slider-wrapper">
-          <div class="product-slider" id="{{ section_id }}">
-            {% if product_source == 'all' %}
-              {% comment %} Show all products sorted by newest first {% endcomment %}
-              {% for product in collections.all.products limit: products_to_show %}
-                <div class="product-slider__item">
-                  {% render 'product-card', product: product %}
-                </div>
-              {% endfor %}
-            {% else %}
-              {% comment %} Show products from selected collection {% endcomment %}
-              {% for product in collection.products limit: products_to_show %}
-                <div class="product-slider__item">
-                  {% render 'product-card', product: product %}
-                </div>
-              {% endfor %}
-            {% endif %}
-            {% comment %} Spacer to prevent last card cutoff {% endcomment %}
-            <div class="product-slider__spacer" aria-hidden="true"></div>
-          </div>
-        </div>
-
         {% comment %} Right Arrow {% endcomment %}
         <button type="button" class="product-slider-arrow product-slider-arrow--next" data-slider-next="{{ section_id }}" aria-label="Naechste Produkte">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
+
+        {% comment %} Slider Container - scrollable area between arrows {% endcomment %}
+        <div class="product-slider" id="{{ section_id }}">
+          {% if product_source == 'all' %}
+            {% for product in collections.all.products limit: products_to_show %}
+              <div class="product-slider__item">
+                {% render 'product-card', product: product %}
+              </div>
+            {% endfor %}
+          {% else %}
+            {% for product in collection.products limit: products_to_show %}
+              <div class="product-slider__item">
+                {% render 'product-card', product: product %}
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
       </div>
 
       {% comment %} View All Link {% endcomment %}
@@ -115,18 +109,16 @@
       {% endif %}
     {% else %}
       {% comment %} Placeholder when no products available {% endcomment %}
-      <div class="product-slider-track">
+      <div class="product-slider-outer">
         <div class="product-slider-arrow product-slider-arrow--prev" style="opacity: 0.3;"></div>
-        <div class="product-slider-wrapper">
-          <div class="product-slider" id="{{ section_id }}">
-            {% for i in (1..6) %}
-              <div class="product-slider__item">
-                <div class="product-slider__placeholder"></div>
-              </div>
-            {% endfor %}
-          </div>
-        </div>
         <div class="product-slider-arrow product-slider-arrow--next" style="opacity: 0.3;"></div>
+        <div class="product-slider" id="{{ section_id }}">
+          {% for i in (1..6) %}
+            <div class="product-slider__item">
+              <div class="product-slider__placeholder"></div>
+            </div>
+          {% endfor %}
+        </div>
       </div>
       <p class="product-slider-empty">
         {% if product_source == 'all' %}
@@ -220,25 +212,26 @@
     }
   }
 
-  /* Slider Track - contains arrows and slider */
-  .product-slider-track {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  /* Outer container - positions arrows on sides */
+  .product-slider-outer {
+    position: relative;
+    padding: 0 3.5rem;
   }
 
   @media (min-width: 1024px) {
-    .product-slider-track {
-      gap: 1rem;
+    .product-slider-outer {
+      padding: 0 4rem;
     }
   }
 
-  /* Navigation Arrows */
+  /* Navigation Arrows - positioned absolutely on sides */
   .product-slider-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
     width: 2.5rem;
     height: 2.5rem;
     border: 1px solid var(--color-border, #e5e5e5);
@@ -248,6 +241,14 @@
     cursor: pointer;
     transition: all 0.2s ease;
     z-index: 2;
+  }
+
+  .product-slider-arrow--prev {
+    left: 0;
+  }
+
+  .product-slider-arrow--next {
+    right: 0;
   }
 
   @media (min-width: 1024px) {
@@ -268,16 +269,7 @@
     cursor: not-allowed;
   }
 
-  /* Slider Wrapper - clips horizontal overflow but allows vertical for shadows */
-  .product-slider-wrapper {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    padding: 0.5rem 0;
-    margin: -0.5rem 0;
-  }
-
-  /* Slider */
+  /* Slider - the scrollable container */
   .product-slider {
     display: flex;
     gap: var(--card-gap, 24px);
@@ -298,12 +290,6 @@
   .product-slider__item {
     flex: 0 0 var(--card-width, 280px);
     scroll-snap-align: start;
-  }
-
-  /* Spacer element to ensure last card is fully visible */
-  .product-slider__spacer {
-    flex: 0 0 1px;
-    min-width: 1px;
   }
 
 
