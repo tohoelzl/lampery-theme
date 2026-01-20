@@ -7,6 +7,7 @@
   assign product_source = section.settings.product_source | default: 'collection'
   assign collection = collections[section.settings.collection]
   assign products_to_show = section.settings.products_to_show
+  assign visible_products = section.settings.visible_products | default: 4
   assign card_size = section.settings.card_size | default: 'medium'
   assign card_gap = section.settings.card_gap | default: 24
   assign text_align = section.settings.text_alignment | default: 'center'
@@ -26,6 +27,15 @@
       assign card_width = 280
   endcase
 
+  comment
+    Calculate slider width:
+    slider_width = (card_width * visible_products) + (card_gap * (visible_products - 1))
+  endcomment
+  assign gaps_count = visible_products | minus: 1
+  assign total_gaps = gaps_count | times: card_gap
+  assign total_cards = visible_products | times: card_width
+  assign slider_width = total_cards | plus: total_gaps
+
   assign section_id = 'product-slider-' | append: section.id
 
   comment
@@ -41,7 +51,7 @@
   endif
 -%}
 
-<section class="product-slider-section" style="--card-width: {{ card_width }}px; --card-gap: {{ card_gap }}px;">
+<section class="product-slider-section" style="--card-width: {{ card_width }}px; --card-gap: {{ card_gap }}px; --slider-width: {{ slider_width }}px;">
   <div class="product-slider-container">
 
     {% comment %} Section Header {% endcomment %}
@@ -53,7 +63,7 @@
     </div>
 
     {% if has_products %}
-      {% comment %} Outer wrapper for positioning arrows {% endcomment %}
+      {% comment %} Outer wrapper - flex container with arrows and slider {% endcomment %}
       <div class="product-slider-outer">
         {% comment %} Left Arrow {% endcomment %}
         <button type="button" class="product-slider-arrow product-slider-arrow--prev" data-slider-prev="{{ section_id }}" aria-label="Vorherige Produkte">
@@ -62,14 +72,7 @@
           </svg>
         </button>
 
-        {% comment %} Right Arrow {% endcomment %}
-        <button type="button" class="product-slider-arrow product-slider-arrow--next" data-slider-next="{{ section_id }}" aria-label="Naechste Produkte">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-
-        {% comment %} Slider Container - scrollable area between arrows {% endcomment %}
+        {% comment %} Slider Container - fixed width based on visible_products {% endcomment %}
         <div class="product-slider" id="{{ section_id }}">
           {% if product_source == 'all' %}
             {% for product in collections.all.products limit: products_to_show %}
@@ -85,6 +88,13 @@
             {% endfor %}
           {% endif %}
         </div>
+
+        {% comment %} Right Arrow {% endcomment %}
+        <button type="button" class="product-slider-arrow product-slider-arrow--next" data-slider-next="{{ section_id }}" aria-label="Naechste Produkte">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
       </div>
 
       {% comment %} View All Link {% endcomment %}
@@ -111,14 +121,14 @@
       {% comment %} Placeholder when no products available {% endcomment %}
       <div class="product-slider-outer">
         <div class="product-slider-arrow product-slider-arrow--prev" style="opacity: 0.3;"></div>
-        <div class="product-slider-arrow product-slider-arrow--next" style="opacity: 0.3;"></div>
         <div class="product-slider" id="{{ section_id }}">
-          {% for i in (1..6) %}
+          {% for i in (1..visible_products) %}
             <div class="product-slider__item">
               <div class="product-slider__placeholder"></div>
             </div>
           {% endfor %}
         </div>
+        <div class="product-slider-arrow product-slider-arrow--next" style="opacity: 0.3;"></div>
       </div>
       <p class="product-slider-empty">
         {% if product_source == 'all' %}
@@ -212,23 +222,23 @@
     }
   }
 
-  /* Outer container - positions arrows on sides */
+  /* Outer container - flex layout with arrows and slider */
   .product-slider-outer {
-    position: relative;
-    padding: 0 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
   }
 
   @media (min-width: 1024px) {
     .product-slider-outer {
-      padding: 0 4rem;
+      gap: 1.5rem;
     }
   }
 
-  /* Navigation Arrows - positioned absolutely on sides */
+  /* Navigation Arrows */
   .product-slider-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -240,15 +250,6 @@
     color: var(--color-text);
     cursor: pointer;
     transition: all 0.2s ease;
-    z-index: 2;
-  }
-
-  .product-slider-arrow--prev {
-    left: 0;
-  }
-
-  .product-slider-arrow--next {
-    right: 0;
   }
 
   @media (min-width: 1024px) {
@@ -269,8 +270,10 @@
     cursor: not-allowed;
   }
 
-  /* Slider - the scrollable container */
+  /* Slider - fixed width based on visible products */
   .product-slider {
+    width: var(--slider-width);
+    max-width: 100%;
     display: flex;
     gap: var(--card-gap, 24px);
     overflow-x: auto;
@@ -280,15 +283,6 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     padding: 0.5rem 0;
-    /* Extend scroll area so last card isn't cut off */
-    margin-right: calc(-1 * var(--card-gap, 24px));
-    padding-right: var(--card-gap, 24px);
-  }
-
-  /* Fix for last item cutoff - adds invisible space after last card */
-  .product-slider::after {
-    content: '';
-    flex: 0 0 1px;
   }
 
   .product-slider::-webkit-scrollbar {
@@ -451,7 +445,17 @@
       "max": 24,
       "step": 2,
       "default": 12,
-      "label": "Anzahl Produkte"
+      "label": "Anzahl Produkte insgesamt"
+    },
+    {
+      "type": "range",
+      "id": "visible_products",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "label": "Sichtbare Produkte",
+      "info": "Anzahl der gleichzeitig sichtbaren Produkte"
     },
     {
       "type": "select",
