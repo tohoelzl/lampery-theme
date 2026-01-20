@@ -135,13 +135,13 @@
     }
   }
 
-  /* Terrakotta Button */
+  /* Newsletter Button */
   .newsletter-button {
-    background-color: var(--color-accent);
-    color: #ffffff;
+    background-color: {{ section.settings.button_bg | default: 'var(--color-accent)' }};
+    color: {{ section.settings.button_text_color | default: '#ffffff' }};
     font-weight: 600;
     padding: 0.875rem 1.5rem;
-    border-radius: 0.5rem;
+    border-radius: var(--button-radius, 0.5rem);
     border: none;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.2s ease;
@@ -151,7 +151,8 @@
   }
 
   .newsletter-button:hover {
-    background-color: var(--color-text);
+    background-color: {{ section.settings.button_hover_bg | default: 'var(--color-text)' }};
+    color: {{ section.settings.button_hover_text | default: '#ffffff' }};
     transform: translateY(-1px);
   }
 
@@ -218,6 +219,34 @@
       "id": "button_text",
       "label": "Button Text",
       "default": "Jetzt anmelden"
+    },
+    {
+      "type": "header",
+      "content": "Button Farben"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button Hintergrund",
+      "default": "#D4A574"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Textfarbe",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg",
+      "label": "Hover Hintergrund",
+      "default": "#2D2D2D"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text",
+      "label": "Hover Textfarbe",
+      "default": "#FFFFFF"
     },
     {
       "type": "text",
