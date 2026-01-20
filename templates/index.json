@@ -44,7 +44,7 @@
         "title": "Entdecke unsere beliebtesten handgefertigten Stuecke",
         "collection": "cloudy",
         "products_to_show": 4,
-        "columns": 4,
+        "columns": 5,
         "card_size": "large",
         "card_gap": 16,
         "show_view_all": true,
