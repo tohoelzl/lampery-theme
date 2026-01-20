@@ -4,6 +4,7 @@
 {% endcomment %}
 
 {%- liquid
+  assign product_source = section.settings.product_source | default: 'collection'
   assign collection = collections[section.settings.collection]
   assign products_to_show = section.settings.products_to_show
   assign card_size = section.settings.card_size | default: 'medium'
@@ -25,6 +26,18 @@
   endcase
 
   assign section_id = 'product-slider-' | append: section.id
+
+  comment
+    Determine which products to show based on source setting
+  endcomment
+  assign has_products = false
+  if product_source == 'all'
+    if collections.all.products.size > 0
+      assign has_products = true
+    endif
+  elsif collection != blank and collection.products.size > 0
+    assign has_products = true
+  endif
 -%}
 
 <section class="product-slider-section" style="--card-width: {{ card_width }}px; --card-gap: {{ card_gap }}px;">
@@ -54,31 +67,50 @@
       </div>
     </div>
 
-    {% if collection != blank and collection.products.size > 0 %}
+    {% if has_products %}
       {% comment %} Products Slider {% endcomment %}
       <div class="product-slider-wrapper">
         <div class="product-slider" id="{{ section_id }}">
-          {% for product in collection.products limit: products_to_show %}
-            <div class="product-slider__item">
-              {% render 'product-card', product: product %}
-            </div>
-          {% endfor %}
+          {% if product_source == 'all' %}
+            {% comment %} Show all products sorted by newest first {% endcomment %}
+            {% for product in collections.all.products limit: products_to_show %}
+              <div class="product-slider__item">
+                {% render 'product-card', product: product %}
+              </div>
+            {% endfor %}
+          {% else %}
+            {% comment %} Show products from selected collection {% endcomment %}
+            {% for product in collection.products limit: products_to_show %}
+              <div class="product-slider__item">
+                {% render 'product-card', product: product %}
+              </div>
+            {% endfor %}
+          {% endif %}
         </div>
       </div>
 
       {% comment %} View All Link {% endcomment %}
       {% if section.settings.show_view_all %}
         <div class="product-slider-footer">
-          <a href="{{ collection.url }}" class="btn-secondary">
-            {{ section.settings.view_all_text | default: 'Alle Produkte ansehen' }}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
+          {% if product_source == 'all' %}
+            <a href="{{ routes.all_products_collection_url }}" class="btn-secondary">
+              {{ section.settings.view_all_text | default: 'Alle Produkte ansehen' }}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {% else %}
+            <a href="{{ collection.url }}" class="btn-secondary">
+              {{ section.settings.view_all_text | default: 'Alle Produkte ansehen' }}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {% endif %}
         </div>
       {% endif %}
     {% else %}
-      {% comment %} Placeholder when no collection is selected {% endcomment %}
+      {% comment %} Placeholder when no products available {% endcomment %}
       <div class="product-slider-wrapper">
         <div class="product-slider" id="{{ section_id }}">
           {% for i in (1..6) %}
@@ -88,7 +120,13 @@
           {% endfor %}
         </div>
       </div>
-      <p class="product-slider-empty">Waehle eine Kollektion in den Theme-Einstellungen aus.</p>
+      <p class="product-slider-empty">
+        {% if product_source == 'all' %}
+          Noch keine Produkte vorhanden.
+        {% else %}
+          Waehle eine Kollektion in den Theme-Einstellungen aus.
+        {% endif %}
+      </p>
     {% endif %}
 
   </div>
@@ -360,12 +398,30 @@
     },
     {
       "type": "header",
-      "content": "Kollektion"
+      "content": "Produkte"
+    },
+    {
+      "type": "select",
+      "id": "product_source",
+      "label": "Produkt-Quelle",
+      "options": [
+        {
+          "value": "all",
+          "label": "Alle Produkte (neueste zuerst)"
+        },
+        {
+          "value": "collection",
+          "label": "Bestimmte Kollektion"
+        }
+      ],
+      "default": "all",
+      "info": "Waehle ob alle Produkte oder eine bestimmte Kollektion angezeigt werden soll"
     },
     {
       "type": "collection",
       "id": "collection",
-      "label": "Kollektion"
+      "label": "Kollektion",
+      "info": "Nur relevant wenn 'Bestimmte Kollektion' ausgewaehlt ist"
     },
     {
       "type": "range",
