@@ -17,6 +17,7 @@
     "button_hover_effect": "fill_diagonal",
     "button_hover_speed": 800,
     "product_card_style": "square",
+    "favicon": "shopify://shop_images/Bildmarke_Main.svg",
     "content_for_index": []
   }
 }
