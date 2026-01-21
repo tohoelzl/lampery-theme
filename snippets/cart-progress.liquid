@@ -143,7 +143,7 @@
         </div>
         <div class="milestone-label milestone-label--right mt-2">
           <div class="text-xs font-medium {% if cart_total >= threshold_3 %}text-primary{% else %}text-text-muted{% endif %}">{{ threshold_3 }}€</div>
-          <div class="text-xs {% if cart_total >= threshold_3 %}text-primary{% else %}text-text-muted{% endif %}">{{ settings.cart_reward_3_text }}</div>
+          <div class="text-xs milestone-text {% if cart_total >= threshold_3 %}text-primary{% else %}text-text-muted{% endif %}">{{ settings.cart_reward_3_text }}</div>
         </div>
       </div>
     {% endif %}
@@ -167,6 +167,10 @@
   /* Right aligned labels (for the last milestone at 100%) */
   .milestone-label--right {
     text-align: right;
-    transform: translateX(calc(50% - 10px));
+  }
+
+  .milestone-label--right .milestone-text {
+    transform: translateX(-30%);
+    display: inline-block;
   }
 </style>
