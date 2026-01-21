@@ -246,7 +246,21 @@
     color: var(--color-text);
     opacity: 0;
     transform: translateX(-0.5rem);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease, background 0.3s ease;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  /* Arrow hover effect pseudo-element (like slider arrows) */
+  .collection-list-card__arrow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-text);
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform 0.3s ease-out;
   }
 
   @media (min-width: 1024px) {
@@ -261,6 +275,15 @@
   .collection-list-card:hover .collection-list-card__arrow {
     opacity: 1;
     transform: translateX(0);
+  }
+
+  /* Hover effect on arrow itself */
+  .collection-list-card__arrow:hover::before {
+    transform: scale(1);
+  }
+
+  .collection-list-card__arrow:hover {
+    color: #ffffff;
   }
 </style>
 
