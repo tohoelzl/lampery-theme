@@ -284,7 +284,7 @@
   .product-slider-arrow:hover:not(:disabled) {
     background: {{ section.settings.arrow_hover_bg_color | default: 'var(--color-text)' }};
     color: {{ section.settings.arrow_hover_icon_color | default: '#ffffff' }};
-    border-color: {{ section.settings.arrow_hover_bg_color | default: 'var(--color-text)' }};
+    border-color: transparent;
   }
 
     {% when 'fill_center' %}
@@ -298,7 +298,7 @@
   }
   .product-slider-arrow:hover:not(:disabled) {
     color: {{ section.settings.arrow_hover_icon_color | default: '#ffffff' }};
-    border-color: {{ section.settings.arrow_hover_bg_color | default: 'var(--color-text)' }};
+    border-color: transparent;
   }
 
     {% when 'fill_left' %}
@@ -313,7 +313,7 @@
   }
   .product-slider-arrow:hover:not(:disabled) {
     color: {{ section.settings.arrow_hover_icon_color | default: '#ffffff' }};
-    border-color: {{ section.settings.arrow_hover_bg_color | default: 'var(--color-text)' }};
+    border-color: transparent;
   }
 
     {% when 'fill_right' %}
@@ -328,7 +328,7 @@
   }
   .product-slider-arrow:hover:not(:disabled) {
     color: {{ section.settings.arrow_hover_icon_color | default: '#ffffff' }};
-    border-color: {{ section.settings.arrow_hover_bg_color | default: 'var(--color-text)' }};
+    border-color: transparent;
   }
 
     {% when 'fill_bottom' %}
@@ -343,7 +343,7 @@
   }
   .product-slider-arrow:hover:not(:disabled) {
     color: {{ section.settings.arrow_hover_icon_color | default: '#ffffff' }};
-    border-color: {{ section.settings.arrow_hover_bg_color | default: 'var(--color-text)' }};
+    border-color: transparent;
   }
 
     {% when 'fill_top' %}
@@ -358,7 +358,7 @@
   }
   .product-slider-arrow:hover:not(:disabled) {
     color: {{ section.settings.arrow_hover_icon_color | default: '#ffffff' }};
-    border-color: {{ section.settings.arrow_hover_bg_color | default: 'var(--color-text)' }};
+    border-color: transparent;
   }
 
     {% else %}
@@ -372,7 +372,7 @@
   }
   .product-slider-arrow:hover:not(:disabled) {
     color: {{ section.settings.arrow_hover_icon_color | default: '#ffffff' }};
-    border-color: {{ section.settings.arrow_hover_bg_color | default: 'var(--color-text)' }};
+    border-color: transparent;
   }
   {% endcase %}
 
