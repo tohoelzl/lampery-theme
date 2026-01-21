@@ -47,10 +47,13 @@
         "collection": "lampen",
         "products_to_show": 4,
         "columns": 4,
+        "mobile_columns": "2",
         "card_size": "extra_large",
         "card_gap": 16,
         "show_view_all": true,
-        "view_all_text": "Alle Produkte ansehen"
+        "view_all_text": "Alle Produkte ansehen",
+        "padding_top": 30,
+        "padding_bottom": 80
       }
     },
     "collection_list": {
@@ -94,7 +97,9 @@
         "card_size": "extra_large",
         "card_gap": 24,
         "card_style": "square",
-        "aspect_ratio": "aspect-[4/3]"
+        "aspect_ratio": "aspect-[4/3]",
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     },
     "product_slider_7n3DnQ": {
@@ -110,6 +115,7 @@
         "visible_products": 4,
         "card_size": "extra_large",
         "card_gap": 24,
+        "mobile_columns": "2",
         "arrow_bg_color": "#ffffff",
         "arrow_border_color": "#e5e5e5",
         "arrow_icon_color": "#2d2d2d",
@@ -117,7 +123,9 @@
         "arrow_hover_icon_color": "#ffffff",
         "arrow_hover_effect": "fill_center",
         "show_view_all": true,
-        "view_all_text": "Alle Produkte ansehen"
+        "view_all_text": "Alle Produkte ansehen",
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     },
     "testimonials": {
@@ -155,7 +163,9 @@
       ],
       "settings": {
         "subtitle": "Kundenstimmen",
-        "title": "Was unsere Kunden sagen"
+        "title": "Was unsere Kunden sagen",
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     },
     "newsletter": {
@@ -169,7 +179,9 @@
         "button_text_color": "#ffffff",
         "button_hover_bg": "#2d2d2d",
         "button_hover_text": "#ffffff",
-        "privacy_text": "Mit der Anmeldung stimmst du unserer Datenschutzerklaerung zu."
+        "privacy_text": "Mit der Anmeldung stimmst du unserer Datenschutzerklaerung zu.",
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     }
   },
