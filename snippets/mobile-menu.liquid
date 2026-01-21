@@ -1,5 +1,5 @@
 {% comment %}
-  Mobile Menu Snippet - Converted from WooCommerce header.php Mobile Menu
+  Mobile Menu Snippet - Burger Menu fuer Mobile
   Usage: {% render 'mobile-menu', menu: section.settings.menu %}
 {% endcomment %}
 
@@ -11,125 +11,282 @@
   endif
 -%}
 
+{% comment %} Backdrop {% endcomment %}
 <div
+  class="mobile-menu-backdrop"
   x-show="mobileMenuOpen"
+  x-transition:enter="transition ease-out duration-300"
+  x-transition:enter-start="opacity-0"
+  x-transition:enter-end="opacity-100"
+  x-transition:leave="transition ease-in duration-200"
+  x-transition:leave-start="opacity-100"
+  x-transition:leave-end="opacity-0"
+  @click="mobileMenuOpen = false"
   x-cloak
-  class="fixed inset-0 z-50 lg:hidden"
+></div>
+
+{% comment %} Mobile Menu Panel {% endcomment %}
+<div
+  class="mobile-menu-panel"
+  x-show="mobileMenuOpen"
+  x-transition:enter="transition ease-out duration-300"
+  x-transition:enter-start="-translate-x-full"
+  x-transition:enter-end="translate-x-0"
+  x-transition:leave="transition ease-in duration-200"
+  x-transition:leave-start="translate-x-0"
+  x-transition:leave-end="-translate-x-full"
+  x-cloak
+  id="mobile-menu"
   role="dialog"
   aria-modal="true"
-  id="mobile-menu"
 >
-  {% comment %} Backdrop {% endcomment %}
-  <div
-    class="fixed inset-0 bg-text/20 backdrop-blur-sm"
-    x-show="mobileMenuOpen"
-    x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0"
-    x-transition:enter-end="opacity-100"
-    x-transition:leave="transition ease-in duration-200"
-    x-transition:leave-start="opacity-100"
-    x-transition:leave-end="opacity-0"
-    @click="mobileMenuOpen = false"
-  ></div>
+  {% comment %} Menu Header {% endcomment %}
+  <div class="mobile-menu-header">
+    <span class="mobile-menu-title">Menu</span>
+    <button
+      class="mobile-menu-close"
+      @click="mobileMenuOpen = false"
+      aria-label="Menu schliessen"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
 
-  {% comment %} Menu Panel {% endcomment %}
-  <div
-    class="fixed inset-y-0 left-0 w-full max-w-sm bg-background shadow-lg flex flex-col"
-    x-show="mobileMenuOpen"
-    x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="-translate-x-full"
-    x-transition:enter-end="translate-x-0"
-    x-transition:leave="transition ease-in duration-200"
-    x-transition:leave-start="translate-x-0"
-    x-transition:leave-end="-translate-x-full"
-  >
-    {% comment %} Menu Header {% endcomment %}
-    <div class="flex items-center justify-between px-6 py-4 border-b border-border">
-      <span class="text-lg font-semibold">{{ 'navigation.menu' | t }}</span>
-      <button
-        class="p-2 -mr-2 text-text hover:text-primary transition-colors"
-        @click="mobileMenuOpen = false"
-        aria-label="{{ 'accessibility.close' | t }}"
-      >
-        {% render 'icon-close', class: 'w-6 h-6' %}
-      </button>
-    </div>
-
-    {% comment %} Menu Content {% endcomment %}
-    <nav class="flex-1 overflow-y-auto px-6 py-6">
-      <ul class="space-y-4">
-        {% for link in mobile_menu.links %}
-          <li>
-            {% if link.links.size > 0 %}
-              <div x-data="{ open: false }">
-                <button
-                  @click="open = !open"
-                  class="flex items-center justify-between w-full py-2 text-lg text-text hover:text-primary transition-colors"
-                >
-                  <span>{{ link.title }}</span>
-                  <span :class="{ 'rotate-180': open }" class="transition-transform duration-200">
-                    {% render 'icon-chevron-down', class: 'w-5 h-5' %}
-                  </span>
-                </button>
-                <ul
-                  x-show="open"
-                  x-collapse
-                  class="pl-4 space-y-2 mt-2"
-                >
-                  {% for child_link in link.links %}
-                    <li>
-                      <a
-                        href="{{ child_link.url }}"
-                        class="block py-1 text-text-muted hover:text-primary transition-colors"
-                        @click="mobileMenuOpen = false"
-                      >
-                        {{ child_link.title }}
-                      </a>
-                    </li>
-                  {% endfor %}
-                </ul>
-              </div>
-            {% else %}
-              <a
-                href="{{ link.url }}"
-                class="block py-2 text-lg text-text hover:text-primary transition-colors"
-                @click="mobileMenuOpen = false"
+  {% comment %} Menu Content {% endcomment %}
+  <nav class="mobile-menu-nav">
+    <ul class="mobile-menu-list">
+      {% for link in mobile_menu.links %}
+        <li class="mobile-menu-item">
+          {% if link.links.size > 0 %}
+            <div x-data="{ subOpen: false }">
+              <button
+                class="mobile-menu-link mobile-menu-link--parent"
+                @click="subOpen = !subOpen"
+                :aria-expanded="subOpen"
               >
-                {{ link.title }}
-              </a>
-            {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
-    </nav>
-
-    {% comment %} Menu Footer {% endcomment %}
-    <div class="px-6 py-6 border-t border-border space-y-4">
-      <a
-        href="{{ routes.account_url | default: routes.account_login_url }}"
-        class="flex items-center space-x-3 text-text hover:text-primary transition-colors"
-        @click="mobileMenuOpen = false"
-      >
-        {% render 'icon-user', class: 'w-5 h-5' %}
-        <span>{{ 'customer.account.title' | t }}</span>
-      </a>
-
-      {% comment %} Language Switcher (if applicable) {% endcomment %}
-      {% if localization.available_languages.size > 1 %}
-        <div class="pt-4 border-t border-border">
-          <span class="block text-sm text-text-muted mb-2">{{ 'localization.language' | t }}</span>
-          <div class="flex items-center gap-2">
-            {% for language in localization.available_languages %}
-              <a
-                href="{{ language.root_url }}"
-                class="flex-1 text-center py-2 px-3 rounded-lg text-sm font-medium transition-colors {% if language.iso_code == localization.language.iso_code %}bg-primary text-white{% else %}bg-background-alt text-text hover:bg-border{% endif %}"
+                <span>{{ link.title }}</span>
+                <svg
+                  class="mobile-menu-chevron"
+                  :class="{ 'rotate-180': subOpen }"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <ul
+                class="mobile-menu-sublist"
+                x-show="subOpen"
+                x-collapse
               >
-                {{ language.endonym_name }}
-              </a>
-            {% endfor %}
-          </div>
-        </div>
-      {% endif %}
-    </div>
+                {% for child_link in link.links %}
+                  <li>
+                    <a
+                      href="{{ child_link.url }}"
+                      class="mobile-menu-sublink"
+                      @click="mobileMenuOpen = false"
+                    >
+                      {{ child_link.title }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% else %}
+            <a
+              href="{{ link.url }}"
+              class="mobile-menu-link"
+              @click="mobileMenuOpen = false"
+            >
+              {{ link.title }}
+            </a>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+
+  {% comment %} Menu Footer {% endcomment %}
+  <div class="mobile-menu-footer">
+    <a
+      href="{{ routes.account_url | default: routes.account_login_url }}"
+      class="mobile-menu-footer-link"
+      @click="mobileMenuOpen = false"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      <span>Mein Konto</span>
+    </a>
   </div>
 </div>
+
+<style>
+  /* Mobile Menu Backdrop */
+  .mobile-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+  }
+
+  /* Mobile Menu Panel */
+  .mobile-menu-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 320px;
+    background-color: var(--color-background, #ffffff);
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Hide on Desktop */
+  @media (min-width: 1024px) {
+    .mobile-menu-backdrop,
+    .mobile-menu-panel {
+      display: none !important;
+    }
+  }
+
+  /* Menu Header */
+  .mobile-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-border, #e5e5e5);
+  }
+
+  .mobile-menu-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text, #2D2D2D);
+  }
+
+  .mobile-menu-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-right: -0.5rem;
+    background: none;
+    border: none;
+    color: var(--color-text, #2D2D2D);
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .mobile-menu-close:hover {
+    color: var(--color-primary, #8B9A7E);
+  }
+
+  /* Menu Navigation */
+  .mobile-menu-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 0;
+  }
+
+  .mobile-menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mobile-menu-item {
+    border-bottom: 1px solid var(--color-border, #e5e5e5);
+  }
+
+  .mobile-menu-item:last-child {
+    border-bottom: none;
+  }
+
+  /* Menu Links */
+  .mobile-menu-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text, #2D2D2D);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .mobile-menu-link:hover {
+    background-color: var(--color-background-alt, #f5f5f5);
+    color: var(--color-primary, #8B9A7E);
+  }
+
+  .mobile-menu-chevron {
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  /* Submenu */
+  .mobile-menu-sublist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-background-alt, #f5f5f5);
+  }
+
+  .mobile-menu-sublink {
+    display: block;
+    padding: 0.75rem 1.25rem 0.75rem 2rem;
+    font-size: 0.9375rem;
+    color: var(--color-text-muted, #666666);
+    text-decoration: none;
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .mobile-menu-sublink:hover {
+    color: var(--color-primary, #8B9A7E);
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+
+  /* Menu Footer */
+  .mobile-menu-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--color-border, #e5e5e5);
+  }
+
+  .mobile-menu-footer-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    font-size: 0.9375rem;
+    color: var(--color-text, #2D2D2D);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .mobile-menu-footer-link:hover {
+    color: var(--color-primary, #8B9A7E);
+  }
+
+  /* Alpine.js x-cloak */
+  [x-cloak] {
+    display: none !important;
+  }
+</style>

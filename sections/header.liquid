@@ -36,18 +36,18 @@
 
       {% comment %} Mobile Menu Toggle {% endcomment %}
       <button
-        class="lg:hidden p-2 -ml-2 text-text hover:text-primary transition-colors"
+        class="mobile-menu-toggle"
         @click="mobileMenuOpen = !mobileMenuOpen"
         :aria-expanded="mobileMenuOpen"
         aria-controls="mobile-menu"
-        aria-label="{{ 'accessibility.toggle_menu' | t }}"
+        aria-label="Menu oeffnen"
+        type="button"
       >
-        <span x-show="!mobileMenuOpen">
-          {% render 'icon-menu' %}
-        </span>
-        <span x-show="mobileMenuOpen" x-cloak>
-          {% render 'icon-close' %}
-        </span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
       </button>
 
       {% comment %} Logo {% endcomment %}
@@ -775,6 +775,38 @@
     align-items: center;
     gap: 0.5rem;
     height: 100%;
+  }
+
+  /* Mobile Menu Toggle Button */
+  .mobile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    margin-left: -8px;
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .mobile-menu-toggle:hover {
+    color: var(--color-primary);
+  }
+
+  /* Hide on Desktop */
+  @media (min-width: 1024px) {
+    .mobile-menu-toggle {
+      display: none;
+    }
+  }
+
+  /* Rotate chevron */
+  .rotate-180 {
+    transform: rotate(180deg);
   }
 </style>
 
