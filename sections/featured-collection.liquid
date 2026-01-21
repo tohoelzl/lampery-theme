@@ -9,30 +9,24 @@
   assign columns = section.settings.columns
   assign card_size = section.settings.card_size | default: 'medium'
   assign card_gap = section.settings.card_gap | default: 24
+  assign mobile_columns = section.settings.mobile_columns | default: 2
 
   comment
     Card width in pixels based on size setting
-    These are minimum widths per card
   endcomment
   case card_size
     when 'small'
       assign card_width = 220
-      assign mobile_columns = 2
     when 'medium'
       assign card_width = 280
-      assign mobile_columns = 2
     when 'large'
       assign card_width = 340
-      assign mobile_columns = 2
     when 'extra_large'
       assign card_width = 400
-      assign mobile_columns = 1
     when 'xxl'
       assign card_width = 480
-      assign mobile_columns = 1
     else
       assign card_width = 280
-      assign mobile_columns = 2
   endcase
 
   comment
@@ -171,6 +165,22 @@
       "step": 1,
       "default": 4,
       "label": "Spalten (Desktop)"
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Spalten (Mobile)",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 Produkt pro Reihe"
+        },
+        {
+          "value": "2",
+          "label": "2 Produkte pro Reihe"
+        }
+      ],
+      "default": "2"
     },
     {
       "type": "select",

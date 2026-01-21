@@ -3,6 +3,10 @@
   Lädt Empfehlungen via Shopify Product Recommendations API
 {% endcomment %}
 
+{%- liquid
+  assign mobile_columns = section.settings.mobile_columns | default: 2
+-%}
+
 <div
   id="product-recommendations"
   data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.products_to_show }}"
@@ -17,7 +21,7 @@
           <h2 class="section-title">{{ section.settings.heading }}</h2>
         </div>
 
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        <div class="product-recommendations__grid product-recommendations__grid--mobile-{{ mobile_columns }}">
           {% for product in recommendations.products limit: section.settings.products_to_show %}
             {% render 'product-card', product: product %}
           {% endfor %}
@@ -71,6 +75,30 @@
 
   @keyframes spin {
     to { transform: rotate(360deg); }
+  }
+
+  /* Grid layout */
+  .product-recommendations__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .product-recommendations__grid {
+      gap: 2rem;
+    }
+  }
+
+  /* Mobile: 2 columns */
+  @media (max-width: 1023px) {
+    .product-recommendations__grid--mobile-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .product-recommendations__grid--mobile-1 {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 
@@ -134,6 +162,22 @@
       "step": 1,
       "default": 4,
       "label": "Anzahl Produkte"
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Spalten (Mobile)",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 Produkt pro Reihe"
+        },
+        {
+          "value": "2",
+          "label": "2 Produkte pro Reihe"
+        }
+      ],
+      "default": "2"
     }
   ]
 }

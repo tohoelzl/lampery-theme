@@ -11,6 +11,7 @@
   assign card_size = section.settings.card_size | default: 'medium'
   assign card_gap = section.settings.card_gap | default: 24
   assign text_align = section.settings.text_alignment | default: 'center'
+  assign mobile_columns = section.settings.mobile_columns | default: '2'
 
   case card_size
     when 'small'
@@ -58,7 +59,7 @@
   endif
 -%}
 
-<section class="product-slider-section" style="--card-width: {{ card_width }}px; --card-gap: {{ card_gap }}px; --slider-width: {{ slider_width }}px; --container-width: {{ container_width }}px; --padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;">
+<section class="product-slider-section product-slider-section--mobile-{{ mobile_columns }}" style="--card-width: {{ card_width }}px; --card-gap: {{ card_gap }}px; --slider-width: {{ slider_width }}px; --container-width: {{ container_width }}px; --padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;">
   <div class="product-slider-container">
 
     {% comment %} Section Header {% endcomment %}
@@ -415,6 +416,36 @@
     scroll-snap-align: start;
   }
 
+  /* Mobile: Adjust card width based on mobile_columns setting */
+  @media (max-width: 767px) {
+    /* 2 products per row on mobile */
+    .product-slider-section--mobile-2 .product-slider__item {
+      flex: 0 0 calc(50% - var(--card-gap, 24px) / 2);
+    }
+
+    /* 1 product per row on mobile */
+    .product-slider-section--mobile-1 .product-slider__item {
+      flex: 0 0 calc(100% - 2rem);
+    }
+
+    /* Hide arrows on mobile for better touch experience */
+    .product-slider-section--mobile-1 .product-slider-arrow,
+    .product-slider-section--mobile-2 .product-slider-arrow {
+      display: none;
+    }
+
+    .product-slider-section--mobile-1 .product-slider-outer,
+    .product-slider-section--mobile-2 .product-slider-outer {
+      gap: 0;
+    }
+
+    .product-slider-section--mobile-1 .product-slider,
+    .product-slider-section--mobile-2 .product-slider {
+      width: 100%;
+      padding: 0.5rem 1rem;
+    }
+  }
+
 
   /* Placeholder */
   .product-slider__placeholder {
@@ -614,6 +645,23 @@
       "default": 24,
       "unit": "px",
       "label": "Abstand zwischen Karten"
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Produkte pro Reihe (Mobile)",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 Produkt pro Reihe"
+        },
+        {
+          "value": "2",
+          "label": "2 Produkte pro Reihe"
+        }
+      ],
+      "default": "2",
+      "info": "Gilt fuer Bildschirme unter 768px"
     },
     {
       "type": "header",
