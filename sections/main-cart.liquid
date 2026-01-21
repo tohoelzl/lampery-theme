@@ -131,9 +131,11 @@
               <p class="text-xs text-text-muted mt-1">{{ 'cart.taxes_included' | t }}</p>
             </div>
 
-            <a href="{{ routes.checkout_url }}" class="btn-primary w-full justify-center text-lg py-4">
-              {{ 'cart.checkout' | t }}
-            </a>
+            <form action="/cart" method="post">
+              <button type="submit" name="checkout" class="btn-primary w-full justify-center text-lg py-4">
+                {{ 'cart.checkout' | t }}
+              </button>
+            </form>
 
             <a href="{{ routes.all_products_collection_url }}" class="btn-ghost w-full justify-center mt-3">
               {{ 'cart.continue_shopping' | t }}

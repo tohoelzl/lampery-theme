@@ -170,9 +170,11 @@
       </a>
 
       {% comment %} Checkout Button {% endcomment %}
-      <a href="{{ routes.checkout_url }}" class="btn-primary w-full justify-center">
-        {{ 'cart.checkout' | t }}
-      </a>
+      <form action="/cart" method="post">
+        <button type="submit" name="checkout" class="btn-primary w-full justify-center">
+          {{ 'cart.checkout' | t }}
+        </button>
+      </form>
 
       <button
         class="btn-link w-full"
