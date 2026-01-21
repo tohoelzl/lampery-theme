@@ -10,11 +10,12 @@
   endif
 -%}
 
+<div x-data="{ scrolled: false, megaMenu: null, megaMenuTimeout: null, mobileMenuOpen: false }"
+     @scroll.window="scrolled = window.scrollY > 20"
+     @keydown.escape.window="megaMenu = null; mobileMenuOpen = false">
+
 <header class="site-header {% if section.settings.logo_overflow %}header--logo-overflow{% endif %} sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border"
-        style="--header-height: {{ section.settings.header_height }}px; --logo-overflow: {{ section.settings.logo_overflow_amount }}px; --logo-top-padding: {{ section.settings.logo_top_padding }}px;"
-        x-data="{ scrolled: false, megaMenu: null, megaMenuTimeout: null }"
-        @scroll.window="scrolled = window.scrollY > 20"
-        @keydown.escape.window="megaMenu = null">
+        style="--header-height: {{ section.settings.header_height }}px; --logo-overflow: {{ section.settings.logo_overflow_amount }}px; --logo-top-padding: {{ section.settings.logo_top_padding }}px;">
 
   {% comment %} Announcement Bar {% endcomment %}
   {% if section.settings.show_announcement and section.settings.announcement_text != blank %}
@@ -373,6 +374,8 @@
 
 {% comment %} Mobile Menu {% endcomment %}
 {% render 'mobile-menu', menu: section.settings.menu %}
+
+</div>
 
 {% comment %} Mega Menu Styles {% endcomment %}
 {% if mega_menu_enabled %}
