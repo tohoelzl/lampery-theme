@@ -608,6 +608,35 @@
     }
   }
 
+  /* Mobile: Always show add-to-cart button */
+  @media (max-width: 1023px) {
+    .product-card__add-form {
+      position: relative;
+      opacity: 1;
+      transform: none;
+      padding: 0.5rem 0 0;
+      bottom: auto;
+      left: auto;
+      right: auto;
+    }
+
+    .product-card__add-btn {
+      padding: 0.625rem 0.875rem;
+      font-size: 0.75rem;
+      border-radius: 0.375rem;
+    }
+
+    .product-card__actions {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Hide quick view on mobile, keep wishlist */
+    .product-card__action:not(.product-card__action--wishlist) {
+      display: none;
+    }
+  }
+
   /* Skeleton Loading State (optional) */
   .product-card--loading .product-card__media {
     background: linear-gradient(90deg, var(--color-background-alt) 25%, var(--color-border) 50%, var(--color-background-alt) 75%);

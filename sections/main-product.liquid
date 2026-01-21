@@ -1646,6 +1646,12 @@
       activeIndex: 0,
       lightboxOpen: false,
       totalImages: {{ product.media.size }},
+      // Touch swipe support
+      touchStartX: 0,
+      touchStartY: 0,
+      touchEndX: 0,
+      touchEndY: 0,
+      isSwiping: false,
 
       prev() {
         this.activeIndex = this.activeIndex > 0 ? this.activeIndex - 1 : this.totalImages - 1;
@@ -1670,10 +1676,66 @@
         document.body.style.overflow = '';
       },
 
+      // Touch event handlers
+      handleTouchStart(e) {
+        this.touchStartX = e.changedTouches[0].screenX;
+        this.touchStartY = e.changedTouches[0].screenY;
+        this.isSwiping = false;
+      },
+
+      handleTouchMove(e) {
+        // Detect if swiping horizontally
+        const diffX = Math.abs(e.changedTouches[0].screenX - this.touchStartX);
+        const diffY = Math.abs(e.changedTouches[0].screenY - this.touchStartY);
+        if (diffX > diffY && diffX > 10) {
+          this.isSwiping = true;
+          e.preventDefault(); // Prevent vertical scroll when swiping horizontally
+        }
+      },
+
+      handleTouchEnd(e) {
+        this.touchEndX = e.changedTouches[0].screenX;
+        this.touchEndY = e.changedTouches[0].screenY;
+        this.handleSwipe();
+      },
+
+      handleSwipe() {
+        const diffX = this.touchStartX - this.touchEndX;
+        const diffY = this.touchStartY - this.touchEndY;
+        const minSwipeDistance = 50;
+
+        // Only swipe if horizontal movement is greater than vertical
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > minSwipeDistance) {
+          if (diffX > 0) {
+            // Swipe left - next image
+            this.next();
+          } else {
+            // Swipe right - previous image
+            this.prev();
+          }
+        }
+      },
+
       init() {
         this.$watch('lightboxOpen', (value) => {
           document.body.style.overflow = value ? 'hidden' : '';
         });
+
+        // Setup touch events on the slider element
+        const slider = this.$refs.slider;
+        if (slider && this.totalImages > 1) {
+          slider.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: true });
+          slider.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
+          slider.addEventListener('touchend', (e) => this.handleTouchEnd(e), { passive: true });
+        }
+
+        // Also add touch events to lightbox
+        const lightbox = document.querySelector('.product-lightbox__image');
+        if (lightbox && this.totalImages > 1) {
+          lightbox.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: true });
+          lightbox.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
+          lightbox.addEventListener('touchend', (e) => this.handleTouchEnd(e), { passive: true });
+        }
       }
     }
   }
