@@ -4,8 +4,11 @@
 {% endcomment %}
 
 {%- liquid
-  assign menu_handle = menu | default: 'main-menu'
-  assign mobile_menu = linklists[menu_handle]
+  if menu != blank
+    assign mobile_menu = linklists[menu]
+  else
+    assign mobile_menu = linklists['main-menu']
+  endif
 -%}
 
 <div

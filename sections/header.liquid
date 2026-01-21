@@ -371,6 +371,9 @@
 
 </header>
 
+{% comment %} Mobile Menu {% endcomment %}
+{% render 'mobile-menu', menu: section.settings.menu %}
+
 {% comment %} Mega Menu Styles {% endcomment %}
 {% if mega_menu_enabled %}
 <style>
