@@ -59,7 +59,7 @@
   assign container_max = total_cards | plus: total_gaps | plus: container_padding
 -%}
 
-<section class="collection-list-section" style="--container-max: {{ container_max }}px; --card-width: {{ card_width }}px;">
+<section class="collection-list-section" style="--container-max: {{ container_max }}px; --card-width: {{ card_width }}px; --padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;">
   <div class="collection-list-container">
 
     {% comment %} Section Header {% endcomment %}
@@ -131,7 +131,8 @@
   /* Collection List Section - full width wrapper */
   .collection-list-section {
     width: 100%;
-    padding: 4rem 0;
+    padding-top: var(--padding-top, 64px);
+    padding-bottom: var(--padding-bottom, 64px);
   }
 
   /* Collection List Container - auto-calculated based on card size, columns, and gap */
@@ -372,6 +373,30 @@
         { "value": "aspect-video", "label": "Breit (16:9)" }
       ],
       "default": "aspect-[4/3]"
+    },
+    {
+      "type": "header",
+      "content": "Abstaende"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px",
+      "label": "Abstand oben"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px",
+      "label": "Abstand unten"
     }
   ],
   "blocks": [

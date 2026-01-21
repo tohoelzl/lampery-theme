@@ -58,7 +58,7 @@
   endif
 -%}
 
-<section class="product-slider-section" style="--card-width: {{ card_width }}px; --card-gap: {{ card_gap }}px; --slider-width: {{ slider_width }}px; --container-width: {{ container_width }}px;">
+<section class="product-slider-section" style="--card-width: {{ card_width }}px; --card-gap: {{ card_gap }}px; --slider-width: {{ slider_width }}px; --container-width: {{ container_width }}px; --padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;">
   <div class="product-slider-container">
 
     {% comment %} Section Header {% endcomment %}
@@ -153,13 +153,8 @@
   /* Product Slider Section */
   .product-slider-section {
     width: 100%;
-    padding: 3rem 0;
-  }
-
-  @media (min-width: 1024px) {
-    .product-slider-section {
-      padding: 4rem 0;
-    }
+    padding-top: var(--padding-top, 48px);
+    padding-bottom: var(--padding-bottom, 48px);
   }
 
   /* Container - width based on slider + arrows + gaps */
@@ -701,6 +696,30 @@
       "id": "view_all_text",
       "label": "Button Text",
       "default": "Alle Produkte ansehen"
+    },
+    {
+      "type": "header",
+      "content": "Abstaende"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px",
+      "label": "Abstand oben"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px",
+      "label": "Abstand unten"
     }
   ],
   "presets": [

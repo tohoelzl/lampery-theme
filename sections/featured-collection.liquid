@@ -46,7 +46,7 @@
   assign container_max = total_cards | plus: total_gaps | plus: container_padding
 -%}
 
-<section id="featured" class="section-lg featured-collection-section" style="--container-max: {{ container_max }}px; --card-width: {{ card_width }}px;">
+<section id="featured" class="section-lg featured-collection-section" style="--container-max: {{ container_max }}px; --card-width: {{ card_width }}px; --padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;">
   <div class="featured-collection-container">
 
     {% comment %} Section Header {% endcomment %}
@@ -91,6 +91,8 @@
   /* Featured Collection Section - full width wrapper */
   .featured-collection-section {
     width: 100%;
+    padding-top: var(--padding-top, 5rem) !important;
+    padding-bottom: var(--padding-bottom, 5rem) !important;
   }
 
   /* Featured Collection Container - auto-calculated based on card size, columns, and gap */
@@ -224,6 +226,30 @@
       "id": "view_all_text",
       "label": "Button Text",
       "default": "Alle Produkte ansehen"
+    },
+    {
+      "type": "header",
+      "content": "Abstaende"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px",
+      "label": "Abstand oben"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px",
+      "label": "Abstand unten"
     }
   ],
   "presets": [

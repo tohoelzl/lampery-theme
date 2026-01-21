@@ -3,7 +3,7 @@
   Design: Helles Input auf Salbei-Hintergrund, Terrakotta Button
 {% endcomment %}
 
-<section class="newsletter-section">
+<section class="newsletter-section" style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;">
   <div class="newsletter-container">
 
     <h2 class="newsletter-heading">{{ section.settings.title }}</h2>
@@ -57,7 +57,10 @@
   .newsletter-section {
     background-color: var(--color-primary);
     color: #ffffff;
-    padding: 4rem 1.5rem;
+    padding-top: var(--padding-top, 64px);
+    padding-bottom: var(--padding-bottom, 64px);
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
     min-height: 400px;
     display: flex;
     align-items: center;
@@ -253,6 +256,30 @@
       "id": "privacy_text",
       "label": "Datenschutz-Hinweis",
       "default": "Mit der Anmeldung stimmst du unserer Datenschutzerklaerung zu."
+    },
+    {
+      "type": "header",
+      "content": "Abstaende"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px",
+      "label": "Abstand oben"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px",
+      "label": "Abstand unten"
     }
   ],
   "presets": [
