@@ -103,7 +103,7 @@
       Each milestone sits at its percentage position
     {% endcomment %}
 
-    {% comment %} Milestone 1 {% endcomment %}
+    {% comment %} Milestone 1 - if steps_count == 1, this is the last one at 100% {% endcomment %}
     {% if steps_count >= 1 %}
       <div class="milestone absolute" style="left: {{ pos_1 }}%; transform: translateX(-50%); top: -7px;">
         <div style="width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; {% if cart_total >= threshold_1 %}background-color: var(--color-primary); border: 2px solid var(--color-primary);{% else %}background-color: var(--color-border); border: 2px solid var(--color-border);{% endif %}">
@@ -111,14 +111,23 @@
             <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
           {% endif %}
         </div>
-        <div class="text-center mt-2 whitespace-nowrap">
-          <div class="text-xs font-medium {% if cart_total >= threshold_1 %}text-primary{% else %}text-text-muted{% endif %}">{{ threshold_1 }}€</div>
-          <div class="text-xs {% if cart_total >= threshold_1 %}text-primary{% else %}text-text-muted{% endif %} max-w-16 truncate">{{ settings.cart_reward_1_text }}</div>
-        </div>
+        {% if steps_count == 1 %}
+          {% comment %} Last milestone when only 1 step - shift label left {% endcomment %}
+          <div class="milestone__label-last mt-2 whitespace-nowrap">
+            <div class="text-xs font-medium {% if cart_total >= threshold_1 %}text-primary{% else %}text-text-muted{% endif %}">{{ threshold_1 }}€</div>
+            <div class="text-xs {% if cart_total >= threshold_1 %}text-primary{% else %}text-text-muted{% endif %}">{{ settings.cart_reward_1_text }}</div>
+          </div>
+        {% else %}
+          {% comment %} Not the last milestone - centered {% endcomment %}
+          <div class="text-center mt-2 whitespace-nowrap">
+            <div class="text-xs font-medium {% if cart_total >= threshold_1 %}text-primary{% else %}text-text-muted{% endif %}">{{ threshold_1 }}€</div>
+            <div class="text-xs {% if cart_total >= threshold_1 %}text-primary{% else %}text-text-muted{% endif %} max-w-16 truncate">{{ settings.cart_reward_1_text }}</div>
+          </div>
+        {% endif %}
       </div>
     {% endif %}
 
-    {% comment %} Milestone 2 {% endcomment %}
+    {% comment %} Milestone 2 - if steps_count == 2, this is the last one at 100% {% endcomment %}
     {% if steps_count >= 2 %}
       <div class="milestone absolute" style="left: {{ pos_2 }}%; transform: translateX(-50%); top: -7px;">
         <div style="width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; {% if cart_total >= threshold_2 %}background-color: var(--color-primary); border: 2px solid var(--color-primary);{% else %}background-color: var(--color-border); border: 2px solid var(--color-border);{% endif %}">
@@ -126,10 +135,19 @@
             <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
           {% endif %}
         </div>
-        <div class="text-center mt-2 whitespace-nowrap">
-          <div class="text-xs font-medium {% if cart_total >= threshold_2 %}text-primary{% else %}text-text-muted{% endif %}">{{ threshold_2 }}€</div>
-          <div class="text-xs {% if cart_total >= threshold_2 %}text-primary{% else %}text-text-muted{% endif %} max-w-16 truncate">{{ settings.cart_reward_2_text }}</div>
-        </div>
+        {% if steps_count == 2 %}
+          {% comment %} Last milestone when only 2 steps - shift label left {% endcomment %}
+          <div class="milestone__label-last mt-2 whitespace-nowrap">
+            <div class="text-xs font-medium {% if cart_total >= threshold_2 %}text-primary{% else %}text-text-muted{% endif %}">{{ threshold_2 }}€</div>
+            <div class="text-xs {% if cart_total >= threshold_2 %}text-primary{% else %}text-text-muted{% endif %}">{{ settings.cart_reward_2_text }}</div>
+          </div>
+        {% else %}
+          {% comment %} Middle milestone when 3 steps - centered {% endcomment %}
+          <div class="text-center mt-2 whitespace-nowrap">
+            <div class="text-xs font-medium {% if cart_total >= threshold_2 %}text-primary{% else %}text-text-muted{% endif %}">{{ threshold_2 }}€</div>
+            <div class="text-xs {% if cart_total >= threshold_2 %}text-primary{% else %}text-text-muted{% endif %} max-w-16 truncate">{{ settings.cart_reward_2_text }}</div>
+          </div>
+        {% endif %}
       </div>
     {% endif %}
 
