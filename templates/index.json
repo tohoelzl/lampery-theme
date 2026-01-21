@@ -107,8 +107,15 @@
         "product_source": "all",
         "collection": "",
         "products_to_show": 12,
-        "card_size": "large",
+        "visible_products": 4,
+        "card_size": "extra_large",
         "card_gap": 24,
+        "arrow_bg_color": "#ffffff",
+        "arrow_border_color": "#e5e5e5",
+        "arrow_icon_color": "#2d2d2d",
+        "arrow_hover_bg_color": "#2d2d2d",
+        "arrow_hover_icon_color": "#ffffff",
+        "arrow_hover_effect": "fill_center",
         "show_view_all": true,
         "view_all_text": "Alle Produkte ansehen"
       }
