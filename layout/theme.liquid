@@ -490,7 +490,7 @@
 </head>
 
 <body class="template-{{ template.name | handle }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix | handle }}{% endif %}"
-      x-data="{ mobileMenuOpen: false, searchOpen: false, cartOpen: false }">
+      x-data="{ searchOpen: false, cartOpen: false }">
 
   <a class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded" href="#main-content">
     {{ 'accessibility.skip_to_content' | t }}

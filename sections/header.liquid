@@ -785,22 +785,35 @@
     width: 44px;
     height: 44px;
     padding: 0;
-    margin-left: -8px;
     background: none;
     border: none;
     color: var(--color-text);
     cursor: pointer;
     transition: color 0.2s ease;
+    order: -1;
+    flex-shrink: 0;
   }
 
   .mobile-menu-toggle:hover {
     color: var(--color-primary);
   }
 
-  /* Hide on Desktop */
+  /* Hide on Desktop, show on Mobile */
   @media (min-width: 1024px) {
     .mobile-menu-toggle {
-      display: none;
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .mobile-menu-toggle {
+      display: flex !important;
+    }
+
+    /* Hide desktop navigation on mobile */
+    .header-mega-menu,
+    .site-header .header-right > div:not(.header-actions) {
+      display: none !important;
     }
   }
 
