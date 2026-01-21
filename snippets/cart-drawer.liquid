@@ -157,7 +157,23 @@
       {% comment %} Subtotal {% endcomment %}
       <div class="flex items-center justify-between">
         <span class="text-text-muted">{{ 'cart.subtotal' | t }}</span>
-        <span class="text-lg font-semibold" id="cart-subtotal">{{ cart.total_price | money }}</span>
+        <span class="text-sm" id="cart-subtotal">{{ cart.original_total_price | money }}</span>
+      </div>
+
+      {% comment %} Discount - show if automatic discount applied {% endcomment %}
+      {% if cart.cart_level_discount_applications.size > 0 %}
+        {% for discount in cart.cart_level_discount_applications %}
+          <div class="flex items-center justify-between text-primary" id="cart-discount">
+            <span class="text-sm">{{ discount.title }}</span>
+            <span class="text-sm font-medium">-{{ discount.total_allocated_amount | money }}</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% comment %} Total {% endcomment %}
+      <div class="flex items-center justify-between border-t border-border pt-2">
+        <span class="font-medium">{{ 'cart.total' | t }}</span>
+        <span class="text-lg font-semibold" id="cart-total">{{ cart.total_price | money }}</span>
       </div>
 
       <p class="text-xs text-text-muted text-center">
