@@ -1,0 +1,131 @@
+{% comment %}
+  Collection Description Section
+  Zeigt die Kollektionsbeschreibung unterhalb der Produkte an
+{% endcomment %}
+
+{% if collection.description != blank %}
+<section class="collection-description section" style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="collection-description__content" style="text-align: {{ section.settings.text_alignment }}; max-width: {{ section.settings.max_width }}px; margin: 0 auto;">
+
+      {% if section.settings.show_title %}
+        <h2 class="collection-description__title">
+          {{ section.settings.title | default: collection.title }}
+        </h2>
+      {% endif %}
+
+      <div class="collection-description__text">
+        {{ collection.description }}
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<style>
+  .collection-description {
+    padding-top: var(--padding-top, 60px);
+    padding-bottom: var(--padding-bottom, 60px);
+    background-color: var(--color-background);
+  }
+
+  .collection-description__title {
+    font-family: var(--font-heading-family);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .collection-description__title {
+      font-size: 1.75rem;
+    }
+  }
+
+  .collection-description__text {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .collection-description__text p {
+    margin-bottom: 1rem;
+  }
+
+  .collection-description__text p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (min-width: 768px) {
+    .collection-description__text {
+      font-size: 1.0625rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Kollektions-Beschreibung",
+  "class": "section-collection-description",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "default": false,
+      "label": "Titel anzeigen"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel (optional)",
+      "info": "Leer lassen fuer Kollektionsname"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text Ausrichtung",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Zentriert" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 600,
+      "max": 1200,
+      "step": 50,
+      "default": 900,
+      "unit": "px",
+      "label": "Maximale Breite"
+    },
+    {
+      "type": "header",
+      "content": "Abstaende"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "unit": "px",
+      "label": "Abstand oben"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "unit": "px",
+      "label": "Abstand unten"
+    }
+  ]
+}
+{% endschema %}
