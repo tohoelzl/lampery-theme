@@ -492,25 +492,29 @@
 <body class="template-{{ template.name | handle }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix | handle }}{% endif %}"
       x-data="{ searchOpen: false, cartOpen: false }">
 
-  <a class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded" href="#main-content">
-    {{ 'accessibility.skip_to_content' | t }}
-  </a>
+  {% unless template == 'password' %}
+    <a class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded" href="#main-content">
+      {{ 'accessibility.skip_to_content' | t }}
+    </a>
 
-  {% sections 'header-group' %}
+    {% sections 'header-group' %}
+  {% endunless %}
 
   <main id="main-content" class="site-main" role="main">
     {{ content_for_layout }}
   </main>
 
-  {% sections 'footer-group' %}
+  {% unless template == 'password' %}
+    {% sections 'footer-group' %}
 
-  {% comment %} Cart Drawer {% endcomment %}
-  {% render 'cart-drawer' %}
+    {% comment %} Cart Drawer {% endcomment %}
+    {% render 'cart-drawer' %}
 
-  {% comment %} Mobile Menu - wird im Header gerendert {% endcomment %}
+    {% comment %} Mobile Menu - wird im Header gerendert {% endcomment %}
 
-  {% comment %} Search Overlay {% endcomment %}
-  {% render 'search-overlay' %}
+    {% comment %} Search Overlay {% endcomment %}
+    {% render 'search-overlay' %}
+  {% endunless %}
 
   {% comment %} Quick View Modal {% endcomment %}
   {% render 'quick-view-modal' %}
