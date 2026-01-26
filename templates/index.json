@@ -134,23 +134,23 @@
         "testimonial_1": {
           "type": "testimonial",
           "settings": {
-            "text": "Die Lampe ist noch schoener als auf den Bildern. Die Verarbeitung ist erstklassig und das Licht schafft eine wunderbare Atmosphaere.",
+            "text": "Die Lampe ist schön verarbeitet und das Licht schafft eine wunderbare Atmosphäre.",
             "author": "Maria S.",
-            "location": "Hamburg"
+            "location": "Coburg"
           }
         },
         "testimonial_2": {
           "type": "testimonial",
           "settings": {
-            "text": "Endlich eine Lampe, die nicht von der Stange ist. Der Kundenservice war super und die Lieferung sehr schnell.",
+            "text": "Endlich eine Lampe, die nicht von der Stange ist und ihren eigenen Charakter hat.",
             "author": "Thomas K.",
-            "location": "Muenchen"
+            "location": "Bamberg"
           }
         },
         "testimonial_3": {
           "type": "testimonial",
           "settings": {
-            "text": "Wir haben schon die dritte Lampe bestellt. Absolute Lieblingsmarke fuer alle, die das Besondere suchen.",
+            "text": "Schön endlich mal wieder einen Hersteller mit einer tollen Marke aus Deutschland unterstützen zu können.",
             "author": "Anna & Peter",
             "location": "Berlin"
           }
