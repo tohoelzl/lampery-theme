@@ -14,43 +14,12 @@
     "header": {
       "type": "header",
       "blocks": {
-        "promotion_GwyQaa": {
+        "promotion_WrtwCe": {
           "type": "promotion",
           "settings": {
             "menu_handle": "Lampen",
             "layout_type": "image_only",
-            "image": "shopify://shop_images/Gemini_Generated_Image_3sox383sox383sox.png",
-            "title": "Neu eingetroffen",
-            "text": "",
-            "button_text": "Jetzt entdecken",
-            "link": "",
-            "product": "",
-            "image_ratio": "portrait",
-            "overlay_text": false,
-            "rounded_corners": true
-          }
-        },
-        "promotion_747xRP": {
-          "type": "promotion",
-          "settings": {
-            "menu_handle": "Lampen",
-            "layout_type": "image_only",
-            "image": "shopify://shop_images/Gemini_Generated_Image_523di6523di6523d.png",
-            "title": "Neu eingetroffen",
-            "text": "",
-            "button_text": "Jetzt entdecken",
-            "link": "",
-            "product": "",
-            "image_ratio": "portrait",
-            "overlay_text": false,
-            "rounded_corners": true
-          }
-        },
-        "promotion_DxYAQy": {
-          "type": "promotion",
-          "settings": {
-            "menu_handle": "",
-            "layout_type": "image_text",
+            "image": "shopify://shop_images/cloudy_desk_brown3.webp",
             "title": "Neu eingetroffen",
             "text": "",
             "button_text": "Jetzt entdecken",
@@ -61,11 +30,44 @@
             "rounded_corners": true
           }
         },
-        "promotion_wffRCr": {
+        "promotion_7bxNVG": {
           "type": "promotion",
           "settings": {
-            "menu_handle": "",
-            "layout_type": "image_text",
+            "menu_handle": "Lampen",
+            "layout_type": "image_only",
+            "image": "shopify://shop_images/Cloudy_Combo5.webp",
+            "title": "Neu eingetroffen",
+            "text": "",
+            "button_text": "Jetzt entdecken",
+            "link": "",
+            "product": "",
+            "image_ratio": "landscape",
+            "overlay_text": false,
+            "rounded_corners": true
+          }
+        },
+        "promotion_4VDcWi": {
+          "type": "promotion",
+          "settings": {
+            "menu_handle": "Kollektionen",
+            "layout_type": "image_only",
+            "image": "shopify://shop_images/cloudy_both2.webp",
+            "title": "Neu eingetroffen",
+            "text": "",
+            "button_text": "Jetzt entdecken",
+            "link": "",
+            "product": "",
+            "image_ratio": "landscape",
+            "overlay_text": false,
+            "rounded_corners": true
+          }
+        },
+        "promotion_H877TP": {
+          "type": "promotion",
+          "settings": {
+            "menu_handle": "Kollektionen",
+            "layout_type": "image_only",
+            "image": "shopify://shop_images/cloudy_collection_3.webp",
             "title": "Neu eingetroffen",
             "text": "",
             "button_text": "Jetzt entdecken",
@@ -78,10 +80,10 @@
         }
       },
       "block_order": [
-        "promotion_GwyQaa",
-        "promotion_747xRP",
-        "promotion_DxYAQy",
-        "promotion_wffRCr"
+        "promotion_WrtwCe",
+        "promotion_7bxNVG",
+        "promotion_4VDcWi",
+        "promotion_H877TP"
       ],
       "settings": {
         "logo": "shopify://shop_images/Group_25.png",
