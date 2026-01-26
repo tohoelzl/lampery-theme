@@ -25,9 +25,9 @@
             "button_text": "Jetzt entdecken",
             "link": "",
             "product": "",
-            "image_ratio": "landscape",
+            "image_ratio": "portrait",
             "overlay_text": false,
-            "rounded_corners": true
+            "rounded_corners": false
           }
         },
         "promotion_7bxNVG": {
@@ -41,9 +41,9 @@
             "button_text": "Jetzt entdecken",
             "link": "",
             "product": "",
-            "image_ratio": "landscape",
+            "image_ratio": "portrait",
             "overlay_text": false,
-            "rounded_corners": true
+            "rounded_corners": false
           }
         },
         "promotion_4VDcWi": {
@@ -57,9 +57,9 @@
             "button_text": "Jetzt entdecken",
             "link": "",
             "product": "",
-            "image_ratio": "landscape",
+            "image_ratio": "portrait",
             "overlay_text": false,
-            "rounded_corners": true
+            "rounded_corners": false
           }
         },
         "promotion_H877TP": {
