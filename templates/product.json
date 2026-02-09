@@ -22,7 +22,9 @@
         },
         "price": {
           "type": "price",
-          "settings": {}
+          "settings": {
+            "show_vat_text": false
+          }
         },
         "variant_picker": {
           "type": "variant_picker",
@@ -69,7 +71,8 @@
       "settings": {
         "label": "Fuer dich ausgewaehlt",
         "heading": "Das koennte dir auch gefallen",
-        "products_to_show": 4
+        "products_to_show": 4,
+        "mobile_columns": "2"
       }
     }
   },
