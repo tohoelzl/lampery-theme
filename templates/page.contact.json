@@ -1,0 +1,46 @@
+{
+  "sections": {
+    "contact-form": {
+      "type": "contact-form",
+      "blocks": {
+        "email": {
+          "type": "email",
+          "settings": {
+            "label": "E-Mail",
+            "email": "info@lampery.de"
+          }
+        },
+        "phone": {
+          "type": "phone",
+          "settings": {
+            "label": "Telefon",
+            "phone": "+49 123 456789"
+          }
+        },
+        "address": {
+          "type": "address",
+          "settings": {
+            "label": "Adresse",
+            "address": "Musterstraße 123, 12345 Berlin"
+          }
+        },
+        "hours": {
+          "type": "hours",
+          "settings": {
+            "label": "Erreichbarkeit",
+            "hours": "Mo-Fr: 9-18 Uhr"
+          }
+        }
+      },
+      "block_order": ["email", "phone", "address", "hours"],
+      "settings": {
+        "subtitle": "Kontakt",
+        "title": "Schreib uns eine Nachricht",
+        "description": "Hast du Fragen zu unseren Produkten oder deiner Bestellung? Wir freuen uns von dir zu hoeren und antworten so schnell wie moeglich.",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": ["contact-form"]
+}

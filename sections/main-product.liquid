@@ -219,7 +219,9 @@
                     </span>
                   {% endif %}
                 </div>
-                <span class="product-price__vat">{{ 'products.product.price_vat' | t }}</span>
+                {% if block.settings.show_vat_text %}
+                  <span class="product-price__vat">{{ 'products.product.price_vat' | t }}</span>
+                {% endif %}
               </div>
 
             {% when 'variant_picker' %}
@@ -1998,7 +2000,15 @@
     {
       "type": "price",
       "name": "Preis",
-      "limit": 1
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_vat_text",
+          "label": "\"inkl. MwSt.\" anzeigen",
+          "default": true
+        }
+      ]
     },
     {
       "type": "variant_picker",
