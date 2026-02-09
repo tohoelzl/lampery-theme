@@ -23,7 +23,7 @@
           "type": "phone",
           "settings": {
             "label": "Telefon",
-            "phone": "+49 123 456789"
+            "phone": "+49 152 26581923"
           }
         },
         "address": {
@@ -41,15 +41,35 @@
           }
         }
       },
-      "block_order": ["email", "phone", "address", "hours"],
+      "block_order": [
+        "email",
+        "phone",
+        "address",
+        "hours"
+      ],
       "settings": {
         "subtitle": "Kontakt",
         "title": "Schreib uns eine Nachricht",
         "description": "Hast du Fragen zu unseren Produkten oder deiner Bestellung? Wir freuen uns von dir zu hoeren und antworten so schnell wie moeglich.",
+        "name_label": "Name",
+        "name_placeholder": "Dein Name",
+        "email_label": "E-Mail",
+        "email_placeholder": "deine@email.de",
+        "phone_label": "Telefon (optional)",
+        "phone_placeholder": "+49 123 456789",
+        "subject_label": "Betreff",
+        "subject_placeholder": "Waehle ein Thema...",
+        "message_label": "Nachricht",
+        "message_placeholder": "Wie koennen wir dir helfen?",
+        "button_text": "Nachricht senden",
+        "success_title": "Vielen Dank!",
+        "success_message": "Wir haben deine Nachricht erhalten und melden uns in Kuerze bei dir.",
         "padding_top": 80,
         "padding_bottom": 80
       }
     }
   },
-  "order": ["contact-form"]
+  "order": [
+    "contact-form"
+  ]
 }
