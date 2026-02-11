@@ -1,53 +1,65 @@
 {% comment %}
   Upsell Checkbox Snippet
-  Zeigt eine Checkbox fuer ein passendes Zusatzprodukt an, basierend auf dem Metafeld product.metafields.custom.related_accessory
+  Zeigt Checkboxen fuer passende Zusatzprodukte an, basierend auf dem Metafeld product.metafields.custom.related_accessory (Liste)
 
   Verwendung: {% render 'upsell-checkbox', product: product %}
 {% endcomment %}
 
 {%- liquid
-  assign related_product = product.metafields.custom.related_accessory.value
+  assign related_products = product.metafields.custom.related_accessory.value
 -%}
 
-{% if related_product != blank and related_product.available %}
-  {%- assign upsell_variant = related_product.first_available_variant -%}
+{% if related_products != blank and related_products.size > 0 %}
+  <div class="upsell-checkboxes" data-upsell-container>
+    {% for related_product in related_products %}
+      {% if related_product.available %}
+        {%- assign upsell_variant = related_product.first_available_variant -%}
 
-  <div class="upsell-checkbox" data-upsell-container>
-    <label class="upsell-checkbox__label">
-      <input
-        type="checkbox"
-        class="upsell-checkbox__input"
-        data-upsell-checkbox
-        data-upsell-variant-id="{{ upsell_variant.id }}"
-      >
-      <span class="upsell-checkbox__checkmark">
-        <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
-          <path d="M1 5L4 8L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      <span class="upsell-checkbox__content">
-        {% if related_product.featured_image %}
-          <span class="upsell-checkbox__image">
-            <img
-              src="{{ related_product.featured_image | image_url: width: 100 }}"
-              alt="{{ related_product.title | escape }}"
-              width="50"
-              height="50"
-              loading="lazy"
+        <div class="upsell-checkbox">
+          <label class="upsell-checkbox__label">
+            <input
+              type="checkbox"
+              class="upsell-checkbox__input"
+              data-upsell-checkbox
+              data-upsell-variant-id="{{ upsell_variant.id }}"
             >
-          </span>
-        {% endif %}
-        <span class="upsell-checkbox__text">
-          <span class="upsell-checkbox__title">Dazu passend: {{ related_product.title }}</span>
-          <span class="upsell-checkbox__price">(+ {{ upsell_variant.price | money }})</span>
-        </span>
-      </span>
-    </label>
+            <span class="upsell-checkbox__checkmark">
+              <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+                <path d="M1 5L4 8L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="upsell-checkbox__content">
+              {% if related_product.featured_image %}
+                <span class="upsell-checkbox__image">
+                  <img
+                    src="{{ related_product.featured_image | image_url: width: 100 }}"
+                    alt="{{ related_product.title | escape }}"
+                    width="50"
+                    height="50"
+                    loading="lazy"
+                  >
+                </span>
+              {% endif %}
+              <span class="upsell-checkbox__text">
+                <span class="upsell-checkbox__title">Dazu passend: {{ related_product.title }}</span>
+                <span class="upsell-checkbox__price">(+ {{ upsell_variant.price | money }})</span>
+              </span>
+            </span>
+          </label>
+        </div>
+      {% endif %}
+    {% endfor %}
   </div>
 
   <style>
-    .upsell-checkbox {
+    .upsell-checkboxes {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
       margin-bottom: 1rem;
+    }
+
+    .upsell-checkbox {
       padding: 1rem;
       background: var(--color-background-alt, #f9f9f9);
       border: 1px solid var(--color-border, #e5e5e5);

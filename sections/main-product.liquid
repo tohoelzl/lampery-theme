@@ -1969,18 +1969,20 @@
   // ========== UPSELL CHECKBOX FUNCTIONALITY ==========
   function initUpsellCheckbox() {
     const form = document.querySelector('[data-upsell-form]');
-    const upsellCheckbox = document.querySelector('[data-upsell-checkbox]');
+    const upsellCheckboxes = document.querySelectorAll('[data-upsell-checkbox]');
 
-    if (!form || !upsellCheckbox) return;
+    if (!form || upsellCheckboxes.length === 0) return;
 
     form.addEventListener('submit', async function(e) {
-      // Nur abfangen wenn Upsell-Checkbox angehakt ist
-      if (!upsellCheckbox.checked) return;
+      // Alle angehakten Checkboxen sammeln
+      const checkedUpsells = document.querySelectorAll('[data-upsell-checkbox]:checked');
+
+      // Nur abfangen wenn mindestens eine Upsell-Checkbox angehakt ist
+      if (checkedUpsells.length === 0) return;
 
       e.preventDefault();
 
       const mainVariantId = document.getElementById('product-variant-id').value;
-      const upsellVariantId = upsellCheckbox.getAttribute('data-upsell-variant-id');
       const quantity = parseInt(document.getElementById('form-quantity')?.value || document.getElementById('product-quantity')?.value || 1);
 
       const addBtn = form.querySelector('.product-add-btn');
@@ -1999,19 +2001,24 @@
       `;
 
       try {
-        // Items Array fuer Shopify Cart API vorbereiten
+        // Items Array fuer Shopify Cart API vorbereiten - Hauptprodukt zuerst
         const items = [
           {
             id: parseInt(mainVariantId),
             quantity: quantity
-          },
-          {
-            id: parseInt(upsellVariantId),
-            quantity: 1
           }
         ];
 
-        // Beide Produkte gleichzeitig zum Warenkorb hinzufuegen
+        // Alle angehakten Upsell-Produkte hinzufuegen
+        checkedUpsells.forEach(checkbox => {
+          const upsellVariantId = checkbox.getAttribute('data-upsell-variant-id');
+          items.push({
+            id: parseInt(upsellVariantId),
+            quantity: 1
+          });
+        });
+
+        // Alle Produkte gleichzeitig zum Warenkorb hinzufuegen
         const response = await fetch('/cart/add.js', {
           method: 'POST',
           headers: {
@@ -2041,11 +2048,11 @@
         // Cart-Drawer oeffnen (falls vorhanden)
         openCartDrawer();
 
-        // Nach kurzer Verzoegerung Button zuruecksetzen
+        // Nach kurzer Verzoegerung Button zuruecksetzen und Checkboxen deaktivieren
         setTimeout(() => {
           addBtn.disabled = false;
           addBtn.innerHTML = originalBtnContent;
-          upsellCheckbox.checked = false;
+          checkedUpsells.forEach(checkbox => checkbox.checked = false);
         }, 2000);
 
       } catch (error) {
