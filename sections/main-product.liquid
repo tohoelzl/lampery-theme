@@ -2091,10 +2091,16 @@
     const priceContainer = document.querySelector('.product-price__main');
     if (!priceContainer) return;
 
-    // Aktuellen Variantenpreis holen
+    // Aktuellen Variantenpreis holen - mehrere Fallbacks
+    const variantIdInput = document.getElementById('product-variant-id');
     const variantSelect = document.getElementById('product-select');
-    const currentVariant = productVariants.find(v => v.id === parseInt(variantSelect?.value));
-    if (!currentVariant) return;
+    const currentVariantId = parseInt(variantIdInput?.value || variantSelect?.value);
+
+    const currentVariant = productVariants.find(v => v.id === currentVariantId);
+    if (!currentVariant) {
+      console.error('Variant not found:', currentVariantId);
+      return;
+    }
 
     let basePrice = currentVariant.price;
     let baseComparePrice = currentVariant.compare_at_price;
