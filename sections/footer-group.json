@@ -18,12 +18,15 @@
         "footer_description": "",
         "contact_email": "",
         "contact_phone": "",
-        "menu_1_title": "Ueber uns",
+        "menu_1_title": "*",
         "menu_1": "",
+        "menu_1_text": "Gemäß § 19 UStG erheben wir keine Umsatzsteuer und weisen diese folglich auch nicht aus.",
         "menu_2_title": "Kundenservice",
         "menu_2": "konto",
+        "menu_2_text": "",
         "menu_3_title": "Rechtliches",
         "menu_3": "rechtliches",
+        "menu_3_text": "",
         "show_payment_icons": true
       }
     }
