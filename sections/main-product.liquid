@@ -2065,6 +2065,8 @@
           addBtn.disabled = false;
           addBtn.innerHTML = originalBtnContent;
           checkedUpsells.forEach(checkbox => checkbox.checked = false);
+          // Preis auf Originalpreis zuruecksetzen
+          updateTotalPrice();
         }, 2000);
 
       } catch (error) {
