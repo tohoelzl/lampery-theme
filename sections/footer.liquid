@@ -75,50 +75,77 @@
       <div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-8">
 
         {% comment %} Column 1 {% endcomment %}
-        {% if section.settings.menu_1 != blank %}
+        {% if section.settings.menu_1 != blank or section.settings.menu_1_text != blank %}
           <div>
-            <h4 class="text-sm font-semibold uppercase tracking-wider mb-4">{{ section.settings.menu_1_title }}</h4>
-            <ul class="space-y-2">
-              {% for link in linklists[section.settings.menu_1].links %}
-                <li>
-                  <a href="{{ link.url }}" class="text-sm text-text-muted hover:text-primary transition-colors">
-                    {{ link.title }}
-                  </a>
-                </li>
-              {% endfor %}
-            </ul>
+            {% if section.settings.menu_1_title != blank %}
+              <h4 class="text-sm font-semibold uppercase tracking-wider mb-4">{{ section.settings.menu_1_title }}</h4>
+            {% endif %}
+            {% if section.settings.menu_1 != blank %}
+              <ul class="space-y-2">
+                {% for link in linklists[section.settings.menu_1].links %}
+                  <li>
+                    <a href="{{ link.url }}" class="text-sm text-text-muted hover:text-primary transition-colors">
+                      {{ link.title }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            {% if section.settings.menu_1_text != blank %}
+              <div class="text-sm text-text-muted leading-relaxed mt-2">
+                {{ section.settings.menu_1_text }}
+              </div>
+            {% endif %}
           </div>
         {% endif %}
 
         {% comment %} Column 2 {% endcomment %}
-        {% if section.settings.menu_2 != blank %}
+        {% if section.settings.menu_2 != blank or section.settings.menu_2_text != blank %}
           <div>
-            <h4 class="text-sm font-semibold uppercase tracking-wider mb-4">{{ section.settings.menu_2_title }}</h4>
-            <ul class="space-y-2">
-              {% for link in linklists[section.settings.menu_2].links %}
-                <li>
-                  <a href="{{ link.url }}" class="text-sm text-text-muted hover:text-primary transition-colors">
-                    {{ link.title }}
-                  </a>
-                </li>
-              {% endfor %}
-            </ul>
+            {% if section.settings.menu_2_title != blank %}
+              <h4 class="text-sm font-semibold uppercase tracking-wider mb-4">{{ section.settings.menu_2_title }}</h4>
+            {% endif %}
+            {% if section.settings.menu_2 != blank %}
+              <ul class="space-y-2">
+                {% for link in linklists[section.settings.menu_2].links %}
+                  <li>
+                    <a href="{{ link.url }}" class="text-sm text-text-muted hover:text-primary transition-colors">
+                      {{ link.title }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            {% if section.settings.menu_2_text != blank %}
+              <div class="text-sm text-text-muted leading-relaxed mt-2">
+                {{ section.settings.menu_2_text }}
+              </div>
+            {% endif %}
           </div>
         {% endif %}
 
         {% comment %} Column 3 {% endcomment %}
-        {% if section.settings.menu_3 != blank %}
+        {% if section.settings.menu_3 != blank or section.settings.menu_3_text != blank %}
           <div>
-            <h4 class="text-sm font-semibold uppercase tracking-wider mb-4">{{ section.settings.menu_3_title }}</h4>
-            <ul class="space-y-2">
-              {% for link in linklists[section.settings.menu_3].links %}
-                <li>
-                  <a href="{{ link.url }}" class="text-sm text-text-muted hover:text-primary transition-colors">
-                    {{ link.title }}
-                  </a>
-                </li>
-              {% endfor %}
-            </ul>
+            {% if section.settings.menu_3_title != blank %}
+              <h4 class="text-sm font-semibold uppercase tracking-wider mb-4">{{ section.settings.menu_3_title }}</h4>
+            {% endif %}
+            {% if section.settings.menu_3 != blank %}
+              <ul class="space-y-2">
+                {% for link in linklists[section.settings.menu_3].links %}
+                  <li>
+                    <a href="{{ link.url }}" class="text-sm text-text-muted hover:text-primary transition-colors">
+                      {{ link.title }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            {% if section.settings.menu_3_text != blank %}
+              <div class="text-sm text-text-muted leading-relaxed mt-2">
+                {{ section.settings.menu_3_text }}
+              </div>
+            {% endif %}
           </div>
         {% endif %}
 
@@ -202,6 +229,12 @@
       "label": "Menu"
     },
     {
+      "type": "textarea",
+      "id": "menu_1_text",
+      "label": "Zusaetzlicher Text",
+      "info": "Wird unter dem Menu angezeigt (z.B. Kleinunternehmer-Hinweis)"
+    },
+    {
       "type": "header",
       "content": "Navigation Spalte 2"
     },
@@ -217,6 +250,12 @@
       "label": "Menu"
     },
     {
+      "type": "textarea",
+      "id": "menu_2_text",
+      "label": "Zusaetzlicher Text",
+      "info": "Wird unter dem Menu angezeigt"
+    },
+    {
       "type": "header",
       "content": "Navigation Spalte 3"
     },
@@ -230,6 +269,12 @@
       "type": "link_list",
       "id": "menu_3",
       "label": "Menu"
+    },
+    {
+      "type": "textarea",
+      "id": "menu_3_text",
+      "label": "Zusaetzlicher Text",
+      "info": "Wird unter dem Menu angezeigt"
     },
     {
       "type": "header",
