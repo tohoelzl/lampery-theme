@@ -385,9 +385,12 @@
 
             {% when 'buy_buttons' %}
               <div class="product-buy" {{ block.shopify_attributes }}>
-                {%- form 'product', product, id: 'product-form', novalidate: 'novalidate', class: 'product-form' -%}
+                {%- form 'product', product, id: 'product-form', novalidate: 'novalidate', class: 'product-form', data-upsell-form: '' -%}
                   <input type="hidden" name="id" value="{{ current_variant.id }}" id="product-variant-id">
                   <input type="hidden" name="quantity" value="1" id="form-quantity">
+
+                  {% comment %} Upsell Checkbox - Zusatzprodukt {% endcomment %}
+                  {% render 'upsell-checkbox', product: product %}
 
                   <button
                     type="submit"
@@ -1962,6 +1965,171 @@
       }
     }
   }
+
+  // ========== UPSELL CHECKBOX FUNCTIONALITY ==========
+  function initUpsellCheckbox() {
+    const form = document.querySelector('[data-upsell-form]');
+    const upsellCheckbox = document.querySelector('[data-upsell-checkbox]');
+
+    if (!form || !upsellCheckbox) return;
+
+    form.addEventListener('submit', async function(e) {
+      // Nur abfangen wenn Upsell-Checkbox angehakt ist
+      if (!upsellCheckbox.checked) return;
+
+      e.preventDefault();
+
+      const mainVariantId = document.getElementById('product-variant-id').value;
+      const upsellVariantId = upsellCheckbox.getAttribute('data-upsell-variant-id');
+      const quantity = parseInt(document.getElementById('form-quantity')?.value || document.getElementById('product-quantity')?.value || 1);
+
+      const addBtn = form.querySelector('.product-add-btn');
+      const originalBtnContent = addBtn.innerHTML;
+
+      // Button in Loading-Zustand versetzen
+      addBtn.disabled = true;
+      addBtn.innerHTML = `
+        <svg class="product-add-btn__spinner" width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.25"/>
+          <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/>
+          </path>
+        </svg>
+        <span>Wird hinzugefuegt...</span>
+      `;
+
+      try {
+        // Items Array fuer Shopify Cart API vorbereiten
+        const items = [
+          {
+            id: parseInt(mainVariantId),
+            quantity: quantity
+          },
+          {
+            id: parseInt(upsellVariantId),
+            quantity: 1
+          }
+        ];
+
+        // Beide Produkte gleichzeitig zum Warenkorb hinzufuegen
+        const response = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ items: items })
+        });
+
+        if (!response.ok) {
+          throw new Error('Fehler beim Hinzufuegen zum Warenkorb');
+        }
+
+        const data = await response.json();
+
+        // Erfolgsanzeige
+        addBtn.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Hinzugefuegt!</span>
+        `;
+
+        // Cart-Counter aktualisieren (falls vorhanden)
+        updateCartCounter();
+
+        // Cart-Drawer oeffnen (falls vorhanden)
+        openCartDrawer();
+
+        // Nach kurzer Verzoegerung Button zuruecksetzen
+        setTimeout(() => {
+          addBtn.disabled = false;
+          addBtn.innerHTML = originalBtnContent;
+          upsellCheckbox.checked = false;
+        }, 2000);
+
+      } catch (error) {
+        console.error('Upsell Add to Cart Error:', error);
+
+        // Fehleranzeige
+        addBtn.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>Fehler - Bitte erneut versuchen</span>
+        `;
+
+        setTimeout(() => {
+          addBtn.disabled = false;
+          addBtn.innerHTML = originalBtnContent;
+        }, 2000);
+      }
+    });
+  }
+
+  // Cart-Counter aktualisieren
+  async function updateCartCounter() {
+    try {
+      const response = await fetch('/cart.js', {
+        headers: { 'Accept': 'application/json' }
+      });
+      const cart = await response.json();
+
+      // Verschiedene gaengige Selektoren fuer Cart-Counter
+      const counterSelectors = [
+        '[data-cart-count]',
+        '.cart-count',
+        '.header-cart__count',
+        '.cart-counter',
+        '#cart-count',
+        '.cart-icon-bubble span',
+        '.cart__count'
+      ];
+
+      counterSelectors.forEach(selector => {
+        const counter = document.querySelector(selector);
+        if (counter) {
+          counter.textContent = cart.item_count;
+          counter.setAttribute('data-count', cart.item_count);
+        }
+      });
+
+      // Custom Event fuer andere Komponenten
+      document.dispatchEvent(new CustomEvent('cart:updated', { detail: cart }));
+
+    } catch (error) {
+      console.error('Error updating cart counter:', error);
+    }
+  }
+
+  // Cart-Drawer oeffnen (falls Theme einen hat)
+  function openCartDrawer() {
+    // Verschiedene gaengige Methoden zum Oeffnen des Cart-Drawers
+    const cartDrawer = document.querySelector('[data-cart-drawer]') ||
+                       document.querySelector('.cart-drawer') ||
+                       document.querySelector('#cart-drawer');
+
+    if (cartDrawer) {
+      // Alpine.js basiertes Drawer
+      if (cartDrawer._x_dataStack && cartDrawer._x_dataStack[0]) {
+        if (typeof cartDrawer._x_dataStack[0].open !== 'undefined') {
+          cartDrawer._x_dataStack[0].open = true;
+        }
+      }
+
+      // CSS-Klassen basiertes Drawer
+      cartDrawer.classList.add('is-open', 'is-active', 'active', 'open');
+      document.body.classList.add('cart-drawer-open', 'overflow-hidden');
+    }
+
+    // Custom Event fuer andere Komponenten
+    document.dispatchEvent(new CustomEvent('cart:open'));
+  }
+
+  // Initialisierung
+  document.addEventListener('DOMContentLoaded', function() {
+    initUpsellCheckbox();
+  });
 </script>
 
 {% schema %}
