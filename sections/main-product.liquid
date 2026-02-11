@@ -1975,6 +1975,7 @@
 
   // ========== UPSELL CHECKBOX FUNCTIONALITY ==========
   let upsellInitialized = false;
+  let isSubmitting = false;
 
   function initUpsellCheckbox() {
     // Verhindere mehrfache Initialisierung
@@ -1992,25 +1993,28 @@
       checkbox.addEventListener('change', updateTotalPrice);
     });
 
-    form.addEventListener('submit', async function(e) {
+    // Submit Button Click abfangen statt Form Submit
+    const addBtn = form.querySelector('.product-add-btn');
+    if (!addBtn) return;
+
+    addBtn.addEventListener('click', async function(e) {
       // Alle angehakten Checkboxen sammeln
       const checkedUpsells = document.querySelectorAll('[data-upsell-checkbox]:checked');
 
-      // Wenn keine Checkbox angehakt, normales Formular-Verhalten
+      // Wenn keine Checkbox angehakt, normales Formular-Verhalten zulassen
       if (checkedUpsells.length === 0) return;
 
-      // WICHTIG: Sofort preventDefault aufrufen
+      // WICHTIG: Event stoppen
       e.preventDefault();
-      e.stopPropagation();
+      e.stopImmediatePropagation();
+
+      // Verhindere Doppelklicks
+      if (isSubmitting) return;
+      isSubmitting = true;
 
       const mainVariantId = document.getElementById('product-variant-id').value;
       const quantityInput = document.getElementById('product-quantity');
       const quantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
-
-      const addBtn = form.querySelector('.product-add-btn');
-
-      // Verhindere Doppelklicks
-      if (addBtn.disabled) return;
 
       const originalBtnContent = addBtn.innerHTML;
 
@@ -2081,6 +2085,7 @@
           checkedUpsells.forEach(checkbox => checkbox.checked = false);
           // Preis auf Originalpreis zuruecksetzen
           updateTotalPrice();
+          isSubmitting = false;
         }, 2000);
 
       } catch (error) {
@@ -2097,6 +2102,7 @@
         setTimeout(() => {
           addBtn.disabled = false;
           addBtn.innerHTML = originalBtnContent;
+          isSubmitting = false;
         }, 2000);
       }
     });
