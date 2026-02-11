@@ -250,6 +250,24 @@
         "id": "cart_reward_3_text",
         "label": "Belohnung 3 - Text",
         "default": "Kostenloser Versand"
+      },
+      {
+        "type": "header",
+        "content": "Preis-Hinweise"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_tax_included",
+        "label": "\"inkl. MwSt.\" anzeigen",
+        "default": true,
+        "info": "Deaktivieren fuer Kleinunternehmerregelung (kein MwSt-Ausweis)"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_shipping_note",
+        "label": "\"zzgl. Versand\" anzeigen",
+        "default": false,
+        "info": "Zeigt 'zzgl. Versand' unter dem Preis an"
       }
     ]
   },

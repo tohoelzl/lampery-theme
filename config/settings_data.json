@@ -9,6 +9,8 @@
  */
 {
   "current": {
+    "show_tax_included": false,
+    "show_shipping_note": true,
     "social_instagram_link": "https://instagram.de/lampery.de",
     "social_tiktok_link": "https://tiktok.de/lampery.de",
     "cart_progress_steps": "2",

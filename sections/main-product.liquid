@@ -204,7 +204,7 @@
                 <div class="product-price__main">
                   {% if product.compare_at_price > product.price %}
                     <span class="product-price__current product-price__current--sale">
-                      {{ current_variant.price | money }}
+                      {{ current_variant.price | money }}{% unless settings.show_tax_included %}<sup class="product-price__asterisk">*</sup>{% endunless %}
                     </span>
                     <span class="product-price__compare">
                       {{ current_variant.compare_at_price | money }}
@@ -215,12 +215,15 @@
                     </span>
                   {% else %}
                     <span class="product-price__current">
-                      {{ current_variant.price | money }}
+                      {{ current_variant.price | money }}{% unless settings.show_tax_included %}<sup class="product-price__asterisk">*</sup>{% endunless %}
                     </span>
                   {% endif %}
                 </div>
-                {% if block.settings.show_vat_text %}
+                {% if block.settings.show_vat_text and settings.show_tax_included %}
                   <span class="product-price__vat">{{ 'products.product.price_vat' | t }}</span>
+                {% endif %}
+                {% if settings.show_shipping_note %}
+                  <span class="product-price__shipping">zzgl. <a href="{{ pages['versand'].url | default: '/policies/shipping-policy' }}">Versand</a></span>
                 {% endif %}
               </div>
 
@@ -1101,6 +1104,28 @@
   .product-price__vat {
     font-size: 0.8125rem;
     color: var(--color-text-muted);
+  }
+
+  .product-price__shipping {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  .product-price__shipping a {
+    color: var(--color-text-muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .product-price__shipping a:hover {
+    color: var(--color-primary);
+  }
+
+  .product-price__asterisk {
+    font-size: 0.65em;
+    color: var(--color-text-muted);
+    margin-left: 1px;
+    vertical-align: super;
   }
 
   /* Variants */

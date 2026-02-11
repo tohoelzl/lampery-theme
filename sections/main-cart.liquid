@@ -137,9 +137,11 @@
             <div class="border-t border-border pt-4 mb-6">
               <div class="flex items-center justify-between text-lg font-semibold">
                 <span>{{ 'cart.total' | t }}</span>
-                <span>{{ cart.total_price | money }}</span>
+                <span>{{ cart.total_price | money }}{% unless settings.show_tax_included %}<sup class="text-xs text-text-muted">*</sup>{% endunless %}</span>
               </div>
-              <p class="text-xs text-text-muted mt-1">{{ 'cart.taxes_included' | t }}</p>
+              {% if settings.show_tax_included %}
+                <p class="text-xs text-text-muted mt-1">{{ 'cart.taxes_included' | t }}</p>
+              {% endif %}
             </div>
 
             <form action="/cart" method="post">

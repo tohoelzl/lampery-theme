@@ -151,10 +151,10 @@
     {% comment %} Product Price {% endcomment %}
     <div class="product-card__price">
       {% if product.compare_at_price > product.price %}
-        <span class="product-card__price-sale">{{ product.price | money }}</span>
+        <span class="product-card__price-sale">{{ product.price | money }}{% unless settings.show_tax_included %}<sup class="product-card__asterisk">*</sup>{% endunless %}</span>
         <span class="product-card__price-compare">{{ product.compare_at_price | money }}</span>
       {% else %}
-        <span class="product-card__price-regular">{{ product.price | money }}</span>
+        <span class="product-card__price-regular">{{ product.price | money }}{% unless settings.show_tax_included %}<sup class="product-card__asterisk">*</sup>{% endunless %}</span>
       {% endif %}
     </div>
 
@@ -561,6 +561,14 @@
     font-size: 0.875rem;
     color: var(--color-text-muted);
     text-decoration: line-through;
+  }
+
+  .product-card__asterisk {
+    font-size: 0.65em;
+    color: var(--color-text-muted);
+    margin-left: 1px;
+    vertical-align: super;
+    font-weight: 400;
   }
 
   /* Color Swatches */

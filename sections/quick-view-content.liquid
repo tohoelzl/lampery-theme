@@ -57,17 +57,19 @@
       {% comment %} Price {% endcomment %}
       <div class="quick-view-price">
         {% if product.compare_at_price > product.price %}
-          <span class="quick-view-price-sale">{{ product.price | money }}</span>
+          <span class="quick-view-price-sale">{{ product.price | money }}{% unless settings.show_tax_included %}<sup class="quick-view-asterisk">*</sup>{% endunless %}</span>
           <span class="quick-view-price-compare">{{ product.compare_at_price | money }}</span>
           <span class="quick-view-price-badge">
             -{{ product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price }}%
           </span>
         {% else %}
-          <span class="quick-view-price-regular">{{ product.price | money }}</span>
+          <span class="quick-view-price-regular">{{ product.price | money }}{% unless settings.show_tax_included %}<sup class="quick-view-asterisk">*</sup>{% endunless %}</span>
         {% endif %}
       </div>
 
-      <p class="quick-view-tax">{{ 'products.product.price_vat' | t | default: 'inkl. MwSt.' }}</p>
+      {% if settings.show_tax_included %}
+        <p class="quick-view-tax">{{ 'products.product.price_vat' | t | default: 'inkl. MwSt.' }}</p>
+      {% endif %}
 
       {% comment %} Short Description {% endcomment %}
       {% if product.description != blank %}
@@ -278,6 +280,13 @@
     font-size: 0.8125rem;
     color: var(--color-text-muted, #666);
     margin: 0 0 1rem;
+  }
+
+  .quick-view-asterisk {
+    font-size: 0.65em;
+    color: var(--color-text-muted, #666);
+    margin-left: 1px;
+    vertical-align: super;
   }
 
   /* Description */
