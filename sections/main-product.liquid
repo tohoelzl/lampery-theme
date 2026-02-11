@@ -1884,6 +1884,13 @@
   }
 
   function updatePrice(variant) {
+    // Bei Variantenwechsel: Upsell-Checkboxen beruecksichtigen falls vorhanden
+    const upsellCheckboxes = document.querySelectorAll('[data-upsell-checkbox]');
+    if (upsellCheckboxes.length > 0) {
+      updateTotalPrice();
+      return;
+    }
+
     const priceContainer = document.querySelector('.product-price__main');
     if (!priceContainer) return;
 
@@ -1972,6 +1979,11 @@
     const upsellCheckboxes = document.querySelectorAll('[data-upsell-checkbox]');
 
     if (!form || upsellCheckboxes.length === 0) return;
+
+    // Event Listener fuer Preisupdate bei Checkbox-Aenderung
+    upsellCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', updateTotalPrice);
+    });
 
     form.addEventListener('submit', async function(e) {
       // Alle angehakten Checkboxen sammeln
@@ -2072,6 +2084,74 @@
         }, 2000);
       }
     });
+  }
+
+  // Gesamtpreis aktualisieren bei Upsell-Auswahl
+  function updateTotalPrice() {
+    const priceContainer = document.querySelector('.product-price__main');
+    if (!priceContainer) return;
+
+    // Aktuellen Variantenpreis holen
+    const variantSelect = document.getElementById('product-select');
+    const currentVariant = productVariants.find(v => v.id === parseInt(variantSelect?.value));
+    if (!currentVariant) return;
+
+    let basePrice = currentVariant.price;
+    let baseComparePrice = currentVariant.compare_at_price;
+
+    // Alle angehakten Upsell-Preise addieren
+    const checkedUpsells = document.querySelectorAll('[data-upsell-checkbox]:checked');
+    let upsellTotal = 0;
+    checkedUpsells.forEach(checkbox => {
+      const upsellPrice = parseInt(checkbox.getAttribute('data-upsell-price')) || 0;
+      upsellTotal += upsellPrice;
+    });
+
+    const totalPrice = basePrice + upsellTotal;
+    const totalComparePrice = baseComparePrice ? baseComparePrice + upsellTotal : null;
+
+    const formatMoney = (cents) => {
+      return new Intl.NumberFormat('de-DE', {
+        style: 'currency',
+        currency: '{{ cart.currency.iso_code | default: "EUR" }}'
+      }).format(cents / 100);
+    };
+
+    // Preis-Anzeige aktualisieren
+    if (totalComparePrice && totalComparePrice > totalPrice) {
+      const savings = totalComparePrice - totalPrice;
+      priceContainer.innerHTML = `
+        <span class="product-price__current product-price__current--sale">
+          ${formatMoney(totalPrice)}
+        </span>
+        <span class="product-price__compare">
+          ${formatMoney(totalComparePrice)}
+        </span>
+        <span class="product-price__savings">
+          Du sparst ${formatMoney(savings)}
+        </span>
+      `;
+    } else {
+      priceContainer.innerHTML = `
+        <span class="product-price__current">
+          ${formatMoney(totalPrice)}
+        </span>
+      `;
+    }
+
+    // Hinweis hinzufuegen wenn Upsells ausgewaehlt
+    let upsellNote = priceContainer.parentElement.querySelector('.product-price__upsell-note');
+    if (checkedUpsells.length > 0) {
+      if (!upsellNote) {
+        upsellNote = document.createElement('span');
+        upsellNote.className = 'product-price__upsell-note';
+        upsellNote.style.cssText = 'display: block; font-size: 0.75rem; color: var(--color-text-muted, #666); margin-top: 0.25rem;';
+        priceContainer.parentElement.appendChild(upsellNote);
+      }
+      upsellNote.textContent = `inkl. ${checkedUpsells.length} Zusatzprodukt${checkedUpsells.length > 1 ? 'e' : ''}`;
+    } else if (upsellNote) {
+      upsellNote.remove();
+    }
   }
 
   // Cart-Counter aktualisieren
