@@ -9,6 +9,17 @@
   assign related_product = product.metafields.custom.related_accessory.value
 -%}
 
+{% comment %} DEBUG - Entferne nach Test {% endcomment %}
+<div style="background: #ffe0e0; padding: 10px; margin: 10px 0; font-size: 12px; border: 1px solid red;">
+  <strong>DEBUG Upsell:</strong><br>
+  Metafeld roh: {{ product.metafields.custom.related_accessory }}<br>
+  Metafeld .value: {{ product.metafields.custom.related_accessory.value }}<br>
+  Related Product: {{ related_product }}<br>
+  Related Product Title: {{ related_product.title }}<br>
+  Related Product Available: {{ related_product.available }}<br>
+  Bedingung (blank): {{ related_product | default: 'LEER' }}<br>
+</div>
+
 {% if related_product != blank and related_product.available %}
   {%- assign upsell_variant = related_product.first_available_variant -%}
 
