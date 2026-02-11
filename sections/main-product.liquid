@@ -2217,24 +2217,62 @@
     }
   }
 
-  // Cart-Drawer oeffnen (falls Theme einen hat)
-  function openCartDrawer() {
-    // Verschiedene gaengige Methoden zum Oeffnen des Cart-Drawers
-    const cartDrawer = document.querySelector('[data-cart-drawer]') ||
-                       document.querySelector('.cart-drawer') ||
-                       document.querySelector('#cart-drawer');
+  // Cart-Drawer oeffnen und Inhalt aktualisieren
+  async function openCartDrawer() {
+    try {
+      // Cart-Drawer Inhalt per AJAX laden (view=drawer nutzt cart.drawer.liquid Template)
+      const cartResponse = await fetch('/cart?view=drawer');
+      if (cartResponse.ok) {
+        const html = await cartResponse.text();
 
-    if (cartDrawer) {
-      // Alpine.js basiertes Drawer
-      if (cartDrawer._x_dataStack && cartDrawer._x_dataStack[0]) {
-        if (typeof cartDrawer._x_dataStack[0].open !== 'undefined') {
-          cartDrawer._x_dataStack[0].open = true;
+        // Parser fuer neues HTML
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        // Elemente auf der aktuellen Seite
+        const cartDrawerContent = document.getElementById('cart-drawer-content');
+        const cartFooter = document.getElementById('cart-footer');
+        const cartCountEl = document.querySelector('[data-cart-count]');
+        const cartItemsList = document.getElementById('cart-items-list');
+        const cartEmptyState = document.getElementById('cart-empty-state');
+
+        // Neue Elemente aus dem geladenen HTML
+        const newContent = doc.getElementById('cart-drawer-content');
+        const newFooter = doc.getElementById('cart-footer');
+        const newCount = doc.querySelector('[data-cart-count]');
+        const newItemsList = doc.getElementById('cart-items-list');
+        const newEmptyState = doc.getElementById('cart-empty-state');
+
+        // Cart-Drawer Inhalt aktualisieren
+        if (cartDrawerContent && newContent) {
+          cartDrawerContent.innerHTML = newContent.innerHTML;
         }
-      }
 
-      // CSS-Klassen basiertes Drawer
-      cartDrawer.classList.add('is-open', 'is-active', 'active', 'open');
-      document.body.classList.add('cart-drawer-open', 'overflow-hidden');
+        // Footer aktualisieren
+        if (cartFooter && newFooter) {
+          cartFooter.innerHTML = newFooter.innerHTML;
+          // Footer sichtbar machen wenn Artikel vorhanden
+          cartFooter.style.display = newFooter.style.display || '';
+        }
+
+        // Cart Counter im Header aktualisieren
+        if (cartCountEl && newCount) {
+          cartCountEl.textContent = newCount.textContent;
+        }
+
+        // Alle Cart-Counter auf der Seite aktualisieren
+        document.querySelectorAll('[data-cart-count]').forEach(el => {
+          if (newCount) el.textContent = newCount.textContent;
+        });
+      }
+    } catch (error) {
+      console.error('Error updating cart drawer:', error);
+    }
+
+    // Alpine.js cartOpen State setzen (liegt auf dem body-Element)
+    const alpineRoot = document.querySelector('[x-data*="cartOpen"]');
+    if (alpineRoot && alpineRoot._x_dataStack && alpineRoot._x_dataStack[0]) {
+      alpineRoot._x_dataStack[0].cartOpen = true;
     }
 
     // Custom Event fuer andere Komponenten
