@@ -451,7 +451,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   /**
-   * Initialize variant picker
+   * Initialize variant picker (for pages without inline variant selector)
+   * Note: main-product.liquid has its own initVariantSelector() that uses 'is-active' class
    */
   function initVariantPicker() {
     const productSelect = document.getElementById('product-select');
@@ -460,6 +461,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const colorButtons = document.querySelectorAll('[data-option-value]');
 
     if (!productSelect) return;
+
+    // Skip if product page has its own variant selector (uses is-active class)
+    if (document.querySelector('.product-color-swatch, .product-option-btn')) return;
 
     optionSelects.forEach(select => {
       select.addEventListener('change', updateVariant);
