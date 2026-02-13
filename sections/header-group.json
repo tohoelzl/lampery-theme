@@ -87,7 +87,7 @@
       ],
       "settings": {
         "logo": "shopify://shop_images/Group_25.png",
-        "logo_width": 100,
+        "logo_width": 90,
         "header_height": 80,
         "logo_overflow": false,
         "logo_overflow_amount": 30,
