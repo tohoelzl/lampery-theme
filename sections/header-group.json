@@ -95,8 +95,8 @@
         "navigation_type": "mega",
         "menu": "main-menu",
         "show_view_all": true,
-        "show_announcement": false,
-        "announcement_text": "Kostenloser Versand ab 100 EUR",
+        "show_announcement": true,
+        "announcement_text": "Kostenloser Versand ab 50 EUR",
         "announcement_link": ""
       }
     }
