@@ -14,7 +14,7 @@
     "footer": {
       "type": "footer",
       "settings": {
-        "footer_logo": "shopify://shop_images/Group_25.png",
+        "footer_logo": "shopify://shop_images/Logo_Main.svg",
         "footer_description": "",
         "contact_email": "",
         "contact_phone": "",
