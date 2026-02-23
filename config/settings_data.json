@@ -9,15 +9,15 @@
  */
 {
   "current": {
-    "show_tax_included": false,
-    "show_shipping_note": true,
     "social_instagram_link": "https://instagram.de/lampery.de",
     "social_tiktok_link": "https://tiktok.de/lampery.de",
     "cart_progress_steps": "2",
     "cart_reward_1_threshold": 50,
-    "cart_reward_1_text": "5% Rabatt",
+    "cart_reward_1_text": "Kostenloser Versand",
     "cart_reward_2_threshold": 100,
-    "cart_reward_2_text": "Kostenloser Versand",
+    "cart_reward_2_text": "10% Rabatt",
+    "show_tax_included": false,
+    "show_shipping_note": true,
     "button_hover_effect": "fill_diagonal",
     "button_hover_speed": 800,
     "product_card_style": "square",
