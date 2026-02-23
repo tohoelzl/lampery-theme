@@ -119,9 +119,9 @@
           </div>
         {% else %}
           {% comment %} Not the last milestone - centered {% endcomment %}
-          <div class="text-center mt-2 whitespace-nowrap">
-            <div class="text-xs font-medium {% if cart_total >= threshold_1 %}text-primary{% else %}text-text-muted{% endif %}">{{ threshold_1 }}€</div>
-            <div class="text-xs {% if cart_total >= threshold_1 %}text-primary{% else %}text-text-muted{% endif %} max-w-16 truncate">{{ settings.cart_reward_1_text }}</div>
+          <div class="text-center mt-2">
+            <div class="text-xs font-medium {% if cart_total >= threshold_1 %}text-primary{% else %}text-text-muted{% endif %} whitespace-nowrap">{{ threshold_1 }}€</div>
+            <div class="text-xs {% if cart_total >= threshold_1 %}text-primary{% else %}text-text-muted{% endif %} leading-tight">{{ settings.cart_reward_1_text }}</div>
           </div>
         {% endif %}
       </div>
@@ -143,9 +143,9 @@
           </div>
         {% else %}
           {% comment %} Middle milestone when 3 steps - centered {% endcomment %}
-          <div class="text-center mt-2 whitespace-nowrap">
-            <div class="text-xs font-medium {% if cart_total >= threshold_2 %}text-primary{% else %}text-text-muted{% endif %}">{{ threshold_2 }}€</div>
-            <div class="text-xs {% if cart_total >= threshold_2 %}text-primary{% else %}text-text-muted{% endif %} max-w-16 truncate">{{ settings.cart_reward_2_text }}</div>
+          <div class="text-center mt-2">
+            <div class="text-xs font-medium {% if cart_total >= threshold_2 %}text-primary{% else %}text-text-muted{% endif %} whitespace-nowrap">{{ threshold_2 }}€</div>
+            <div class="text-xs {% if cart_total >= threshold_2 %}text-primary{% else %}text-text-muted{% endif %} leading-tight">{{ settings.cart_reward_2_text }}</div>
           </div>
         {% endif %}
       </div>
