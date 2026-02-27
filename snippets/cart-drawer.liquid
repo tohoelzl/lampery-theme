@@ -94,6 +94,19 @@
                   <p class="text-xs text-text-muted mt-1">{{ item.variant.title }}</p>
                 {% endif %}
 
+                {% comment %} Line Item Properties (Konfigurator) {% endcomment %}
+                {% if item.properties.size > 0 %}
+                  <div class="mt-1 space-y-0.5">
+                    {% for property in item.properties %}
+                      {% unless property.last == blank or property.first contains '_' %}
+                        <p class="text-xs text-text-muted">
+                          <span class="font-medium">{{ property.first }}:</span> {{ property.last }}
+                        </p>
+                      {% endunless %}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
                 <div class="flex items-center justify-between mt-2">
                   {% comment %} Quantity Selector {% endcomment %}
                   <div class="flex items-center border border-border rounded">

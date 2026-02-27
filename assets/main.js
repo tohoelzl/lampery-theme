@@ -64,8 +64,11 @@ document.addEventListener('DOMContentLoaded', function() {
   /**
    * Add to cart
    */
-  function addToCart(variantId, quantity = 1) {
+  function addToCart(variantId, quantity = 1, properties = null) {
     const cartAddUrl = window.routes?.cart_add_url || '/cart/add.js';
+
+    const body = { id: variantId, quantity: quantity };
+    if (properties) body.properties = properties;
 
     fetch(cartAddUrl, {
       method: 'POST',
@@ -73,10 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify({
-        id: variantId,
-        quantity: quantity
-      })
+      body: JSON.stringify(body)
     })
     .then(response => {
       if (!response.ok) {

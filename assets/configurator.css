@@ -1,0 +1,427 @@
+/* ============================================
+   3D Schriftzug Konfigurator Styles
+   ============================================ */
+
+.section-configurator {
+  min-height: 100vh;
+}
+
+.configurator-section {
+  padding: 2rem 0 4rem;
+}
+
+/* Gallery */
+.configurator-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+@media (min-width: 768px) {
+  .configurator-gallery {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+.configurator-gallery__item {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--button-radius, 0.5rem);
+  overflow: hidden;
+  background: var(--color-background-alt);
+}
+
+.configurator-gallery__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.configurator-gallery__item:hover img {
+  transform: scale(1.05);
+}
+
+.configurator-gallery__caption {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+/* Main Layout */
+.configurator-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .configurator-layout {
+    flex-direction: row;
+    gap: 3rem;
+  }
+
+  .configurator-options {
+    flex: 0 0 420px;
+  }
+
+  .configurator-preview {
+    flex: 1;
+    position: sticky;
+    top: 6rem;
+    align-self: flex-start;
+  }
+}
+
+/* Options Panel */
+.configurator-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.configurator-field-label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+  color: var(--color-text);
+}
+
+/* Font Selector */
+.configurator-fonts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.configurator-font-btn {
+  padding: 0.625rem 1rem;
+  border: 2px solid var(--color-border);
+  border-radius: var(--button-radius, 0.5rem);
+  background: var(--color-background);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.configurator-font-btn:hover {
+  border-color: var(--color-primary);
+}
+
+.configurator-font-btn.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.configurator-font-btn[data-font="Bangers"] { font-family: 'Bangers', cursive; }
+.configurator-font-btn[data-font="Arial"] { font-family: Arial, sans-serif; }
+.configurator-font-btn[data-font="Chicle"] { font-family: 'Chicle', cursive; }
+.configurator-font-btn[data-font="Lobster"] { font-family: 'Lobster', cursive; }
+.configurator-font-btn[data-font="PT Sans"] { font-family: 'PT Sans', sans-serif; }
+
+/* Text Input */
+.configurator-text-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid var(--color-border);
+  border-radius: var(--button-radius, 0.5rem);
+  background: var(--color-background);
+  color: var(--color-text);
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.configurator-text-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.configurator-text-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.configurator-char-count {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin-top: 0.375rem;
+}
+
+/* Size Selector */
+.configurator-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.configurator-size-btn {
+  padding: 0.625rem 1.25rem;
+  border: 2px solid var(--color-border);
+  border-radius: var(--button-radius, 0.5rem);
+  background: var(--color-background);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  min-width: 100px;
+}
+
+.configurator-size-btn:hover {
+  border-color: var(--color-primary);
+}
+
+.configurator-size-btn.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.configurator-size-price {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  opacity: 0.8;
+  margin-top: 0.125rem;
+}
+
+/* Color Selector */
+.configurator-colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.configurator-color-swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.configurator-color-swatch:hover {
+  transform: scale(1.1);
+}
+
+.configurator-color-swatch.active {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-primary);
+}
+
+.configurator-color-name {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin-top: 0.375rem;
+}
+
+/* Logo Upload */
+.configurator-upload {
+  position: relative;
+}
+
+.configurator-upload-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--button-radius, 0.5rem);
+  background: var(--color-background-alt);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.configurator-upload-area:hover {
+  border-color: var(--color-primary);
+  background: var(--color-background);
+}
+
+.configurator-upload-area svg {
+  width: 2rem;
+  height: 2rem;
+  color: var(--color-text-muted);
+}
+
+.configurator-upload-area span {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.configurator-upload-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.configurator-logo-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 2px solid var(--color-border);
+  border-radius: var(--button-radius, 0.5rem);
+  background: var(--color-background-alt);
+}
+
+.configurator-logo-preview img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 0.25rem;
+}
+
+.configurator-logo-preview-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.configurator-logo-preview-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.configurator-logo-remove {
+  padding: 0.375rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+}
+
+.configurator-logo-remove:hover {
+  color: var(--color-accent);
+}
+
+/* Preview Area */
+.configurator-preview-wrapper {
+  background: var(--color-background-alt);
+  border-radius: var(--button-radius, 0.5rem);
+  padding: 1.5rem;
+  border: 2px solid var(--color-border);
+}
+
+.configurator-canvas-container {
+  position: relative;
+  width: 100%;
+  background: #fff;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.configurator-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.configurator-preview-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-top: 0.75rem;
+  font-style: italic;
+}
+
+.configurator-preview-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+/* Price Display */
+.configurator-price-box {
+  background: var(--color-background-alt);
+  border-radius: var(--button-radius, 0.5rem);
+  padding: 1.25rem 1.5rem;
+  border: 2px solid var(--color-border);
+}
+
+.configurator-price-calc {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.configurator-price-total {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+/* Add to Cart */
+.configurator-add-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  background: var(--btn-primary-bg, var(--color-primary));
+  color: var(--btn-primary-text, #fff);
+  border: none;
+  border-radius: var(--button-radius, 0.5rem);
+  cursor: pointer;
+  transition: all var(--button-hover-speed, 300ms) ease;
+}
+
+.configurator-add-btn:hover {
+  background: var(--btn-primary-hover-bg, var(--color-primary-light));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.configurator-add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Validation */
+.configurator-validation-msg {
+  font-size: 0.8125rem;
+  color: var(--color-accent);
+  margin-top: 0.25rem;
+}
+
+/* Section Title */
+.configurator-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+@media (min-width: 768px) {
+  .configurator-title {
+    font-size: 2rem;
+  }
+}
+
+.configurator-subtitle {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  margin-bottom: 2rem;
+}

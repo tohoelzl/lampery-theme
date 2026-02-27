@@ -1,0 +1,647 @@
+{% comment %}
+  3D Schriftzug Konfigurator Section
+  - Beispiel-Galerie
+  - Font/Text/Größe/Farbe Auswahl
+  - Canvas Preview mit 3D-Effekt
+  - Dynamische Preisberechnung
+  - Add to Cart mit Line Item Properties
+{% endcomment %}
+
+{{ 'configurator.css' | asset_url | stylesheet_tag }}
+
+{% comment %} Eigenes Farbschema für den Konfigurator {% endcomment %}
+{% style %}
+  .section-configurator {
+    {% if section.settings.cfg_bg != blank %}
+      --color-background: {{ section.settings.cfg_bg }};
+    {% endif %}
+    {% if section.settings.cfg_bg_alt != blank %}
+      --color-background-alt: {{ section.settings.cfg_bg_alt }};
+    {% endif %}
+    {% if section.settings.cfg_text != blank %}
+      --color-text: {{ section.settings.cfg_text }};
+    {% endif %}
+    {% if section.settings.cfg_text_muted != blank %}
+      --color-text-muted: {{ section.settings.cfg_text_muted }};
+    {% endif %}
+    {% if section.settings.cfg_border != blank %}
+      --color-border: {{ section.settings.cfg_border }};
+    {% endif %}
+    {% if section.settings.cfg_primary != blank %}
+      --color-primary: {{ section.settings.cfg_primary }};
+    {% endif %}
+    {% if section.settings.cfg_accent != blank %}
+      --color-accent: {{ section.settings.cfg_accent }};
+    {% endif %}
+    {% if section.settings.cfg_btn_bg != blank %}
+      --btn-primary-bg: {{ section.settings.cfg_btn_bg }};
+    {% endif %}
+    {% if section.settings.cfg_btn_text != blank %}
+      --btn-primary-text: {{ section.settings.cfg_btn_text }};
+    {% endif %}
+    {% if section.settings.cfg_btn_hover != blank %}
+      --btn-primary-hover-bg: {{ section.settings.cfg_btn_hover }};
+    {% endif %}
+
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
+{% endstyle %}
+
+{%- liquid
+  assign sizes_json = '[]'
+  assign sizes_arr = ''
+
+  if section.settings.size_1_label != blank and section.settings.size_1_price != blank
+    assign s1 = '{"label":"' | append: section.settings.size_1_label | append: '","price":' | append: section.settings.size_1_price | append: '}'
+    assign sizes_arr = s1
+  endif
+  if section.settings.size_2_label != blank and section.settings.size_2_price != blank
+    assign s2 = '{"label":"' | append: section.settings.size_2_label | append: '","price":' | append: section.settings.size_2_price | append: '}'
+    if sizes_arr != ''
+      assign sizes_arr = sizes_arr | append: ',' | append: s2
+    else
+      assign sizes_arr = s2
+    endif
+  endif
+  if section.settings.size_3_label != blank and section.settings.size_3_price != blank
+    assign s3 = '{"label":"' | append: section.settings.size_3_label | append: '","price":' | append: section.settings.size_3_price | append: '}'
+    if sizes_arr != ''
+      assign sizes_arr = sizes_arr | append: ',' | append: s3
+    else
+      assign sizes_arr = s3
+    endif
+  endif
+  if section.settings.size_4_label != blank and section.settings.size_4_price != blank
+    assign s4 = '{"label":"' | append: section.settings.size_4_label | append: '","price":' | append: section.settings.size_4_price | append: '}'
+    if sizes_arr != ''
+      assign sizes_arr = sizes_arr | append: ',' | append: s4
+    else
+      assign sizes_arr = s4
+    endif
+  endif
+  if section.settings.size_5_label != blank and section.settings.size_5_price != blank
+    assign s5 = '{"label":"' | append: section.settings.size_5_label | append: '","price":' | append: section.settings.size_5_price | append: '}'
+    if sizes_arr != ''
+      assign sizes_arr = sizes_arr | append: ',' | append: s5
+    else
+      assign sizes_arr = s5
+    endif
+  endif
+  if section.settings.size_6_label != blank and section.settings.size_6_price != blank
+    assign s6 = '{"label":"' | append: section.settings.size_6_label | append: '","price":' | append: section.settings.size_6_price | append: '}'
+    if sizes_arr != ''
+      assign sizes_arr = sizes_arr | append: ',' | append: s6
+    else
+      assign sizes_arr = s6
+    endif
+  endif
+
+  assign sizes_json = '[' | append: sizes_arr | append: ']'
+
+  assign colors_arr = ''
+  if section.settings.color_1 != blank and section.settings.color_1_name != blank
+    assign c1 = '{"hex":"' | append: section.settings.color_1 | append: '","name":"' | append: section.settings.color_1_name | append: '"}'
+    assign colors_arr = c1
+  endif
+  if section.settings.color_2 != blank and section.settings.color_2_name != blank
+    assign c2 = '{"hex":"' | append: section.settings.color_2 | append: '","name":"' | append: section.settings.color_2_name | append: '"}'
+    if colors_arr != ''
+      assign colors_arr = colors_arr | append: ',' | append: c2
+    else
+      assign colors_arr = c2
+    endif
+  endif
+  if section.settings.color_3 != blank and section.settings.color_3_name != blank
+    assign c3 = '{"hex":"' | append: section.settings.color_3 | append: '","name":"' | append: section.settings.color_3_name | append: '"}'
+    if colors_arr != ''
+      assign colors_arr = colors_arr | append: ',' | append: c3
+    else
+      assign colors_arr = c3
+    endif
+  endif
+  if section.settings.color_4 != blank and section.settings.color_4_name != blank
+    assign c4 = '{"hex":"' | append: section.settings.color_4 | append: '","name":"' | append: section.settings.color_4_name | append: '"}'
+    if colors_arr != ''
+      assign colors_arr = colors_arr | append: ',' | append: c4
+    else
+      assign colors_arr = c4
+    endif
+  endif
+  if section.settings.color_5 != blank and section.settings.color_5_name != blank
+    assign c5 = '{"hex":"' | append: section.settings.color_5 | append: '","name":"' | append: section.settings.color_5_name | append: '"}'
+    if colors_arr != ''
+      assign colors_arr = colors_arr | append: ',' | append: c5
+    else
+      assign colors_arr = c5
+    endif
+  endif
+  if section.settings.color_6 != blank and section.settings.color_6_name != blank
+    assign c6 = '{"hex":"' | append: section.settings.color_6 | append: '","name":"' | append: section.settings.color_6_name | append: '"}'
+    if colors_arr != ''
+      assign colors_arr = colors_arr | append: ',' | append: c6
+    else
+      assign colors_arr = c6
+    endif
+  endif
+  if section.settings.color_7 != blank and section.settings.color_7_name != blank
+    assign c7 = '{"hex":"' | append: section.settings.color_7 | append: '","name":"' | append: section.settings.color_7_name | append: '"}'
+    if colors_arr != ''
+      assign colors_arr = colors_arr | append: ',' | append: c7
+    else
+      assign colors_arr = c7
+    endif
+  endif
+  if section.settings.color_8 != blank and section.settings.color_8_name != blank
+    assign c8 = '{"hex":"' | append: section.settings.color_8 | append: '","name":"' | append: section.settings.color_8_name | append: '"}'
+    if colors_arr != ''
+      assign colors_arr = colors_arr | append: ',' | append: c8
+    else
+      assign colors_arr = c8
+    endif
+  endif
+
+  assign colors_json = '[' | append: colors_arr | append: ']'
+
+  assign variant_map = '{'
+  assign variant_first = true
+  for variant in product.variants
+    unless variant_first
+      assign variant_map = variant_map | append: ','
+    endunless
+    assign variant_map = variant_map | append: '"' | append: variant.title | append: '":' | append: variant.id
+    assign variant_first = false
+  endfor
+  assign variant_map = variant_map | append: '}'
+-%}
+
+<section class="configurator-section">
+  <div class="container mx-auto px-4 lg:px-8">
+
+    {% comment %} Product Title {% endcomment %}
+    <h1 class="configurator-title">{{ product.title }}</h1>
+    {% if product.description != blank %}
+      <div class="configurator-subtitle">{{ product.description }}</div>
+    {% endif %}
+
+    {% comment %} Example Gallery {% endcomment %}
+    {% if section.blocks.size > 0 %}
+      <div class="configurator-gallery">
+        {% for block in section.blocks %}
+          {% if block.type == 'gallery_image' and block.settings.image != blank %}
+            <div class="configurator-gallery__item" {{ block.shopify_attributes }}>
+              <img
+                src="{{ block.settings.image | image_url: width: 600 }}"
+                alt="{{ block.settings.caption | default: product.title | escape }}"
+                width="300"
+                height="300"
+                loading="lazy"
+              >
+              {% if block.settings.caption != blank %}
+                <p class="configurator-gallery__caption">{{ block.settings.caption }}</p>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% comment %} Configurator {% endcomment %}
+    <div
+      class="configurator-layout"
+      x-data="{
+        ...configurator(),
+        sizes: {{ sizes_json }},
+        colors: {{ colors_json }},
+        variantIds: {{ variant_map }}
+      }"
+      x-init="init()"
+    >
+
+      {% comment %} Left: Options {% endcomment %}
+      <div class="configurator-options">
+
+        {% comment %} Font Selection {% endcomment %}
+        <div>
+          <label class="configurator-field-label">Schriftart</label>
+          <div class="configurator-fonts">
+            <template x-for="f in fonts" :key="f">
+              <button
+                type="button"
+                class="configurator-font-btn"
+                :class="{ 'active': font === f }"
+                :data-font="f"
+                :style="'font-family: ' + (f === 'PT Sans' ? '\'PT Sans\', sans-serif' : f === 'Arial' ? 'Arial, sans-serif' : '\'' + f + '\', cursive')"
+                @click="selectFont(f)"
+                x-text="f"
+              ></button>
+            </template>
+          </div>
+        </div>
+
+        {% comment %} Text Input {% endcomment %}
+        <div>
+          <label class="configurator-field-label" for="configurator-text">Dein Text</label>
+          <input
+            type="text"
+            id="configurator-text"
+            class="configurator-text-input"
+            placeholder="Gib deinen Wunschtext ein..."
+            x-model="text"
+            autocomplete="off"
+          >
+          <p class="configurator-char-count">
+            <span x-text="letterCount"></span> Buchstaben (ohne Leerzeichen)
+            <template x-if="wordCount > 3">
+              <span class="configurator-validation-msg"> &mdash; Vorschau zeigt nur die ersten 3 W&ouml;rter</span>
+            </template>
+          </p>
+        </div>
+
+        {% comment %} Size Selection {% endcomment %}
+        <div>
+          <label class="configurator-field-label">Gr&ouml;&szlig;e</label>
+          <div class="configurator-sizes">
+            <template x-for="(s, i) in sizes" :key="i">
+              <button
+                type="button"
+                class="configurator-size-btn"
+                :class="{ 'active': sizeIndex === i }"
+                @click="selectSize(i)"
+              >
+                <span x-text="s.label"></span>
+                <span class="configurator-size-price" x-text="(s.price / 100).toFixed(2).replace('.', ',') + ' \u20AC/Buchstabe'"></span>
+              </button>
+            </template>
+          </div>
+        </div>
+
+        {% comment %} Color Selection {% endcomment %}
+        <div>
+          <label class="configurator-field-label">Farbe</label>
+          <div class="configurator-colors">
+            <template x-for="(c, i) in colors" :key="i">
+              <button
+                type="button"
+                class="configurator-color-swatch"
+                :class="{ 'active': color === c.hex }"
+                :style="'background-color: ' + c.hex"
+                :title="c.name"
+                @click="selectColor(c.hex, c.name)"
+              ></button>
+            </template>
+          </div>
+          <p class="configurator-color-name" x-text="colorName"></p>
+        </div>
+
+        {% comment %} Logo Upload {% endcomment %}
+        <div>
+          <label class="configurator-field-label">Logo hochladen (optional)</label>
+          <div class="configurator-upload" x-show="!logoPreview">
+            <div class="configurator-upload-area">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              <span>Bild ausw&auml;hlen (max. 5MB)</span>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              class="configurator-upload-input"
+              @change="handleLogoUpload($event)"
+              x-ref="logoInput"
+            >
+          </div>
+          <div class="configurator-logo-preview" x-show="logoPreview" x-cloak>
+            <img :src="logoPreview" alt="Logo Vorschau">
+            <div class="configurator-logo-preview-info">
+              <p class="configurator-logo-preview-name" x-text="logoFileName"></p>
+            </div>
+            <button type="button" class="configurator-logo-remove" @click="removeLogo()" title="Logo entfernen">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {% comment %} Price Display {% endcomment %}
+        <div class="configurator-price-box" x-show="letterCount > 0">
+          <p class="configurator-price-calc">
+            <span x-text="letterCount"></span> Buchstaben &times;
+            <span x-text="formattedPricePerLetter"></span>
+          </p>
+          <p class="configurator-price-total" x-text="formattedTotal"></p>
+        </div>
+
+        {% comment %} Add to Cart {% endcomment %}
+        <button
+          type="button"
+          class="configurator-add-btn"
+          :disabled="!isValid"
+          @click="addToCart()"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+          </svg>
+          <span x-text="isValid ? 'In den Warenkorb \u2013 ' + formattedTotal : 'Bitte alle Optionen ausw\u00e4hlen'"></span>
+        </button>
+
+      </div>
+
+      {% comment %} Right: Preview {% endcomment %}
+      <div class="configurator-preview">
+        <div class="configurator-preview-wrapper">
+          <label class="configurator-field-label">Vorschau</label>
+          <div class="configurator-canvas-container">
+            <canvas
+              x-ref="canvas"
+              class="configurator-canvas"
+              width="800"
+              height="360"
+            ></canvas>
+          </div>
+          <p class="configurator-preview-hint" x-show="wordCount > 3">
+            Die Vorschau zeigt nur die ersten 3 W&ouml;rter. Der vollst&auml;ndige Text wird gedruckt.
+          </p>
+          <p class="configurator-preview-hint" x-show="letterCount === 0">
+            Gib oben deinen Wunschtext ein, um eine Vorschau zu sehen.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script src="{{ 'configurator.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "3D Schriftzug Konfigurator",
+  "tag": "div",
+  "class": "section-configurator",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Seiten-Design"
+    },
+    {
+      "type": "paragraph",
+      "content": "Eigenes Farbschema f\u00fcr die Konfigurator-Seite. Leer lassen = Standard-Theme-Farben."
+    },
+    {
+      "type": "color",
+      "id": "cfg_bg",
+      "label": "Hintergrund"
+    },
+    {
+      "type": "color",
+      "id": "cfg_bg_alt",
+      "label": "Hintergrund Alt (Karten, Inputs)"
+    },
+    {
+      "type": "color",
+      "id": "cfg_text",
+      "label": "Textfarbe"
+    },
+    {
+      "type": "color",
+      "id": "cfg_text_muted",
+      "label": "Textfarbe Dezent"
+    },
+    {
+      "type": "color",
+      "id": "cfg_border",
+      "label": "Rahmenfarbe"
+    },
+    {
+      "type": "color",
+      "id": "cfg_primary",
+      "label": "Akzentfarbe (aktive Buttons, Hover)"
+    },
+    {
+      "type": "color",
+      "id": "cfg_accent",
+      "label": "Warnfarbe"
+    },
+    {
+      "type": "color",
+      "id": "cfg_btn_bg",
+      "label": "Warenkorb-Button Hintergrund"
+    },
+    {
+      "type": "color",
+      "id": "cfg_btn_text",
+      "label": "Warenkorb-Button Text"
+    },
+    {
+      "type": "color",
+      "id": "cfg_btn_hover",
+      "label": "Warenkorb-Button Hover"
+    },
+    {
+      "type": "header",
+      "content": "Gr\u00f6\u00dfen & Preise"
+    },
+    {
+      "type": "paragraph",
+      "content": "Definiere bis zu 6 Gr\u00f6\u00dfen-Stufen. Der Preis ist in Cent pro Buchstabe (z.B. 350 = 3,50\u20ac). Erstelle im Produkt Varianten mit den gleichen Labels."
+    },
+    {
+      "type": "text",
+      "id": "size_1_label",
+      "label": "Gr\u00f6\u00dfe 1 \u2013 Label",
+      "default": "bis 5cm"
+    },
+    {
+      "type": "text",
+      "id": "size_1_price",
+      "label": "Gr\u00f6\u00dfe 1 \u2013 Preis (Cent/Buchstabe)",
+      "default": "350"
+    },
+    {
+      "type": "text",
+      "id": "size_2_label",
+      "label": "Gr\u00f6\u00dfe 2 \u2013 Label",
+      "default": "5-10cm"
+    },
+    {
+      "type": "text",
+      "id": "size_2_price",
+      "label": "Gr\u00f6\u00dfe 2 \u2013 Preis (Cent/Buchstabe)",
+      "default": "500"
+    },
+    {
+      "type": "text",
+      "id": "size_3_label",
+      "label": "Gr\u00f6\u00dfe 3 \u2013 Label",
+      "default": "10-15cm"
+    },
+    {
+      "type": "text",
+      "id": "size_3_price",
+      "label": "Gr\u00f6\u00dfe 3 \u2013 Preis (Cent/Buchstabe)",
+      "default": "700"
+    },
+    {
+      "type": "text",
+      "id": "size_4_label",
+      "label": "Gr\u00f6\u00dfe 4 \u2013 Label",
+      "default": "15-20cm"
+    },
+    {
+      "type": "text",
+      "id": "size_4_price",
+      "label": "Gr\u00f6\u00dfe 4 \u2013 Preis (Cent/Buchstabe)",
+      "default": "900"
+    },
+    {
+      "type": "text",
+      "id": "size_5_label",
+      "label": "Gr\u00f6\u00dfe 5 \u2013 Label",
+      "default": "20-25cm"
+    },
+    {
+      "type": "text",
+      "id": "size_5_price",
+      "label": "Gr\u00f6\u00dfe 5 \u2013 Preis (Cent/Buchstabe)",
+      "default": "1200"
+    },
+    {
+      "type": "text",
+      "id": "size_6_label",
+      "label": "Gr\u00f6\u00dfe 6 \u2013 Label",
+      "default": "25-30cm"
+    },
+    {
+      "type": "text",
+      "id": "size_6_price",
+      "label": "Gr\u00f6\u00dfe 6 \u2013 Preis (Cent/Buchstabe)",
+      "default": "1500"
+    },
+    {
+      "type": "header",
+      "content": "Farben"
+    },
+    {
+      "type": "paragraph",
+      "content": "Definiere bis zu 8 Filament-Farben."
+    },
+    {
+      "type": "color",
+      "id": "color_1",
+      "label": "Farbe 1",
+      "default": "#000000"
+    },
+    {
+      "type": "text",
+      "id": "color_1_name",
+      "label": "Farbe 1 \u2013 Name",
+      "default": "Schwarz"
+    },
+    {
+      "type": "color",
+      "id": "color_2",
+      "label": "Farbe 2",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "text",
+      "id": "color_2_name",
+      "label": "Farbe 2 \u2013 Name",
+      "default": "Wei\u00df"
+    },
+    {
+      "type": "color",
+      "id": "color_3",
+      "label": "Farbe 3",
+      "default": "#C0A060"
+    },
+    {
+      "type": "text",
+      "id": "color_3_name",
+      "label": "Farbe 3 \u2013 Name",
+      "default": "Gold"
+    },
+    {
+      "type": "color",
+      "id": "color_4",
+      "label": "Farbe 4",
+      "default": "#C0C0C0"
+    },
+    {
+      "type": "text",
+      "id": "color_4_name",
+      "label": "Farbe 4 \u2013 Name",
+      "default": "Silber"
+    },
+    {
+      "type": "color",
+      "id": "color_5",
+      "label": "Farbe 5",
+      "default": "#CC0000"
+    },
+    {
+      "type": "text",
+      "id": "color_5_name",
+      "label": "Farbe 5 \u2013 Name",
+      "default": "Rot"
+    },
+    {
+      "type": "color",
+      "id": "color_6",
+      "label": "Farbe 6"
+    },
+    {
+      "type": "text",
+      "id": "color_6_name",
+      "label": "Farbe 6 \u2013 Name"
+    },
+    {
+      "type": "color",
+      "id": "color_7",
+      "label": "Farbe 7"
+    },
+    {
+      "type": "text",
+      "id": "color_7_name",
+      "label": "Farbe 7 \u2013 Name"
+    },
+    {
+      "type": "color",
+      "id": "color_8",
+      "label": "Farbe 8"
+    },
+    {
+      "type": "text",
+      "id": "color_8_name",
+      "label": "Farbe 8 \u2013 Name"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "gallery_image",
+      "name": "Beispielbild",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Bild"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Bildunterschrift"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "3D Schriftzug Konfigurator"
+    }
+  ]
+}
+{% endschema %}
